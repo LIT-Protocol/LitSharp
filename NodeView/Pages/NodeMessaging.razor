@@ -1,0 +1,107 @@
+@page "/nodemessaging"
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject HttpClient Http
+@using System.Net.Http.Json
+@using SharedService;
+<PageTitle>Node Messaging</PageTitle>
+
+<h2>Realtime InterNode Messaging</h2>
+<NodeView.Components.NetworkState />
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+@if (@node_averages != null) {
+    <RadzenChart style="height: 400px">                 
+        <RadzenStackedColumnSeries Data="@node_averages" CategoryProperty="node_name" Title="Incoming" LineType="LineType.Dashed" ValueProperty="incoming">
+            <RadzenSeriesDataLabels Visible="true" />
+        </RadzenStackedColumnSeries>
+        <RadzenStackedColumnSeries Data="@node_averages" CategoryProperty="node_name" Title="Outgoing" ValueProperty="outgoing">
+            <RadzenSeriesDataLabels Visible="true" />
+        </RadzenStackedColumnSeries>
+    
+        <RadzenValueAxis Min="0" Max="300" Step="100">
+            <RadzenGridLines Visible="true" />
+            <RadzenAxisTitle Text="Messages/Second" />
+        </RadzenValueAxis>
+        <RadzenColumnOptions Radius="5" />
+    </RadzenChart>
+
+<br>
+    @foreach (ActiveActions actions in history.get_active_actions()) {
+        @if (actions.ids.Count > 0) {
+            <a>Nodes running @actions.action_name</a> <b>: @actions.ids.Count</b> 
+            <b> ( @actions.ids.GroupBy(i => i).Count() unique ) </b>
+         <br/>
+        }
+    }
+
+}
+        </div>
+    </div>
+</div>
+
+
+@code {
+
+    private string output = "... gathering metrics ...";
+    private LitContracts.Staking.ContractDefinition.Validator[]? nodes;
+    PeriodicTimer periodicTimer = new (TimeSpan.FromMilliseconds(500));
+
+    private List<Metric>? node_averages;
+    private  NetworkHistory? history;
+    protected override async Task OnInitializedAsync(){  
+        
+        var stakingService = new SharedService.Resolver().GetStakingService();
+        
+        var validators = await stakingService.GetValidatorsStructsInCurrentEpochQueryAsync();   
+        nodes = validators.ReturnValue1.Select(x => new LitContracts.Staking.ContractDefinition.Validator
+            {
+                Ip = x.Ip,
+                Ipv6 = x.Ipv6,
+                NodeAddress = x.NodeAddress,
+                Port = x.Port,
+            }).ToArray();
+
+        history = new NetworkHistory(5, nodes.Length);
+        RunTimer();
+    }
+
+    async void RunTimer()
+    {
+        while (await periodicTimer.WaitForNextTickAsync()) { 
+            HttpClient client = new HttpClient();
+            List<NodeMetricRoot> new_metrics = new List<NodeMetricRoot>();
+            if(nodes != null) {
+                foreach ( var node in nodes ) {
+                    await client.GetAsync("http://localhost:" + node.Port.ToString() +  "/web/rt/metrics").ContinueWith(
+                        (requestTask) =>
+                        {
+                            HttpResponseMessage response = requestTask.Result;
+                            response.EnsureSuccessStatusCode();
+                            return response.Content.ReadAsStringAsync();
+                        }
+                    ).Unwrap().ContinueWith(
+                        (readTask) =>
+                        {
+                            var result = readTask.Result;                            
+                            var current_metrics = System.Text.Json.JsonSerializer.Deserialize<NodeMetricRoot>(result);
+                            if (current_metrics != null) {
+                                new_metrics.Add(current_metrics);
+                            }                            
+                        }
+                    );                    
+                }
+            }            
+            history.add(new_metrics);
+            var net_average = history.network_average();
+            node_averages = history.node_average();           
+            StateHasChanged();           
+        }    
+    }
+
+    public void Dispose()
+    {
+        periodicTimer.Dispose();
+    }
+}
+      

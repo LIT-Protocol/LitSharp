@@ -1,0 +1,77 @@
+
+@using LitContracts.Staking;
+@using LitContracts.Staking.ContractDefinition;
+ 
+<div> 
+    Network State: @network_state,  Epoch: @epoch_number  (Next: @block_number / @epoch_end_time)
+</div>
+
+@code {
+ 
+    private StakingService? stakingService;
+    private Validator[]? nodes;
+    private string network_state = "... checking network state ...";
+    private System.Numerics.BigInteger epoch_number = 0;
+    private System.Numerics.BigInteger epoch_end_time = 0;
+    private System.Numerics.BigInteger epoch_length = 0;
+    private System.Numerics.BigInteger block_number = 0;
+    PeriodicTimer periodicTimer = new (TimeSpan.FromMilliseconds(500));
+
+    protected override async Task OnInitializedAsync(){          
+ 
+        stakingService = new SharedService.Resolver().GetStakingService();
+        var state = await stakingService.StateQueryAsync();
+
+        RunTimer();
+    }     
+ 
+    async void RunTimer()
+    {
+        while (await periodicTimer.WaitForNextTickAsync()) { 
+            if ( stakingService is null ) {
+                return;
+            }
+            var state = await  stakingService.StateQueryAsync();
+            var web3 =  SharedService.NodeContracts.GetAnvilConnection();
+            var block_number_hex = await web3.Eth.Blocks.GetBlockNumber.SendRequestAsync();
+            block_number = block_number_hex.Value;
+            
+            switch (state) {
+                case 0:
+                    network_state = "Active";
+                    break;
+                case 1:
+                    network_state = "Next Validator Set Locked";
+                    break;
+                case 2:
+                    network_state = "Ready For Next Epoch";
+                    break;
+                case 3:
+                    network_state = "Unlocked";
+                    break;
+                case 4:
+                    network_state = "Paused";
+                    break;
+                case 5:
+                    network_state = "Restore";
+                    break;
+                default:
+                    network_state = "Unknown";
+                    break;
+            }
+
+            var epochOutput = await stakingService.EpochQueryAsync();
+            epoch_number = epochOutput.ReturnValue1.Number;
+            epoch_length = epochOutput.ReturnValue1.EpochLength;
+            epoch_end_time = epochOutput.ReturnValue1.EndTime;
+
+            StateHasChanged();            
+        }    
+    }
+
+    public void Dispose()
+    {
+        periodicTimer?.Dispose();
+    }
+}
+      

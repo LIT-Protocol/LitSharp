@@ -1,0 +1,61 @@
+is_global = true
+build_property.TargetFramework = net7.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = false
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = browser
+build_property.RootNamespace = NodeView
+build_property.RootNamespace = NodeView
+build_property.ProjectDir = /Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/NodeView/
+build_property.RazorLangVersion = 7.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = /Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/NodeView
+build_property._RazorSourceGeneratorDebug = 
+
+[/Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/NodeView/App.razor]
+build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/NodeView/Components/NetworkState.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9OZXR3b3JrU3RhdGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/NodeView/Pages/Counter.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ291bnRlci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/NodeView/Pages/Index.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvSW5kZXgucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/NodeView/Pages/NetworkView.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTmV0d29ya1ZpZXcucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/NodeView/Pages/NodeMessaging.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTm9kZU1lc3NhZ2luZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/NodeView/Pages/RunningMetrics.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUnVubmluZ01ldHJpY3MucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/NodeView/Shared/SurveyPrompt.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL1N1cnZleVByb21wdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/NodeView/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/NodeView/Shared/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL01haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-k6srozvh3i
+
+[/Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/NodeView/Shared/NavMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL05hdk1lbnUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-jamgk78ufx

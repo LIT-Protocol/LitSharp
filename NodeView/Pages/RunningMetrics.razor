@@ -1,0 +1,80 @@
+@page "/runningmetrics"
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject HttpClient Http
+@using System.Net.Http.Json
+<PageTitle>Raw Metrics</PageTitle>
+
+<h1>RealTime Raw Metrics</h1>
+
+<p>Ouput:</p>
+
+@output
+
+
+@code {
+
+    string output = "... gathering metrics ...";
+    private LitContracts.Staking.ContractDefinition.Validator[]? nodes;
+    PeriodicTimer periodicTimer = new (TimeSpan.FromMilliseconds(500));
+    protected override async Task OnInitializedAsync(){  
+        
+        var stakingService = new SharedService.Resolver().GetStakingService();
+        
+        var validators = await stakingService.GetValidatorsStructsInCurrentEpochQueryAsync();   
+        nodes = validators.ReturnValue1.Select(x => new LitContracts.Staking.ContractDefinition.Validator
+            {
+                Ip = x.Ip,
+                Ipv6 = x.Ipv6,
+                NodeAddress = x.NodeAddress,
+                Port = x.Port,
+            }).ToArray();
+
+
+        @* var result = await localStorage.GetItemAsync<int?>("currentCount");         *@
+        @* currentCount = result.HasValue ? result.Value : 0; *@
+        RunTimer();
+    }
+
+    
+
+    async void RunTimer()
+    {
+        while (await periodicTimer.WaitForNextTickAsync()) { 
+            HttpClient client = new HttpClient();
+
+            if(nodes != null) {
+                var combined_output = new System.Text.StringBuilder();
+                foreach ( var node in nodes ) {
+                    await client.GetAsync("http://localhost:" + node.Port.ToString() +  "/web/rt/metrics").ContinueWith(
+                        (requestTask) =>
+                        {
+                            HttpResponseMessage response = requestTask.Result;
+                            response.EnsureSuccessStatusCode();
+                            return response.Content.ReadAsStringAsync();
+                        }
+                    ).Unwrap().ContinueWith(
+                        (readTask) =>
+                        {
+                            combined_output.Append( readTask.Result);                            
+                        }
+                    );
+                }
+
+                output = combined_output.ToString();
+                StateHasChanged();
+
+            }
+            
+            @* output = "" ;
+            
+            StateHasChanged(); *@
+        }    
+    }
+
+
+    public void Dispose()
+    {
+        periodicTimer?.Dispose();
+    }
+}
+      
