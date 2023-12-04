@@ -24,6 +24,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9OZXR3b3JrU3RhdGUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
+[/Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/NodeView/Pages/Config/Contracts.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ29uZmlnL0NvbnRyYWN0cy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
 [/Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/NodeView/Pages/Counter.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ291bnRlci5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
@@ -32,20 +36,16 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXMvSW5kZXgucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/NodeView/Pages/NetworkView.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTmV0d29ya1ZpZXcucmF6b3I=
+[/Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/NodeView/Pages/Nodes/NetworkView.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTm9kZXMvTmV0d29ya1ZpZXcucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/NodeView/Pages/NodeMessaging.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTm9kZU1lc3NhZ2luZy5yYXpvcg==
+[/Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/NodeView/Pages/Nodes/NodeMessaging.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTm9kZXMvTm9kZU1lc3NhZ2luZy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/NodeView/Pages/RunningMetrics.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUnVubmluZ01ldHJpY3MucmF6b3I=
-build_metadata.AdditionalFiles.CssScope = 
-
-[/Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/NodeView/Shared/SurveyPrompt.razor]
-build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL1N1cnZleVByb21wdC5yYXpvcg==
+[/Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/NodeView/Pages/Nodes/RunningMetrics.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTm9kZXMvUnVubmluZ01ldHJpY3MucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [/Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/NodeView/_Imports.razor]

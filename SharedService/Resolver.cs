@@ -1,12 +1,26 @@
 
+using System.Collections;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Text;
 using LitContracts.LITToken;
 using LitContracts.PubkeyRouter;
 using LitContracts.Staking;
+using Nethereum.ABI;
+using Nethereum.ABI.Decoders;
+using Nethereum.ABI.Encoders;
 using Nethereum.Hex.HexConvertors.Extensions;
 using Nethereum.Model;
+using Nethereum.Util;
 using Org.BouncyCastle.Crypto.Digests;
 namespace SharedService;
+ 
+ public struct ContractAddress {
+    public string name { get; set; }
+    public string address { get; set; }
+    
+ }
+ 
  public enum Env {
         Dev = 0,
         Staging = 1,
@@ -36,7 +50,7 @@ public enum ContractType
     }
 
 public class Resolver{
-    private static string ContractResolverAddress = "0x0000000";
+    private static string ContractResolverAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
     public static byte[] keccak256(string tx_bytes) {        
         byte[] txByte = Encoding.UTF8.GetBytes(tx_bytes);
         var digest = new KeccakDigest(256);
@@ -46,8 +60,8 @@ public class Resolver{
         return calculatedHash;
     }
 
-    public static async Task<string> GetContractAddress(ContractType contractType)
-    {
+    public static byte[] GetContractTypKeccak(ContractType contractType) {
+
         byte[]  typ = keccak256("STAKING"); // 0x080909c18c958ce5a2d36481697824e477319323d03154ceba3b78f28a61887b
                 
         switch (contractType) {
@@ -108,8 +122,18 @@ public class Resolver{
             typ = keccak256("STAKING"); // 0x080909c18c958ce5a2d36481697824e477319323d03154ceba3b78f28a61887b
             break;
         }
+         
+        if ( typ.Length > 32  )
+            typ = typ.Slice(0, 32);
 
-        // typ = keccak256("ADMIN"); // Admin Role ?
+        return typ;
+
+    }
+
+    public static async Task<string> GetContractAddress(ContractType contractType)
+    {
+
+        var typ = GetContractTypKeccak(contractType);
 
         var web3 =  NodeContracts.GetAnvilConnection();
         LitContracts.ContractResolver.ContractResolverService resolverService = new LitContracts.ContractResolver.ContractResolverService(web3, ContractResolverAddress);
@@ -118,7 +142,36 @@ public class Resolver{
         return address_bytes;
     }
 
-    public StakingService GetStakingService()
+
+    public static async Task<string> GetContractAddress(string contractType)
+    {
+        byte[]  typ = keccak256(contractType); // 0x080909c18c958ce5a2d36481697824e477319323d03154ceba3b78f28a61887b
+        var web3 =  NodeContracts.GetAnvilConnection();
+        LitContracts.ContractResolver.ContractResolverService resolverService = new LitContracts.ContractResolver.ContractResolverService(web3, ContractResolverAddress);
+        var address_bytes = await resolverService.GetContractQueryAsync(typ, env: (byte)Env.Dev);
+
+        return address_bytes;
+    }
+ 
+    public static async Task<List<ContractAddress>> GetAllContractAddresses() {
+        var web3 =  NodeContracts.GetAnvilConnection();
+        LitContracts.ContractResolver.ContractResolverService resolverService = new LitContracts.ContractResolver.ContractResolverService(web3, ContractResolverAddress);
+        var contractAddresses = new List<ContractAddress>();
+
+        foreach (ContractType contractType in Enum.GetValues(typeof(ContractType)) )
+        {            
+            var typ = GetContractTypKeccak(contractType);
+            var env = (byte)Env.Dev;
+            var contract = await resolverService.GetContractQueryAsync(typ, env);
+            Console.WriteLine($"Contract Type: {contractType} Address: {contract}");
+            contractAddresses.Add(new ContractAddress { name = contractType.ToString(), address = contract });
+        }
+
+        
+        return contractAddresses;
+    }
+
+    public StakingService GetStakingService() 
     {
         var web3 =  NodeContracts.GetAnvilConnection();
         var stakingService = new StakingService(web3, "0x67d269191c92Caf3cD7723F116c85e6E9bf55933");
