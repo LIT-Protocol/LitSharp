@@ -52,7 +52,7 @@
     private  NetworkHistory? history;
     protected override async Task OnInitializedAsync(){  
         
-        var stakingService = new SharedService.Resolver().GetStakingService();
+        var stakingService = await Resolver.GetStakingService();
         
         var validators = await stakingService.GetValidatorsStructsInCurrentEpochQueryAsync();   
         nodes = validators.ReturnValue1.Select(x => new LitContracts.Staking.ContractDefinition.Validator

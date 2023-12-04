@@ -1,14 +1,12 @@
-﻿@page "/config/validators"
+﻿@page "/pkps/list"
 @using Radzen.Blazor.Rendering;
 @using SharedService;
 @using LitContracts.Staking.ContractDefinition;
 @using System.Numerics;
 
-<PageTitle>Contracts</PageTitle>
+<PageTitle>PKPs</PageTitle>
 
-<h2>Validators</h2>    
-
-<p>Current Nodes:</p>
+<h2>Minted PKPs</h2>    
 
 <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="20" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
     Data="@current_validators" TItem="Validator" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
@@ -22,23 +20,6 @@
     </Columns>
 </RadzenDataGrid>  
 
-<br/><br/>
-<p>Next Nodes:</p>
-
-<RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="20" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
-    Data="@next_validators" TItem="Validator" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
-    <Columns>       
-        <RadzenDataGridColumn TItem="Validator" Property="Ip" Title="ip" Width="10" />
-        <RadzenDataGridColumn TItem="Validator" Property="Port" Title="port" Width="3" />
-        <RadzenDataGridColumn TItem="Validator" Property="NodeAddress" Title="Node Wallet Address" Width="50" />
-        <RadzenDataGridColumn TItem="Validator" Property="Reward" Title="Reward" Width="3"  />
-        @* <RadzenDataGridColumn TItem="Validator" Property="SenderPubKey" Title="SenderPubKey"  />
-        <RadzenDataGridColumn TItem="Validator" Property="ReceiverPubKey" Title="ReceiverPubKey"  /> *@
-    </Columns>
-</RadzenDataGrid>  
-
-<br/><br/>
-<p>Total Staked: @total_staked</p>
 
 @code {
 
@@ -48,6 +29,10 @@
     private BigInteger total_staked = 0;
     protected override async Task OnInitializedAsync()
     {                
+        var pubkeyRouterService = await Resolver.GetPubkeyRouterService();
+        
+    
+    
         var stakingService = await Resolver.GetStakingService();
 
         var v = await stakingService.GetValidatorsStructsInCurrentEpochQueryAsync();

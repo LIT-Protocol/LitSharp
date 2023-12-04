@@ -1,0 +1,54 @@
+﻿@page "/config/rootkeys"
+@using Radzen.Blazor.Rendering;
+@using SharedService;
+@using LitContracts.Staking.ContractDefinition;
+@using System.Numerics;
+@using Nethereum.Hex.HexConvertors.Extensions;
+
+<PageTitle>Root Keys</PageTitle>
+
+<h2>Root Keys</h2>    
+
+<p>Keys for the currently selected network.</p>
+
+<RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="20" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
+    Data="@root_keys" TItem="SimpleRootKey" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
+    <Columns>       
+        <RadzenDataGridColumn TItem="SimpleRootKey" Property="KeyType" Title="Key Type" Width="10%" />
+        <RadzenDataGridColumn TItem="SimpleRootKey" Property="Pubkey" Title="Public Key" />        
+    </Columns>
+</RadzenDataGrid>  
+
+
+@code {
+    
+    struct SimpleRootKey
+    {
+        public string Pubkey { get; set; }
+        public string KeyType { get; set; }
+    }
+
+    private List<SimpleRootKey> ? root_keys = null;
+    protected override async Task OnInitializedAsync()
+    {                
+        var pubkeyRouterService = await Resolver.GetPubkeyRouterService();
+        var staking_contract = await Resolver.GetContractAddress(ContractType.Staking);
+        var root_keys_result =  await pubkeyRouterService.GetRootKeysQueryAsync(staking_contract);
+
+        
+        root_keys = new List<SimpleRootKey>();
+        foreach (var root_key in root_keys_result.ReturnValue1)
+        {
+            var key_type = "BLS";
+            switch (root_key.KeyType.ToString()) {
+                case "2": key_type = "ECDSA"; break;
+                default: key_type = "BLS"; break;
+            }
+            root_keys.Add(new SimpleRootKey { Pubkey = "0x" + root_key.Pubkey.ToHex(), KeyType =  key_type });
+        }
+ 
+        
+
+
+    }
+}

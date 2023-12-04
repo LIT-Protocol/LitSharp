@@ -1,7 +1,8 @@
 
 @using LitContracts.Staking;
 @using LitContracts.Staking.ContractDefinition;
- 
+@using SharedService;
+
 <div> 
     Network State: @network_state,  Epoch: @epoch_number  (Next: @block_number / @epoch_end_time)
 </div>
@@ -19,7 +20,7 @@
 
     protected override async Task OnInitializedAsync(){          
  
-        stakingService = new SharedService.Resolver().GetStakingService();
+        stakingService = await Resolver.GetStakingService();
         var state = await stakingService.StateQueryAsync();
 
         RunTimer();
@@ -32,7 +33,7 @@
                 return;
             }
             var state = await  stakingService.StateQueryAsync();
-            var web3 =  SharedService.NodeContracts.GetAnvilConnection();
+            var web3 =  Resolver.GetConnection();
             var block_number_hex = await web3.Eth.Blocks.GetBlockNumber.SendRequestAsync();
             block_number = block_number_hex.Value;
             

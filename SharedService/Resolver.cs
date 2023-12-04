@@ -7,12 +7,12 @@ using LitContracts.PKPPermissions;
 using LitContracts.PKPNFTMetadata;
 using LitContracts.StakingBalances;
 using LitContracts.RateLimitNFT;
-
+using LitContracts.ContractResolver;
 using Nethereum.Util;
 using Org.BouncyCastle.Crypto.Digests;
 using Nethereum.Web3;
 using  Nethereum.Web3.Accounts;
-// using Blazored.LocalStorage;
+using Blazored.LocalStorage;
 namespace SharedService;
 
  public struct ContractAddress {
@@ -50,21 +50,34 @@ public enum ContractType
     }
 
 public class Resolver{
-    private static string ContractResolverAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+    
+    private ILocalStorageService localStorage { get; }
+    private string defaultPrivateKey = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
+    private string defaultContractResolverAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
-     public static Web3 GetConnection() {
-
-        var url = "http://127.0.0.1:8545";
-        var privateKey = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
+    private string defaultUrl = "http://127.0.0.1:8545";
+    public Resolver(ILocalStorageService localStorageService) {
+        localStorage = localStorageService;
+    }
+    public async Task<Web3> GetConnection() {
+    
+        var url = await localStorage.GetItemAsync<string>("url");
+        if (url == null)
+             url = defaultUrl;
+            
+        var privateKey = await localStorage.GetItemAsync<string>("privateKey");
+        if (privateKey == null)
+             privateKey = defaultPrivateKey;
+                    
         var account = new Account(privateKey);
         var web3 = new Web3(account, url);
         return web3;
     }
 
-    public static void SetConnection(string url, string privateKey, string contractAddress) {
-        
+    public static void SetConnection(string url, string privateKey, string contractAddress) {        
      
     }
+
     public static byte[] keccak256(string tx_bytes) {        
         byte[] txByte = Encoding.UTF8.GetBytes(tx_bytes);
         var digest = new KeccakDigest(256);
@@ -143,18 +156,18 @@ public class Resolver{
         return typ;
     }
 
-    public static async Task<string> GetContractAddress(ContractType contractType)
+    public async Task<string> GetContractAddress(ContractType contractType)
     {
         var typ = GetContractTypKeccak(contractType);
-        var web3 =  GetConnection();
-        LitContracts.ContractResolver.ContractResolverService resolverService = new LitContracts.ContractResolver.ContractResolverService(web3, ContractResolverAddress);
+        var web3 =  await GetConnection();
+        ContractResolverService resolverService = new ContractResolverService(web3, defaultContractResolverAddress);
         var address_bytes = await resolverService.GetContractQueryAsync(typ, env: (byte)Env.Dev);
         return address_bytes;
     }
  
-    public static async Task<List<ContractAddress>> GetAllContractAddresses() {
-        var web3 =  GetConnection();
-        LitContracts.ContractResolver.ContractResolverService resolverService = new LitContracts.ContractResolver.ContractResolverService(web3, ContractResolverAddress);
+    public  async Task<List<ContractAddress>> GetAllContractAddresses() {
+        var web3 = await  GetConnection();
+        ContractResolverService resolverService = new ContractResolverService(web3, defaultContractResolverAddress);
         var contractAddresses = new List<ContractAddress>();
 
         foreach (ContractType contractType in Enum.GetValues(typeof(ContractType)) )
@@ -165,48 +178,46 @@ public class Resolver{
             Console.WriteLine($"Contract Type: {contractType} Address: {contract}");
             contractAddresses.Add(new ContractAddress { name = contractType.ToString(), address = contract });
         }
-
-        
         return contractAddresses;
     }
 
-    public StakingService GetStakingService() 
+    public async Task<StakingService> GetStakingService() 
     {
-        return new StakingService(GetConnection(), GetContractAddress(ContractType.Staking).Result);
+        return new StakingService(await GetConnection(), await GetContractAddress(ContractType.Staking));
     }
 
-    public PubkeyRouterService GetPubkeyRouterService()
+    public async Task<PubkeyRouterService> GetPubkeyRouterService()
     {
-        return new PubkeyRouterService(GetConnection(), GetContractAddress(ContractType.PubkeyRouter).Result);
+        return new PubkeyRouterService(await GetConnection(), await GetContractAddress(ContractType.PubkeyRouter));
     }
 
-    public PKPHelperService GetPKPHelperService()
+    public async Task<PKPHelperService> GetPKPHelperService()
     {
-        return new PKPHelperService(GetConnection(), GetContractAddress(ContractType.PKPHelper).Result);
+        return new PKPHelperService(await GetConnection(), await GetContractAddress(ContractType.PKPHelper));
     }
 
-    public PKPNFTMetadataService GetPKPNFTMetadataService()
+    public async Task<PKPNFTMetadataService> GetPKPNFTMetadataService()
     {
-        return new PKPNFTMetadataService(GetConnection(), GetContractAddress(ContractType.PKPNFTMetadata).Result);
+        return new PKPNFTMetadataService(await GetConnection(), await GetContractAddress(ContractType.PKPNFTMetadata));
     }
 
-    public PKPPermissionsService    GetPKPPermissionsService()
+    public async Task<PKPPermissionsService>    GetPKPPermissionsService()
     {
-        return new PKPPermissionsService(GetConnection(), GetContractAddress(ContractType.PKPPermissions).Result);
+        return new PKPPermissionsService(await GetConnection(), await GetContractAddress(ContractType.PKPPermissions));
     }
 
-    public PkpnftService GetPkpnftService () {
-        return new PkpnftService(GetConnection(), GetContractAddress(ContractType.PKPNFT).Result);
+    public async Task<PkpnftService> GetPkpnftService () {
+        return new PkpnftService(await GetConnection(), await GetContractAddress(ContractType.PKPNFT));
     }
 
-    public RateLimitNFTService  GetRateLimitNFTService()
+    public async Task<RateLimitNFTService>  GetRateLimitNFTService()
     {
-        return new RateLimitNFTService(GetConnection(), GetContractAddress(ContractType.RateLimitNFT).Result);
+        return new RateLimitNFTService(await GetConnection(), await GetContractAddress(ContractType.RateLimitNFT));
     }
 
-    public StakingBalancesService GetStakingBalancesService()
+    public async Task<StakingBalancesService> GetStakingBalancesService()
     {
-        return new StakingBalancesService(GetConnection(), GetContractAddress(ContractType.StakingBalances).Result);
+        return new StakingBalancesService(await GetConnection(), await GetContractAddress(ContractType.StakingBalances));
     }
 
 }
