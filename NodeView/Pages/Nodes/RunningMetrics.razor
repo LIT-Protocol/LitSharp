@@ -20,7 +20,8 @@
     PeriodicTimer periodicTimer = new (TimeSpan.FromMilliseconds(500));
     protected override async Task OnInitializedAsync(){  
         
-        var stakingService = await Resolver.GetStakingService();
+        var resolver = new Resolver(localStorage);
+        var stakingService = await resolver.GetStakingService();
         
         var validators = await stakingService.GetValidatorsStructsInCurrentEpochQueryAsync();   
         nodes = validators.ReturnValue1.Select(x => new LitContracts.Staking.ContractDefinition.Validator

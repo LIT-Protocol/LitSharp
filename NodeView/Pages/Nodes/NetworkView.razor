@@ -12,6 +12,7 @@
 @using Blazor.Diagrams.Components.Widgets;
 @using System.Net.Http.Json
 @using SharedService;
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 
 <PageTitle>Network Viewer</PageTitle>
 
@@ -54,7 +55,8 @@ else
     private  NetworkHistory? history;
     protected override async Task OnInitializedAsync()
     {                
-        var stakingService = await Resolver.GetStakingService();
+        var resolver = new Resolver(localStorage);
+        var stakingService = await resolver.GetStakingService();
         
         var validators = await stakingService.GetValidatorsStructsInCurrentEpochQueryAsync();   
         nodes = validators.ReturnValue1.Select(x => new LitContracts.Staking.ContractDefinition.Validator

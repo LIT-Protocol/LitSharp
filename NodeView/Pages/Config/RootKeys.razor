@@ -4,7 +4,7 @@
 @using LitContracts.Staking.ContractDefinition;
 @using System.Numerics;
 @using Nethereum.Hex.HexConvertors.Extensions;
-
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 <PageTitle>Root Keys</PageTitle>
 
 <h2>Root Keys</h2>    
@@ -31,8 +31,9 @@
     private List<SimpleRootKey> ? root_keys = null;
     protected override async Task OnInitializedAsync()
     {                
-        var pubkeyRouterService = await Resolver.GetPubkeyRouterService();
-        var staking_contract = await Resolver.GetContractAddress(ContractType.Staking);
+        var resolver = new Resolver(localStorage);
+        var pubkeyRouterService = await resolver.GetPubkeyRouterService();
+        var staking_contract = await resolver.GetContractAddress(ContractType.Staking);
         var root_keys_result =  await pubkeyRouterService.GetRootKeysQueryAsync(staking_contract);
 
         

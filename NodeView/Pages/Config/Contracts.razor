@@ -1,7 +1,7 @@
 ﻿@page "/config/contracts"
 @using Radzen.Blazor.Rendering;
 @using SharedService;
-
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 <PageTitle>Contracts</PageTitle>
 
 <h2>Contracts</h2>    
@@ -21,7 +21,8 @@ Network Contract Overview
     private List<ContractAddress>? contractAddresses = null;
     protected override async Task OnInitializedAsync()
     {                
-        contractAddresses = await Resolver.GetAllContractAddresses();
+        var resolver = new Resolver(localStorage);
+        contractAddresses = await resolver.GetAllContractAddresses();
         var i = "";
 
     }

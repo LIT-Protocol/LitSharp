@@ -3,7 +3,7 @@
 @using SharedService;
 @using LitContracts.Staking.ContractDefinition;
 @using System.Numerics;
-
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 <PageTitle>Contracts</PageTitle>
 
 <h2>Validators</h2>    
@@ -48,14 +48,15 @@
     private BigInteger total_staked = 0;
     protected override async Task OnInitializedAsync()
     {                
-        var stakingService = await Resolver.GetStakingService();
+        var resolver = new Resolver(localStorage);
+        var stakingService = await resolver.GetStakingService();
 
         var v = await stakingService.GetValidatorsStructsInCurrentEpochQueryAsync();
         current_validators = v.ReturnValue1;
         var v2 = await stakingService.GetValidatorsStructsInNextEpochQueryAsync();
         next_validators = v2.ReturnValue1;
 
-        var stakingBalance = await Resolver.GetStakingBalancesService();
+        var stakingBalance = await resolver.GetStakingBalancesService();
 
         total_staked = await stakingBalance.TotalStakedQueryAsync();
 
