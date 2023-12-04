@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "mfL1F9b5UNzSdjVVhVmxCfDmbDuOE7qM53uc99Yah4K4fWeImwxyX2sC7vyblqQjWPfGnDvdgbsBOKzHsrkqFQ==",
+  "dgSpecHash": "xJTuHb4O9Rcc+zOJ3inBYP75ajZBLalBSflxxiBTSJiJpmMUGQBFbALEE0icaFBpwDvECvmPmNNCsl7cpvWD5w==",
   "success": true,
-  "projectFilePath": "/Users/brendonpaul/documents/github/gtc6244/litsharp/NodeView/NodeView.csproj",
+  "projectFilePath": "/Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/NodeView/NodeView.csproj",
   "expectedPackageFiles": [
     "/Users/brendonpaul/.nuget/packages/adraffy.ensnormalize/0.1.5/adraffy.ensnormalize.0.1.5.nupkg.sha512",
     "/Users/brendonpaul/.nuget/packages/blazored.localstorage/4.4.0/blazored.localstorage.4.4.0.nupkg.sha512",
