@@ -34,14 +34,15 @@ else
     </CascadingValue>
 </div>
 
+@if (history != null) {
     @foreach (ActiveActions actions in history.get_active_actions()) {
-        @if (actions.ids.Count > 0) {
+        @if (actions.ids != null && actions.ids.Count > 0) {
             <a>Nodes running @actions.action_name</a> <b>: @actions.ids.Count</b> 
             <b> ( @actions.ids.GroupBy(i => i).Count() unique ) </b>
          <br/>
         }
     }
-
+}
 
 }
 

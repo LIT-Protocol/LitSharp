@@ -1,20 +1,20 @@
-
-using System.Collections;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Text;
-using LitContracts.LITToken;
 using LitContracts.PubkeyRouter;
 using LitContracts.Staking;
-using Nethereum.ABI;
-using Nethereum.ABI.Decoders;
-using Nethereum.ABI.Encoders;
-using Nethereum.Hex.HexConvertors.Extensions;
-using Nethereum.Model;
+using LitContracts.PKPHelper;
+using LitContracts.PKPNFT;
+using LitContracts.PKPPermissions;
+using LitContracts.PKPNFTMetadata;
+using LitContracts.StakingBalances;
+using LitContracts.RateLimitNFT;
+
 using Nethereum.Util;
 using Org.BouncyCastle.Crypto.Digests;
+using Nethereum.Web3;
+using  Nethereum.Web3.Accounts;
+// using Blazored.LocalStorage;
 namespace SharedService;
- 
+
  public struct ContractAddress {
     public string name { get; set; }
     public string address { get; set; }
@@ -51,6 +51,20 @@ public enum ContractType
 
 public class Resolver{
     private static string ContractResolverAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+
+     public static Web3 GetConnection() {
+
+        var url = "http://127.0.0.1:8545";
+        var privateKey = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
+        var account = new Account(privateKey);
+        var web3 = new Web3(account, url);
+        return web3;
+    }
+
+    public static void SetConnection(string url, string privateKey, string contractAddress) {
+        
+     
+    }
     public static byte[] keccak256(string tx_bytes) {        
         byte[] txByte = Encoding.UTF8.GetBytes(tx_bytes);
         var digest = new KeccakDigest(256);
@@ -127,34 +141,19 @@ public class Resolver{
             typ = typ.Slice(0, 32);
 
         return typ;
-
     }
 
     public static async Task<string> GetContractAddress(ContractType contractType)
     {
-
         var typ = GetContractTypKeccak(contractType);
-
-        var web3 =  NodeContracts.GetAnvilConnection();
+        var web3 =  GetConnection();
         LitContracts.ContractResolver.ContractResolverService resolverService = new LitContracts.ContractResolver.ContractResolverService(web3, ContractResolverAddress);
         var address_bytes = await resolverService.GetContractQueryAsync(typ, env: (byte)Env.Dev);
-
-        return address_bytes;
-    }
-
-
-    public static async Task<string> GetContractAddress(string contractType)
-    {
-        byte[]  typ = keccak256(contractType); // 0x080909c18c958ce5a2d36481697824e477319323d03154ceba3b78f28a61887b
-        var web3 =  NodeContracts.GetAnvilConnection();
-        LitContracts.ContractResolver.ContractResolverService resolverService = new LitContracts.ContractResolver.ContractResolverService(web3, ContractResolverAddress);
-        var address_bytes = await resolverService.GetContractQueryAsync(typ, env: (byte)Env.Dev);
-
         return address_bytes;
     }
  
     public static async Task<List<ContractAddress>> GetAllContractAddresses() {
-        var web3 =  NodeContracts.GetAnvilConnection();
+        var web3 =  GetConnection();
         LitContracts.ContractResolver.ContractResolverService resolverService = new LitContracts.ContractResolver.ContractResolverService(web3, ContractResolverAddress);
         var contractAddresses = new List<ContractAddress>();
 
@@ -173,16 +172,42 @@ public class Resolver{
 
     public StakingService GetStakingService() 
     {
-        var web3 =  NodeContracts.GetAnvilConnection();
-        var stakingService = new StakingService(web3, "0x67d269191c92Caf3cD7723F116c85e6E9bf55933");
-        return stakingService;
+        return new StakingService(GetConnection(), GetContractAddress(ContractType.Staking).Result);
     }
 
     public PubkeyRouterService GetPubkeyRouterService()
     {
-        var web3 = NodeContracts.GetAnvilConnection();
-        var pubkeyRouterService = new PubkeyRouterService(web3, "0x67d269191c92Caf3cD7723F116c85e6E9bf55933");
-        return pubkeyRouterService;
+        return new PubkeyRouterService(GetConnection(), GetContractAddress(ContractType.PubkeyRouter).Result);
+    }
+
+    public PKPHelperService GetPKPHelperService()
+    {
+        return new PKPHelperService(GetConnection(), GetContractAddress(ContractType.PKPHelper).Result);
+    }
+
+    public PKPNFTMetadataService GetPKPNFTMetadataService()
+    {
+        return new PKPNFTMetadataService(GetConnection(), GetContractAddress(ContractType.PKPNFTMetadata).Result);
+    }
+
+    public PKPPermissionsService    GetPKPPermissionsService()
+    {
+        return new PKPPermissionsService(GetConnection(), GetContractAddress(ContractType.PKPPermissions).Result);
+    }
+
+    public PkpnftService GetPkpnftService () {
+        return new PkpnftService(GetConnection(), GetContractAddress(ContractType.PKPNFT).Result);
+    }
+
+    public RateLimitNFTService  GetRateLimitNFTService()
+    {
+        return new RateLimitNFTService(GetConnection(), GetContractAddress(ContractType.RateLimitNFT).Result);
+    }
+
+    public StakingBalancesService GetStakingBalancesService()
+    {
+        return new StakingBalancesService(GetConnection(), GetContractAddress(ContractType.StakingBalances).Result);
     }
 
 }
+

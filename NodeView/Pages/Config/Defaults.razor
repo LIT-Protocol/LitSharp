@@ -1,0 +1,28 @@
+﻿@page "/config/defaults"
+@using Radzen.Blazor.Rendering;
+@using SharedService;
+
+<PageTitle>Contracts</PageTitle>
+
+<h2>Contracts</h2>    
+<p>
+Network Contract Overview
+</p>
+
+<RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="20" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
+    Data="@contractAddresses" TItem="ContractAddress" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
+    <Columns>       
+        <RadzenDataGridColumn TItem="ContractAddress" Property="name" Title="Name" Width="160px" />
+        <RadzenDataGridColumn TItem="ContractAddress" Property="address" Title="Address" Width="300px" />
+    </Columns>
+</RadzenDataGrid>  
+
+@code {
+    private List<ContractAddress>? contractAddresses = null;
+    protected override async Task OnInitializedAsync()
+    {                
+        contractAddresses = await Resolver.GetAllContractAddresses();
+        var i = "";
+
+    }
+}

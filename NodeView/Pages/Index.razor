@@ -2,7 +2,65 @@
 
 <PageTitle>Index</PageTitle>
 
-<h2>Local Node Network Tools</h2>    
+<h2>Developer Node Explorer</h2>    
 <p>
-Network Contract Overview
+    <br>
+<b>Notes:</b>
 </p>
+<li>
+    This tool is runs entirely in the browser and requires only a the resolver contract address (or staker contract address) and access to the base chain in order to self configure.
+</li>
+<li>
+    To view node information, the nodes must support metrics collection.   The other exploration functions will continue to work, however.
+</li>
+<li>
+    This tool was written in C# using Blazor technology and the Nethereum library - a web3 or ethers equivalent for C#.
+</li>
+<li>
+    Source code is available at <a href="https://github.com/GTC6244/LitSharp/">LitSharp</a>
+</li>
+
+<p></p>
+<p>
+The default settings are to use the local Anvil configuration, wtih a deterministic address for the resolver contract.  
+</p>
+
+<p>
+    <br>
+    <b>
+    Configuration
+</b></p>
+
+<div class="form-group">
+    <label for="chainId">Chain url:</label>
+    <input type="text" id="chainUrl" class="form-control" name="chainId" value="@chainUrl" @onchange="ChainUrlChanged" />
+</div>
+<div class="form-group">
+    <label for="resolverAddress">Resolver Contract Address:</label>
+    <input type="text" id="resolverAddress" class="form-control" name="resolverAddress" value="@resolverAddress" @onchange="ResolverAddressChanged" />
+</div>
+<div class="form-group">
+    <label for="privateKey">Private Key:</label>
+    <input type="text" id="privateKey" class="form-control" name="privateKey" value="@defaultPrivateKey" />
+</div>
+
+@code {
+    string chainUrl = "https://localhost:8545";
+    string resolverAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+    string defaultPrivateKey = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
+
+    void ResolverAddressChanged(ChangeEventArgs e)
+    {
+        resolverAddress = e.Value.ToString();
+    }
+
+    void ChainUrlChanged(ChangeEventArgs e)
+    {
+        chainUrl = e.Value.ToString();
+    }
+
+    void PrivateKeyChanged(ChangeEventArgs e)
+    {
+        defaultPrivateKey = e.Value.ToString();
+    }
+}
