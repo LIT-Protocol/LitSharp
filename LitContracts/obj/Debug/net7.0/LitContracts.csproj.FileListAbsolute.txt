@@ -10,7 +10,7 @@
 /Users/brendonpaul/csharp/web3/LitSharp/LitContracts/obj/Debug/net7.0/refint/LitContracts.dll
 /Users/brendonpaul/csharp/web3/LitSharp/LitContracts/obj/Debug/net7.0/LitContracts.pdb
 /Users/brendonpaul/csharp/web3/LitSharp/LitContracts/obj/Debug/net7.0/ref/LitContracts.dll
-/Users/brendonpaul/documents/github/gtc6244/litsharp/LitContracts/bin/Debug/net7.0/LitContracts.deps.json
+/Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/LitContracts/bin/Debug/net7.0/LitContracts.deps.json
 /Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/LitContracts/bin/Debug/net7.0/LitContracts.dll
 /Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/LitContracts/bin/Debug/net7.0/LitContracts.pdb
 /Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/LitContracts/obj/Debug/net7.0/LitContracts.csproj.AssemblyReference.cache
@@ -21,4 +21,4 @@
 /Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/LitContracts/obj/Debug/net7.0/LitContracts.dll
 /Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/LitContracts/obj/Debug/net7.0/refint/LitContracts.dll
 /Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/LitContracts/obj/Debug/net7.0/LitContracts.pdb
-/Users/brendonpaul/documents/github/gtc6244/litsharp/LitContracts/obj/Debug/net7.0/ref/LitContracts.dll
+/Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/LitContracts/obj/Debug/net7.0/ref/LitContracts.dll

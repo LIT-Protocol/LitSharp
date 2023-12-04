@@ -226,7 +226,7 @@
       "System.Private.CoreLib.dll": "sha256-\/7uQ+eNo9u3H1mpgMko4D3tKZHeGRfsRjna0Dqsu62k=",
       "LitContracts.dll": "sha256-iRlU7XmLJYN\/Q+h7XXzq8OuLfBN1t3I4ByUp4vE2aQs=",
       "SharedService.dll": "sha256-gxI3q7J9i+ed0UA5dtglvwC5AtEp3GFNpeojakYirVU=",
-      "NodeView.dll": "sha256-JPWsXtA3M+3aHfL+WRZvqymfBGOhmbfFz\/he0GVKB2U="
+      "NodeView.dll": "sha256-IUJBLcsLNRG4wq+r0MyYHb3c4Wp6xUu\/BCmArT94WYU="
     },
     "extensions": null,
     "lazyAssembly": null,
@@ -234,7 +234,7 @@
     "pdb": {
       "LitContracts.pdb": "sha256-rf7c3BGvNRGOttMadtOzcDNHO\/nskfkg4neS2v5Dk78=",
       "SharedService.pdb": "sha256-QUlQefXPPyhNmbLbWPEAtaAjLkoJNOI6zipj34PBuH8=",
-      "NodeView.pdb": "sha256-Ojk25zuErDs06gg\/yHef8aOeACHEIkgiKHElviMsf8M="
+      "NodeView.pdb": "sha256-XeKKhgAVaUw4CUTvKouSxHEI2Ybt9PQzZGUzwS6JLO4="
     },
     "runtime": {
       "dotnet.7.0.10.foe4pgafy4.js": "sha256-qJB30QURoyH3y3WyayHu6nMFIx2XNOkXCez7tagGpvE=",
