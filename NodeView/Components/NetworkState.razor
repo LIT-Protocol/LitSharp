@@ -2,6 +2,7 @@
 @using LitContracts.Staking;
 @using LitContracts.Staking.ContractDefinition;
 @using SharedService;
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 
 <div> 
     Network State: @network_state,  Epoch: @epoch_number  (Next: @block_number / @epoch_end_time)
@@ -10,17 +11,19 @@
 @code {
  
     private StakingService? stakingService;
-    private Validator[]? nodes;
     private string network_state = "... checking network state ...";
     private System.Numerics.BigInteger epoch_number = 0;
     private System.Numerics.BigInteger epoch_end_time = 0;
     private System.Numerics.BigInteger epoch_length = 0;
     private System.Numerics.BigInteger block_number = 0;
+ 
+ 
     PeriodicTimer periodicTimer = new (TimeSpan.FromMilliseconds(500));
 
     protected override async Task OnInitializedAsync(){          
  
-        stakingService = await Resolver.GetStakingService();
+        var resolver = new Resolver(localStorage);
+        stakingService = await resolver.GetStakingService();
         var state = await stakingService.StateQueryAsync();
 
         RunTimer();
@@ -28,12 +31,15 @@
  
     async void RunTimer()
     {
+
+        var resolver = new Resolver(localStorage);
+
         while (await periodicTimer.WaitForNextTickAsync()) { 
             if ( stakingService is null ) {
                 return;
             }
             var state = await  stakingService.StateQueryAsync();
-            var web3 =  Resolver.GetConnection();
+            var web3 = await resolver.GetConnection();
             var block_number_hex = await web3.Eth.Blocks.GetBlockNumber.SendRequestAsync();
             block_number = block_number_hex.Value;
             

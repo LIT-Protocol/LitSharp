@@ -9,8 +9,9 @@
 <b>Notes:</b>
 </p>
 <li>
-    This tool is runs entirely in the browser and requires only a the resolver contract address (or staker contract address) and access to the base chain in order to self configure.
+    This tool is runs entirely in the browser and requires only a the resolver contract address (or staker contract address) and access to the base chain in order to self configure.    
 </li>
+    <li> a private key is required for transactions that require funds - in the default scenario, this is the first key from the Anvil/HardHat node list</li>
 <li>
     To view node information, the nodes must support metrics collection.   The other exploration functions will continue to work, however.
 </li>
@@ -46,22 +47,36 @@ The default settings are to use the local Anvil configuration, wtih a determinis
 </div>
 
 @code {
-    string chainUrl = "https://localhost:8545";
+    string? chainUrl = "https://localhost:8545";
     string resolverAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
     string defaultPrivateKey = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
 
-    void ResolverAddressChanged(ChangeEventArgs e)
+    async void ResolverAddressChanged(ChangeEventArgs e)
     {
-        resolverAddress = e.Value.ToString();
+
+        if ( e.Value == null ) return;
+        if ( string.IsNullOrEmpty( e.Value.ToString() ) ) return;
+
+        resolverAddress =  e.Value.ToString();
+        await localStorage.SetItemAsync("contractResolverAddress", resolverAddress);
     }
 
-    void ChainUrlChanged(ChangeEventArgs e)
+    async void ChainUrlChanged(ChangeEventArgs e)
     {
+        if ( e.Value == null ) return;
+        if ( string.IsNullOrEmpty( e.Value.ToString() ) ) return;
+
         chainUrl = e.Value.ToString();
+        await localStorage.SetItemAsync("url", chainUrl);
     }
 
-    void PrivateKeyChanged(ChangeEventArgs e)
+    async void PrivateKeyChanged(ChangeEventArgs e)
     {
+
+        if ( e.Value == null ) return;
+        if ( string.IsNullOrEmpty( e.Value.ToString() ) ) return;
+
         defaultPrivateKey = e.Value.ToString();
+        await localStorage.SetItemAsync("privateKey", defaultPrivateKey);
     }
 }

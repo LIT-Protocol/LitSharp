@@ -13,6 +13,7 @@ using Org.BouncyCastle.Crypto.Digests;
 using Nethereum.Web3;
 using  Nethereum.Web3.Accounts;
 using Blazored.LocalStorage;
+using Org.BouncyCastle.Crypto.Tls;
 namespace SharedService;
 
  public struct ContractAddress {
@@ -54,8 +55,8 @@ public class Resolver{
     private ILocalStorageService localStorage { get; }
     private string defaultPrivateKey = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
     private string defaultContractResolverAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
-
     private string defaultUrl = "http://127.0.0.1:8545";
+
     public Resolver(ILocalStorageService localStorageService) {
         localStorage = localStorageService;
     }
@@ -74,8 +75,11 @@ public class Resolver{
         return web3;
     }
 
-    public static void SetConnection(string url, string privateKey, string contractAddress) {        
+    public  async void SetConnection(string url, string privateKey, string contractResolverAddress) {        
      
+        await localStorage.SetItemAsync<string>("url", url);
+        await localStorage.SetItemAsync<string>("privateKey", privateKey);
+        await localStorage.SetItemAsync<string>("contractResolverAddress", contractResolverAddress);
     }
 
     public static byte[] keccak256(string tx_bytes) {        
@@ -89,11 +93,11 @@ public class Resolver{
 
     public static byte[] GetContractTypKeccak(ContractType contractType) {
 
-        byte[]  typ = keccak256("STAKING"); // 0x080909c18c958ce5a2d36481697824e477319323d03154ceba3b78f28a61887b
+        byte[]  typ = keccak256("STAKING"); 
                 
         switch (contractType) {
         case ContractType.Allowlist:
-            typ = keccak256("ALLOWLIST"); // 0x74845de37cfabd357633214b47fa91ccd19b05b7c5a08ac22c187f811fb62bca
+            typ = keccak256("ALLOWLIST");  
             break;
         case ContractType.BackupRecovery:
             typ = keccak256("BACKUP_RECOVERY");
@@ -113,40 +117,40 @@ public class Resolver{
             typ = keccak256("LIT_TOKEN");            
             break;
         case ContractType.Multisender:
-            typ = keccak256("MULTI_SENDER"); // 0xd5b9b8a5e8e01f962ed7e983d58fe32e1f66aa88dd7ab30770fa9b77da7243
+            typ = keccak256("MULTI_SENDER"); 
             break;
         case ContractType.PKPHelper:
-            typ = keccak256("PKP_HELPER"); // 0x27d764ea2a4a3865434bbf4a391110149644be31448f3479fd15b44388755765
+            typ = keccak256("PKP_HELPER"); 
             break;
         case ContractType.PKPNFT:
-            typ = keccak256("PKP_NFT"); // 0xb7b4fde9944d3c13e9a78835431c33a5084d90a7f0c73def76d7886315fe87b0
+            typ = keccak256("PKP_NFT");  
             break;
         case ContractType.PKPNFTMetadata:
-            typ = keccak256("PKP_NFT_METADATA"); // 0xf14f431dadc82e7dbc5e379f71234e5735c9187e4327a7c6ac014d55d1b7727a
+            typ = keccak256("PKP_NFT_METADATA");  
             break;
         case ContractType.PKPPermissions:
-            typ = keccak256("PKP_PERMISSIONS"); // 0x54953c23068b8fc4c0736301b50f10027d6b469327de1fd42841a5072b1bcebe
+            typ = keccak256("PKP_PERMISSIONS");  
             break;
         case ContractType.PubkeyRouter:
-            typ = keccak256("PUB_KEY_ROUTER"); // 0xb1f79813bc7630a52ae948bc99781397e409d0dd3521953bf7d8d7a2db6147f7
+            typ = keccak256("PUB_KEY_ROUTER");  
             break;
         case ContractType.RateLimitNFT:
-            typ = keccak256("RATE_LIMIT_NFT"); // 0xb931b2719aeb2a65a5035fa0a190bfdc4c8622ce8cbff7a3d1ab42531fb1a918
+            typ = keccak256("RATE_LIMIT_NFT");  
             break;
         case ContractType.ReleaseRegister:
-            typ = keccak256("RELEASE_REGISTER"); // 0x3a68dbfd8bbb64015c42bc131c388dea7965e28c1004d09b39f59500c3a763ec
+            typ = keccak256("RELEASE_REGISTER"); 
             break;
         case ContractType.Staking:
-            typ = keccak256("STAKING"); // 0x080909c18c958ce5a2d36481697824e477319323d03154ceba3b78f28a61887b
+            typ = keccak256("STAKING");  
             break;
         case ContractType.StakingBalances:
-            typ = keccak256("STAKING_BALANCES"); // 0xaa06d108dbd7bf976b16b7bf5adb29d2d0ef2c385ca8b9d833cc802f33942d72
+            typ = keccak256("STAKING_BALANCES");  
             break;
         case ContractType.WLIT:
-            typ = keccak256("WLIT"); // 0xaa06d108dbd7bf976b16b7bf5adb29d2d0ef2c385ca8b9d833cc802f33942d72
+            typ = keccak256("WLIT"); 
             break;
         default:
-            typ = keccak256("STAKING"); // 0x080909c18c958ce5a2d36481697824e477319323d03154ceba3b78f28a61887b
+            typ = keccak256("STAKING");  
             break;
         }
          
@@ -158,16 +162,15 @@ public class Resolver{
 
     public async Task<string> GetContractAddress(ContractType contractType)
     {
-        var typ = GetContractTypKeccak(contractType);
-        var web3 =  await GetConnection();
-        ContractResolverService resolverService = new ContractResolverService(web3, defaultContractResolverAddress);
+        var typ = GetContractTypKeccak(contractType);        
+        var resolverService = await GetContractResolverService();
         var address_bytes = await resolverService.GetContractQueryAsync(typ, env: (byte)Env.Dev);
         return address_bytes;
     }
  
     public  async Task<List<ContractAddress>> GetAllContractAddresses() {
-        var web3 = await  GetConnection();
-        ContractResolverService resolverService = new ContractResolverService(web3, defaultContractResolverAddress);
+        
+        var resolverService = await GetContractResolverService();
         var contractAddresses = new List<ContractAddress>();
 
         foreach (ContractType contractType in Enum.GetValues(typeof(ContractType)) )
@@ -179,6 +182,14 @@ public class Resolver{
             contractAddresses.Add(new ContractAddress { name = contractType.ToString(), address = contract });
         }
         return contractAddresses;
+    }
+
+    public async Task<ContractResolverService> GetContractResolverService() 
+    {
+        var contractResolverAddress = await localStorage.GetItemAsync<string>("contractResolverAddress");
+        if (contractResolverAddress == null)
+             contractResolverAddress = defaultContractResolverAddress;
+        return new ContractResolverService(await GetConnection(), contractResolverAddress);
     }
 
     public async Task<StakingService> GetStakingService() 
