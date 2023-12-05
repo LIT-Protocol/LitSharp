@@ -1,27 +1,43 @@
 ﻿@page "/config/defaults"
 @using Radzen.Blazor.Rendering;
 @using SharedService;
+@using LitContracts.Staking.ContractDefinition;
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 <PageTitle>Contracts</PageTitle>
 
-<h2>Contracts</h2>    
+<h2>Configuration</h2>    
 <p>
-Network Contract Overview
+Network Configuration 
 </p>
 
 <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="20" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
-    Data="@contractAddresses" TItem="ContractAddress" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
+    Data="@config" TItem="ConfigItem" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
     <Columns>       
-        <RadzenDataGridColumn TItem="ContractAddress" Property="name" Title="Name" Width="160px" />
-        <RadzenDataGridColumn TItem="ContractAddress" Property="address" Title="Address" Width="300px" />
+        <RadzenDataGridColumn TItem="ConfigItem" Property="name" Title="Name" Width="30%" />
+        <RadzenDataGridColumn TItem="ConfigItem" Property="value" Title="Value" Width="70%" />
     </Columns>
 </RadzenDataGrid>  
 
 @code {
-    private List<ContractAddress>? contractAddresses = null;
+    struct ConfigItem
+    {
+        public string name { get; set; }
+        public string value { get; set; }
+    }
+    private List<ConfigItem>? config = null;
     protected override async Task OnInitializedAsync()
     {                
         var resolver = new Resolver(localStorage);
-        contractAddresses = await resolver.GetAllContractAddresses();
+        var stakingService = await resolver.GetStakingService();
+        var config_call = await stakingService.ConfigQueryAsync();
+        var c = config_call.ReturnValue1;
+
+        config = new List<ConfigItem>();
+        config.Add(new ConfigItem { name = "ComplaintIntervalSecs", value = c.ComplaintIntervalSecs.ToString() });
+        config.Add(new ConfigItem { name = "ComplaintTolerance", value = c.ComplaintTolerance .ToString() });
+        config.Add(new ConfigItem { name = "KeyTypes", value = String.Join(",", c.KeyTypes.ToArray() ) } );
+        config.Add(new ConfigItem { name = "MinimumValidatorCount", value = c.MinimumValidatorCount.ToString() });
+        config.Add(new ConfigItem { name = "TokenRewardPerTokenPerEpoch", value = c.TokenRewardPerTokenPerEpoch.ToString() });
+        
     }
 }
