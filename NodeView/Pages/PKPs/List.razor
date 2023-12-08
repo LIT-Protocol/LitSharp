@@ -12,24 +12,24 @@
 <h2>Minted PKPs</h2>    
 
 <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="20" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
-    Data="@routing_data" TItem="simple_pubkey" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
+    Data="@pkps" TItem="SimplePKP" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
     <Columns>       
-        <RadzenDataGridColumn TItem="simple_pubkey" Property="pubkey" Title="Public Key" Width="40%" />
-        <RadzenDataGridColumn TItem="simple_pubkey" Property="derived_id" Title="Derived Id" Width="40%" />
-        <RadzenDataGridColumn TItem="simple_pubkey" Property="key_type" Title="Key Type" Width="20%" />
+        <RadzenDataGridColumn TItem="SimplePKP" Property="Pubkey" Title="Public Key" Width="40%" />
+        <RadzenDataGridColumn TItem="SimplePKP" Property="DerivedId" Title="Derived Id" Width="40%" />
+        <RadzenDataGridColumn TItem="SimplePKP" Property="KeyType" Title="Key Type" Width="20%" />
     </Columns>
 </RadzenDataGrid>  
 
 
 @code {
-    struct simple_pubkey
+    struct SimplePKP
     {
-        public string pubkey;
-        public string derived_id;
-        public string key_type;
+        public string Pubkey { get; set; }
+        public string DerivedId { get; set; }
+        public string KeyType { get; set; }
     }
     
-    private List<simple_pubkey> ? routing_data = null;
+    private List<SimplePKP> ? pkps = null;
     private BigInteger total_staked = 0;
     protected override async Task OnInitializedAsync()
     {                
@@ -43,7 +43,7 @@
         var contract =  pkpnftService.ContractHandler.EthApiContractService;
         var contract2 = contract.ERC721.GetContractService(pkpnftAddress);
         var totalSupply = await contract2.TotalSupplyQueryAsync();
-        routing_data = new List<simple_pubkey>();
+        pkps = new List<SimplePKP>();
 
         for (int i = 0; i < 10 ; i++ )
         {
@@ -54,7 +54,7 @@
             var tokenId = await contract2.TokenByIndexQueryAsync(0);
             var a = await pubkeyRouterService.PubkeysQueryAsync(tokenId);
             var b = a.ReturnValue1;                
-            routing_data.Add(new simple_pubkey{ pubkey = b.Pubkey.ToHex(), derived_id = b.DerivedKeyId.ToHex(), key_type = "ECDSA" });
+            pkps.Add(new SimplePKP{ Pubkey = b.Pubkey.ToHex(), DerivedId = b.DerivedKeyId.ToHex(), KeyType = "ECDSA" });
         }
 
     }

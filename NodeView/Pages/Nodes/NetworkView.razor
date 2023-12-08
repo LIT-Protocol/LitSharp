@@ -26,33 +26,40 @@
 }
 else
 {
-<div style="width: 60%;
-    height: 700px;
+<div style="width: 80%;
+    height: 800px;
     border: 1px solid black;">
     <CascadingValue Value="diagram" IsFixed="true">
         <DiagramCanvas>        
         </DiagramCanvas>
     </CascadingValue>
+
+    Out Messages  @System.Text.Json.JsonSerializer.Serialize(out_messages);
+
 </div>
 
 @if (history != null) {
     @foreach (ActiveActions actions in history.get_active_actions()) {
         @if (actions.ids != null && actions.ids.Count > 0) {
-            <a>Nodes running @actions.action_name</a> <b>: @actions.ids.Count</b> 
+            <a>Nodes running @actions.type_id</a> <b>: @actions.ids.Count</b> 
             <b> ( @actions.ids.GroupBy(i => i).Count() unique ) </b>
          <br/>
         }
     }
 }
 
+
+
 }
 
 @code {
     private LitContracts.Staking.ContractDefinition.Validator[]? nodes;
-    private BlazorDiagram diagram { get; set; } = null!;
+    private BlazorDiagram diagram { get; set; } = null;
     PeriodicTimer periodicTimer = new (TimeSpan.FromMilliseconds(500));
     private List<Metric>? node_averages;
     private  NetworkHistory? history;
+
+    private List<OutMessages>? out_messages;
     protected override async Task OnInitializedAsync()
     {                
         var resolver = new Resolver(localStorage);
@@ -75,7 +82,7 @@ else
                 Enabled = false,
             },
             Links =
-            {
+            { 
                 DefaultRouter = new NormalRouter(),
                 DefaultPathGenerator = new SmoothPathGenerator()
             },
@@ -83,9 +90,9 @@ else
 
         diagram = new BlazorDiagram(options);
 
-        var center_point = new Blazor.Diagrams.Core.Geometry.Point(400, 400);
+        var center_point = new Blazor.Diagrams.Core.Geometry.Point(450, 450);
         var node_count = nodes.Length;
-        var positions = GetCirclePoints(node_count, 300, center_point);
+        var positions = GetCirclePoints(node_count, 400, center_point);
         
         @* var inner_positions = GetCirclePoints(node_count , 350, center_point);
         var outer_positions = GetCirclePoints(node_count , 450, center_point); *@
@@ -100,11 +107,6 @@ else
 
         }
 
-        var center_node = diagram.Nodes.Add(new NodeModel(id: "request", center_point)
-        {
-            Title = "Request " 
-        });
-
 
         for (int i = 0; i < node_count; i++)
         {
@@ -116,51 +118,39 @@ else
                 }
 
 
-                var link = diagram.Links.Add(new LinkModel(diagram.Nodes[i], diagram.Nodes[j]));                                 
-                link.PathGenerator = new StraightPathGenerator();
+                var link_id = i.ToString() + "-" + j.ToString();
+                var link = diagram.Links.Add(new LinkModel( link_id , diagram.Nodes[i], diagram.Nodes[j]));                                 
+                link.PathGenerator = new SmoothPathGenerator();
                 link.TargetMarker = LinkMarker.Arrow;
+                link.Width = 5;
 
 
+                var link_id2 = j.ToString() + "-" + i.ToString();
                 var targetAnchor = new Blazor.Diagrams.Core.Anchors.LinkAnchor(link, 20, 10,10);
                 var sourceAnchor = new Blazor.Diagrams.Core.Anchors.ShapeIntersectionAnchor(diagram.Nodes[j]  );
-                var link2 = diagram.Links.Add(new LinkModel(sourceAnchor, targetAnchor));                                 
-                @* var link2 = diagram.Links.Add(new LinkModel(diagram.Nodes[j], diagram.Nodes[i]));                                  *@
+                var link2 = diagram.Links.Add(new LinkModel(link_id2, diagram.Nodes[j], diagram.Nodes[i]));                                 
                 link2.PathGenerator = new SmoothPathGenerator();                
                 link2.TargetMarker = LinkMarker.Arrow;
-                @* var outer_point = new Blazor.Diagrams.Core.Geometry.Point(x - 20 , y);
-                link2.AddVertex( outer_point ); *@
-
-
-
-
-                @* var x = (diagram.Nodes[j].Position.X + diagram.Nodes[i].Position.X) / 2;
-                var y = (diagram.Nodes[j].Position.Y + diagram.Nodes[i].Position.Y) / 2;
+                link2.Width = 3;
                 
-                var s_x = (diagram.Nodes[j].Position.X - diagram.Nodes[i].Position.X) / (diagram.Nodes[j].Position.Y - diagram.Nodes[i].Position.Y);
-                s_x = s_x * 10;
-                var s_y = 10;
+                var x = (diagram.Nodes[j].Position.X + diagram.Nodes[i].Position.X) / 2;
+                var y = (diagram.Nodes[j].Position.Y + diagram.Nodes[i].Position.Y) / 2;
+                var point = new Blazor.Diagrams.Core.Geometry.Point(x, y);
+                
+                var length = Math.Sqrt(Math.Pow(diagram.Nodes[j].Position.X - diagram.Nodes[i].Position.X, 2) + Math.Pow(diagram.Nodes[j].Position.Y - diagram.Nodes[i].Position.Y, 2)   );
+                var offset_length = 20; //length / 10;
+                var offset_x = (diagram.Nodes[j].Position.X - diagram.Nodes[i].Position.X) / length * offset_length;
+                var offset_y = (diagram.Nodes[j].Position.Y - diagram.Nodes[i].Position.Y) / length * offset_length;
 
-
-                var link = diagram.Links.Add(new LinkModel(diagram.Nodes[i], diagram.Nodes[j]));                                 
-                link.PathGenerator = new SmoothPathGenerator();    
-                link.TargetMarker = LinkMarker.Arrow;
-                var inner_point = new Blazor.Diagrams.Core.Geometry.Point(x + 20, y);
+                var inner_point = new Blazor.Diagrams.Core.Geometry.Point(x - offset_y, y + offset_x);
                 var vertex1 = link.AddVertex( inner_point );
                 
-            
-                var link2 = diagram.Links.Add(new LinkModel(diagram.Nodes[j], diagram.Nodes[i]));                                 
-                link2.PathGenerator = new SmoothPathGenerator();                
-                link2.TargetMarker = LinkMarker.Arrow;
-                var outer_point = new Blazor.Diagrams.Core.Geometry.Point(x - 20 , y);
-                link2.AddVertex( outer_point );
-  *@
+
+                var outer_point = new Blazor.Diagrams.Core.Geometry.Point(x + offset_y, y - offset_x);
+                var vertex2 = link2.AddVertex( outer_point );
+
             }
-            var sourceNode3 = diagram.Nodes[i];
-            var targetNode3 = center_node;
-            var link3 = diagram.Links.Add(new LinkModel("request-" + i.ToString(), sourceNode3, targetNode3));             
-            link3.PathGenerator = new StraightPathGenerator();         
-            link3.Color="white";   
-            link3.Width = 5;
+         
         } 
 
             history = new NetworkHistory(5, nodes.Length);
@@ -187,70 +177,61 @@ else
         while (await periodicTimer.WaitForNextTickAsync()) { 
             HttpClient client = new HttpClient();
             List<NodeMetricRoot> new_metrics = new List<NodeMetricRoot>();
+            List<Task> handles = new List<Task>();
             if(nodes != null) {
                 foreach ( var node in nodes ) {
-                    await client.GetAsync("http://localhost:" + node.Port.ToString() +  "/web/rt/metrics").ContinueWith(
-                        (requestTask) =>
-                        {
-                            HttpResponseMessage response = requestTask.Result;
-                            response.EnsureSuccessStatusCode();
-                            return response.Content.ReadAsStringAsync();
-                        }
-                    ).Unwrap().ContinueWith(
-                        (readTask) =>
-                        {
-                            var result = readTask.Result;                            
+
+                    var handle = Task.Run(async () => {
+                        var response = await client.GetAsync("http://localhost:" + node.Port.ToString() +  "/web/rt/metrics");
+                        if (response.StatusCode == System.Net.HttpStatusCode.OK) {
+                            var result = await response.Content.ReadAsStringAsync();
                             var current_metrics = System.Text.Json.JsonSerializer.Deserialize<NodeMetricRoot>(result);
                             if (current_metrics != null) {
                                 new_metrics.Add(current_metrics);
                             }                            
                         }
-                    );                    
+                    });
+
+                    handles.Add(handle);
+
                 }
             }            
+
+            await Task.WhenAll(handles);
+
             history.add(new_metrics);
             @* var net_average = history.network_average(); *@
-            node_averages = history.node_average();            
-            foreach (NodeModel node in diagram.Nodes)
-            {
-                if (node.Id == "request") {
-                    continue;
+            @* node_averages = history.node_average();             *@
+            out_messages = history.get_out_messages();
+
+            foreach (LinkModel link in diagram.Links) {
+                var out_message = out_messages.First(x => x.name == link.Id);
+                if (out_message == null) {
+                    link.Color = "#CCCCCC";
                 }
-                var id = int.Parse(node.Id);
-                
-                @* node.Title = node_averages[id].incoming + " / " + node_averages[id].outgoing; *@
-                var message_count = node_averages[id].incoming + node_averages[id].outgoing; 
-                
-                
-                foreach (LinkModel link in node.Links)
+                else 
                 {
-                    if (link.Id.Contains("request")) {
-                        link.Color = get_spectrum_color(message_count);
-                        link.Refresh();
-                    }
+                    link.Color = get_spectrum_color(out_message.count);
                 }
+                link.Refresh();
             }
-
             StateHasChanged();           
-        }    
+        }     
     }
-
     private string get_spectrum_color(int value) {
         switch (value) {
-            case < 20:
-                return "#f7f7f7";
-            case < 40:
-                return "#d1fbd8";
-            case < 70:
-                return "#a3ee5b";
+            case < 5:                
+                return "#575957";
+            case < 15:                
+                return "#567051";
+            case < 45:                
+                return "#55914b";
+            case < 75:        
+                return "#4aaf3a";
             case < 100:
-                return "#66d855";
-            case < 120:
-                return "#40ba0f";
-            case >= 120 :
-                return "#188300";
-            default:
-                return "#f7f7f7";
+                return "#3ec729";
+            case >= 100 :
+                return "#25ff00";
         }
     }
 

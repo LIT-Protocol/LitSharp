@@ -20,21 +20,26 @@
     PeriodicTimer periodicTimer = new (TimeSpan.FromMilliseconds(500));
     protected override async Task OnInitializedAsync(){  
         
-        var resolver = new Resolver(localStorage);
-        var stakingService = await resolver.GetStakingService();
-        
-        var validators = await stakingService.GetValidatorsStructsInCurrentEpochQueryAsync();   
-        nodes = validators.ReturnValue1.Select(x => new LitContracts.Staking.ContractDefinition.Validator
-            {
-                Ip = x.Ip,
-                Ipv6 = x.Ipv6,
-                NodeAddress = x.NodeAddress,
-                Port = x.Port,
-            }).ToArray();
+        try
+        {        
+            var resolver = new Resolver(localStorage);
+            var stakingService = await resolver.GetStakingService();
+            
+            var validators = await stakingService.GetValidatorsStructsInCurrentEpochQueryAsync();   
+            nodes = validators.ReturnValue1.Select(x => new LitContracts.Staking.ContractDefinition.Validator
+                {
+                    Ip = x.Ip,
+                    Ipv6 = x.Ipv6,
+                    NodeAddress = x.NodeAddress,
+                    Port = x.Port,
+                }).ToArray();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
 
-
-        @* var result = await localStorage.GetItemAsync<int?>("currentCount");         *@
-        @* currentCount = result.HasValue ? result.Value : 0; *@
+     
         RunTimer();
     }
 
@@ -44,33 +49,34 @@
     {
         while (await periodicTimer.WaitForNextTickAsync()) { 
             HttpClient client = new HttpClient();
+            client.Timeout = TimeSpan.FromMilliseconds(1000);
 
             if(nodes != null) {
                 var combined_output = new System.Text.StringBuilder();
+                List<Task> handles = new List<Task>();
                 foreach ( var node in nodes ) {
-                    await client.GetAsync("http://localhost:" + node.Port.ToString() +  "/web/rt/metrics").ContinueWith(
-                        (requestTask) =>
-                        {
-                            HttpResponseMessage response = requestTask.Result;
-                            response.EnsureSuccessStatusCode();
-                            return response.Content.ReadAsStringAsync();
+                    var handle = Task.Run(async () => {
+                        try {
+                            var response = await client.GetAsync("http://localhost:" + node.Port.ToString() +  "/web/rt/metrics");
+                            if (response.StatusCode == System.Net.HttpStatusCode.OK) {
+                                var result = await response.Content.ReadAsStringAsync();
+                                combined_output.AppendLine(result);                                                                                
+                                combined_output.AppendLine("**********");
+                            }
+                        } catch (Exception e) {
+                            @output = e.Message;
                         }
-                    ).Unwrap().ContinueWith(
-                        (readTask) =>
-                        {
-                            combined_output.Append( readTask.Result);                            
-                        }
-                    );
+                    });
+
+                    handles.Add(handle);
+
                 }
-
-                output = combined_output.ToString();
+                await Task.WhenAll(handles);
+                if (combined_output.Length > 0) {
+                    output = combined_output.ToString();
+                }
                 StateHasChanged();
-
             }
-            
-            @* output = "" ;
-            
-            StateHasChanged(); *@
         }    
     }
 

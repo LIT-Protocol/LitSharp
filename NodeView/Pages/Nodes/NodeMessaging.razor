@@ -13,10 +13,10 @@
         <div class="col-sm-12">
 @if (@node_averages != null) {
     <RadzenChart style="height: 400px">                 
-        <RadzenStackedColumnSeries Data="@node_averages" CategoryProperty="node_name" Title="Incoming" LineType="LineType.Dashed" ValueProperty="incoming">
+        <RadzenStackedColumnSeries Data="@node_averages" CategoryProperty="node_name" Title="Incoming" LineType="LineType.Dashed" ValueProperty="inmsg">
             <RadzenSeriesDataLabels Visible="true" />
         </RadzenStackedColumnSeries>
-        <RadzenStackedColumnSeries Data="@node_averages" CategoryProperty="node_name" Title="Outgoing" ValueProperty="outgoing">
+        <RadzenStackedColumnSeries Data="@node_averages" CategoryProperty="node_name" Title="Outgoing" ValueProperty="outmsg">
             <RadzenSeriesDataLabels Visible="true" />
         </RadzenStackedColumnSeries>
     
@@ -26,11 +26,11 @@
         </RadzenValueAxis>
         <RadzenColumnOptions Radius="5" />
     </RadzenChart>
-
+    @* @System.Text.Json.JsonSerializer.Serialize(  node_averages); *@
 <br>
     @foreach (ActiveActions actions in history.get_active_actions()) {
         @if (actions.ids.Count > 0) {
-            <a>Nodes running @actions.action_name</a> <b>: @actions.ids.Count</b> 
+            <a>Nodes running @actions.type_id</a> <b>: @actions.ids.Count</b> 
             <b> ( @actions.ids.GroupBy(i => i).Count() unique ) </b>
          <br/>
         }
@@ -94,7 +94,7 @@
                         }
                     );                    
                 }
-            }            
+            }               
             history.add(new_metrics);
             var net_average = history.network_average();
             node_averages = history.node_average();           

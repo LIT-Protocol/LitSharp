@@ -6,36 +6,36 @@ using Nethereum.Model;
 namespace SharedService;
 public class Metric
 {
-    public int node_index { get; set; }
-    public int incoming { get; set; }
-    public int outgoing { get; set; }
-
-    public int total { get { return incoming + outgoing; } }
+    public int idx { get; set; }
+    public int inmsg { get; set; }
+    public int outmsg { get; set; }
+    public int badmsg {get ; set;}
+    public int triple { get; set; }
+    public int total { get { return inmsg + outmsg; } }
     public Timestamp? timestamp { get; set; }
-
     public string? node_name { get; set; }
 }
 
 public class NewAction
     {
-        public string? name { get; set; }
-        public string? txn_id { get; set; }
+        public string? type_id { get; set; }
+        public int txn_id { get; set; }
         public bool is_start { get; set; }
     }
 
 public class Peer
 {
-    public string? address { get; set; }
-    public int share_index { get; set; }
+    public int idx { get; set; }
     public bool kicked { get; set; }
 }
 
 public class NodeMetricRoot
 {
-    public int node_index { get; set; }
+    public int idx { get; set; }
     public List<Metric>? metrics { get; set; }
     public List<NewAction>? new_actions { get; set; }
     public List<Peer>? peers { get; set; }
+    public List<TripleCount>? triple_counts { get; set; }
     public Timestamp? timestamp { get; set; }
 }
 
@@ -45,6 +45,16 @@ public class Timestamp
     public int nanos_since_epoch { get; set; }
 }
 
+public class TripleCount
+{
+    public int peer_group_id { get; set; }
+    public int count { get; set; }
+    
+    // missing the triple keys
+}
+
+
+
 public class NodeMetric {
     public int node_index { get; set; }
     public string? node_name { get; set; }
@@ -52,8 +62,15 @@ public class NodeMetric {
 }
 
 public class ActiveActions {
-    public string? action_name { get; set; }
-    public List<string>? ids { get; set; }
+    public string type_id { get; set; }
+    public List<int>? ids { get; set; }
+}
+
+public class OutMessages {
+    public int src {get; set;}
+    public int dst {get; set;}  
+    public string name {get; set;}  
+    public int count {get; set;}
 }
 
 public class NetworkHistory
@@ -82,25 +99,25 @@ public class NetworkHistory
             return;
         }
 
-        new_metrics.Sort((x, y) => x.node_index.CompareTo(y.node_index));
+        new_metrics.Sort((x, y) => x.idx.CompareTo(y.idx));
         var new_node_metrics = new List<NodeMetric>();
 
         foreach (var node_metric in new_metrics) {
-            node_metric.metrics.Sort((x, y) => x.node_index.CompareTo(y.node_index));
-            var new_node_metric = new NodeMetric { node_index = node_metric.node_index, metrics = node_metric.metrics };
+            node_metric.metrics.Sort((x, y) => x.idx.CompareTo(y.idx));
+            var new_node_metric = new NodeMetric { node_index = node_metric.idx, metrics = node_metric.metrics };
             new_node_metrics.Add(new_node_metric);
             
             if (node_metric.new_actions != null) {
                 foreach (var action in node_metric.new_actions) {
                     if (action.is_start) { // add
-                        if (active_actions.Where(x => x.action_name == action.name).Count() == 0) {
-                            active_actions.Add(new ActiveActions { action_name = action.name, ids = new List<string>() });
+                        if (active_actions.Where(x => x.type_id == action.type_id).Count() == 0) {
+                            active_actions.Add(new ActiveActions { type_id = action.type_id, ids = new List<int>() });
                         }
                         
                         foreach (ActiveActions active_action in active_actions) {
-                            if (active_action.action_name == action.name) {
+                            if (active_action.type_id == action.type_id) {
                                 if (active_action.ids == null) {
-                                    active_action.ids = new List<string>();
+                                    active_action.ids = new List<int>();
                                 }
                                 active_action.ids.Add(action.txn_id);                                
                             }
@@ -108,7 +125,7 @@ public class NetworkHistory
                     }
                     else{ // remove
                         foreach (ActiveActions active_action in active_actions) {
-                            if (active_action.action_name == action.name) {
+                            if (active_action.type_id == action.type_id) {
                                 if (active_action.ids != null) {
                                     active_action.ids.Remove(action.txn_id);
                                 }
@@ -129,6 +146,25 @@ public class NetworkHistory
         }        
 
     }
+    public List<OutMessages> get_out_messages () {
+        var out_messages = new List<OutMessages>();
+        foreach (var historic_metric in historic_metrics) {
+            foreach (var node_metric in historic_metric) {
+                foreach (var metric in node_metric.metrics) {
+                    var join_name = node_metric.node_index.ToString() + "-" + metric.idx.ToString();
+                    if ( out_messages.Select(x => x.name).Contains(join_name)) {
+                        var out_message = out_messages.Where(x => x.name == join_name).First();
+                        out_message.count += metric.outmsg;
+                    }
+                    else {
+                        out_messages.Add(new OutMessages { src = node_metric.node_index, dst = metric.idx, name = join_name, count = metric.outmsg });
+                    }
+                    out_messages.Add(new OutMessages { src = node_metric.node_index, dst = metric.idx, name = join_name, count = metric.outmsg });
+                }
+            }
+        }
+        return out_messages;
+    }
 
     public Metric network_average() {
         var sum_incoming = 0;
@@ -138,15 +174,15 @@ public class NetworkHistory
             foreach (var m in historic_metric) {
                 foreach (var metric in m.metrics) 
                 {
-                    sum_incoming += metric.incoming;
-                    sum_outgoing += metric.outgoing;
+                    sum_incoming += metric.inmsg;
+                    sum_outgoing += metric.outmsg;
                 }
                 count++;
             }
         }
         var avg_incoming = sum_incoming / count;
         var avg_outgoing = sum_outgoing / count;
-        return new Metric { incoming = avg_incoming, outgoing = avg_outgoing };
+        return new Metric { inmsg = avg_incoming, outmsg = avg_outgoing };
     }
 
     public List<Metric> node_average() {
@@ -158,26 +194,28 @@ public class NetworkHistory
 
         
         for (int i =0; i < node_count ;i++) {
-            node_metrics.Add(new Metric { incoming = 0, outgoing = 0 });
+            node_metrics.Add(new Metric { inmsg = 0, outmsg = 0 });
             foreach (var h in historic_metrics) {                
                 foreach (var hm in h.Where(x => x.node_index == i).Select(x => x.metrics).ToArray()) {
                     foreach (var m in hm) {
                         node_metrics[i].node_name = "Node: " + (i + 1).ToString();
-                        node_metrics[i].node_index = i;                        
-                        node_metrics[i].incoming += m.incoming;
-                        node_metrics[i].outgoing += m.outgoing;
+                        node_metrics[i].idx = i;                        
+                        node_metrics[i].inmsg += m.inmsg;
+                        node_metrics[i].outmsg += m.outmsg;
                     }
                 }
             }
         }
 
-        if (history_count == 0) {
-            return node_metrics;
-        }
+        // if (history_count == 0) {
+        //     return node_metrics;
+        // }
 
         for (int i = 0; i < node_count; i++) {
-            node_metrics[i].incoming = node_metrics[i].incoming / (history_count + 1);
-            node_metrics[i].outgoing = node_metrics[i].outgoing / (history_count + 1);
+            node_metrics[i].node_name = "Node: " + (i + 1).ToString();
+            node_metrics[i].idx = i;                        
+            node_metrics[i].inmsg = node_metrics[i].inmsg / (history_count + 1);
+            node_metrics[i].outmsg = node_metrics[i].outmsg / (history_count + 1);
         }
 
         return node_metrics;
