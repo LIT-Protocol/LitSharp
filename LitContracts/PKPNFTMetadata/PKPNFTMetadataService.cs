@@ -16,7 +16,7 @@ namespace LitContracts.PKPNFTMetadata
 {
     public partial class PKPNFTMetadataService
     {
-        public static Task<TransactionReceipt> DeployContractAndWaitForReceiptAsync(Nethereum.Web3.Web3 web3, PKPNFTMetadataDeployment pKPNFTMetadataDeployment, CancellationTokenSource? cancellationTokenSource = null)
+        public static Task<TransactionReceipt> DeployContractAndWaitForReceiptAsync(Nethereum.Web3.Web3 web3, PKPNFTMetadataDeployment pKPNFTMetadataDeployment, CancellationTokenSource cancellationTokenSource = null)
         {
             return web3.Eth.GetContractDeploymentHandler<PKPNFTMetadataDeployment>().SendRequestAndWaitForReceiptAsync(pKPNFTMetadataDeployment, cancellationTokenSource);
         }
@@ -26,7 +26,7 @@ namespace LitContracts.PKPNFTMetadata
             return web3.Eth.GetContractDeploymentHandler<PKPNFTMetadataDeployment>().SendRequestAsync(pKPNFTMetadataDeployment);
         }
 
-        public static async Task<PKPNFTMetadataService> DeployContractAndGetServiceAsync(Nethereum.Web3.Web3 web3, PKPNFTMetadataDeployment pKPNFTMetadataDeployment, CancellationTokenSource? cancellationTokenSource = null)
+        public static async Task<PKPNFTMetadataService> DeployContractAndGetServiceAsync(Nethereum.Web3.Web3 web3, PKPNFTMetadataDeployment pKPNFTMetadataDeployment, CancellationTokenSource cancellationTokenSource = null)
         {
             var receipt = await DeployContractAndWaitForReceiptAsync(web3, pKPNFTMetadataDeployment, cancellationTokenSource);
             return new PKPNFTMetadataService(web3, receipt.ContractAddress);
@@ -48,46 +48,46 @@ namespace LitContracts.PKPNFTMetadata
             ContractHandler = web3.Eth.GetContractHandler(contractAddress);
         }
 
-        public Task<byte[]> AdminRoleQueryAsync(AdminRoleFunction adminRoleFunction, BlockParameter? blockParameter = null)
+        public Task<byte[]> AdminRoleQueryAsync(AdminRoleFunction adminRoleFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<AdminRoleFunction, byte[]>(adminRoleFunction, blockParameter);
         }
 
         
-        public Task<byte[]> AdminRoleQueryAsync(BlockParameter? blockParameter = null)
+        public Task<byte[]> AdminRoleQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<AdminRoleFunction, byte[]>(null, blockParameter);
         }
 
-        public Task<byte[]> DefaultAdminRoleQueryAsync(DefaultAdminRoleFunction defaultAdminRoleFunction, BlockParameter? blockParameter = null)
+        public Task<byte[]> DefaultAdminRoleQueryAsync(DefaultAdminRoleFunction defaultAdminRoleFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<DefaultAdminRoleFunction, byte[]>(defaultAdminRoleFunction, blockParameter);
         }
 
         
-        public Task<byte[]> DefaultAdminRoleQueryAsync(BlockParameter? blockParameter = null)
+        public Task<byte[]> DefaultAdminRoleQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<DefaultAdminRoleFunction, byte[]>(null, blockParameter);
         }
 
-        public Task<byte[]> WriterRoleQueryAsync(WriterRoleFunction writerRoleFunction, BlockParameter? blockParameter = null)
+        public Task<byte[]> WriterRoleQueryAsync(WriterRoleFunction writerRoleFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<WriterRoleFunction, byte[]>(writerRoleFunction, blockParameter);
         }
 
         
-        public Task<byte[]> WriterRoleQueryAsync(BlockParameter? blockParameter = null)
+        public Task<byte[]> WriterRoleQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<WriterRoleFunction, byte[]>(null, blockParameter);
         }
 
-        public Task<string> BytesToHexQueryAsync(BytesToHexFunction bytesToHexFunction, BlockParameter? blockParameter = null)
+        public Task<string> BytesToHexQueryAsync(BytesToHexFunction bytesToHexFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<BytesToHexFunction, string>(bytesToHexFunction, blockParameter);
         }
 
         
-        public Task<string> BytesToHexQueryAsync(byte[] buffer, BlockParameter? blockParameter = null)
+        public Task<string> BytesToHexQueryAsync(byte[] buffer, BlockParameter blockParameter = null)
         {
             var bytesToHexFunction = new BytesToHexFunction();
                 bytesToHexFunction.Buffer = buffer;
@@ -95,35 +95,35 @@ namespace LitContracts.PKPNFTMetadata
             return ContractHandler.QueryAsync<BytesToHexFunction, string>(bytesToHexFunction, blockParameter);
         }
 
-        public Task<string> ContractResolverQueryAsync(ContractResolverFunction contractResolverFunction, BlockParameter? blockParameter = null)
+        public Task<string> ContractResolverQueryAsync(ContractResolverFunction contractResolverFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<ContractResolverFunction, string>(contractResolverFunction, blockParameter);
         }
 
         
-        public Task<string> ContractResolverQueryAsync(BlockParameter? blockParameter = null)
+        public Task<string> ContractResolverQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<ContractResolverFunction, string>(null, blockParameter);
         }
 
-        public Task<byte> EnvQueryAsync(EnvFunction envFunction, BlockParameter? blockParameter = null)
+        public Task<byte> EnvQueryAsync(EnvFunction envFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<EnvFunction, byte>(envFunction, blockParameter);
         }
 
         
-        public Task<byte> EnvQueryAsync(BlockParameter? blockParameter = null)
+        public Task<byte> EnvQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<EnvFunction, byte>(null, blockParameter);
         }
 
-        public Task<byte[]> GetRoleAdminQueryAsync(GetRoleAdminFunction getRoleAdminFunction, BlockParameter? blockParameter = null)
+        public Task<byte[]> GetRoleAdminQueryAsync(GetRoleAdminFunction getRoleAdminFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetRoleAdminFunction, byte[]>(getRoleAdminFunction, blockParameter);
         }
 
         
-        public Task<byte[]> GetRoleAdminQueryAsync(byte[] role, BlockParameter? blockParameter = null)
+        public Task<byte[]> GetRoleAdminQueryAsync(byte[] role, BlockParameter blockParameter = null)
         {
             var getRoleAdminFunction = new GetRoleAdminFunction();
                 getRoleAdminFunction.Role = role;
@@ -136,7 +136,7 @@ namespace LitContracts.PKPNFTMetadata
              return ContractHandler.SendRequestAsync(grantRoleFunction);
         }
 
-        public Task<TransactionReceipt> GrantRoleRequestAndWaitForReceiptAsync(GrantRoleFunction grantRoleFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> GrantRoleRequestAndWaitForReceiptAsync(GrantRoleFunction grantRoleFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(grantRoleFunction, cancellationToken);
         }
@@ -150,7 +150,7 @@ namespace LitContracts.PKPNFTMetadata
              return ContractHandler.SendRequestAsync(grantRoleFunction);
         }
 
-        public Task<TransactionReceipt> GrantRoleRequestAndWaitForReceiptAsync(byte[] role, string account, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> GrantRoleRequestAndWaitForReceiptAsync(byte[] role, string account, CancellationTokenSource cancellationToken = null)
         {
             var grantRoleFunction = new GrantRoleFunction();
                 grantRoleFunction.Role = role;
@@ -159,13 +159,13 @@ namespace LitContracts.PKPNFTMetadata
              return ContractHandler.SendRequestAndWaitForReceiptAsync(grantRoleFunction, cancellationToken);
         }
 
-        public Task<bool> HasRoleQueryAsync(HasRoleFunction hasRoleFunction, BlockParameter? blockParameter = null)
+        public Task<bool> HasRoleQueryAsync(HasRoleFunction hasRoleFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<HasRoleFunction, bool>(hasRoleFunction, blockParameter);
         }
 
         
-        public Task<bool> HasRoleQueryAsync(byte[] role, string account, BlockParameter? blockParameter = null)
+        public Task<bool> HasRoleQueryAsync(byte[] role, string account, BlockParameter blockParameter = null)
         {
             var hasRoleFunction = new HasRoleFunction();
                 hasRoleFunction.Role = role;
@@ -179,7 +179,7 @@ namespace LitContracts.PKPNFTMetadata
              return ContractHandler.SendRequestAsync(removeProfileForPkpFunction);
         }
 
-        public Task<TransactionReceipt> RemoveProfileForPkpRequestAndWaitForReceiptAsync(RemoveProfileForPkpFunction removeProfileForPkpFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> RemoveProfileForPkpRequestAndWaitForReceiptAsync(RemoveProfileForPkpFunction removeProfileForPkpFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(removeProfileForPkpFunction, cancellationToken);
         }
@@ -192,7 +192,7 @@ namespace LitContracts.PKPNFTMetadata
              return ContractHandler.SendRequestAsync(removeProfileForPkpFunction);
         }
 
-        public Task<TransactionReceipt> RemoveProfileForPkpRequestAndWaitForReceiptAsync(BigInteger tokenId, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> RemoveProfileForPkpRequestAndWaitForReceiptAsync(BigInteger tokenId, CancellationTokenSource cancellationToken = null)
         {
             var removeProfileForPkpFunction = new RemoveProfileForPkpFunction();
                 removeProfileForPkpFunction.TokenId = tokenId;
@@ -205,7 +205,7 @@ namespace LitContracts.PKPNFTMetadata
              return ContractHandler.SendRequestAsync(removeUrlForPKPFunction);
         }
 
-        public Task<TransactionReceipt> RemoveUrlForPKPRequestAndWaitForReceiptAsync(RemoveUrlForPKPFunction removeUrlForPKPFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> RemoveUrlForPKPRequestAndWaitForReceiptAsync(RemoveUrlForPKPFunction removeUrlForPKPFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(removeUrlForPKPFunction, cancellationToken);
         }
@@ -218,7 +218,7 @@ namespace LitContracts.PKPNFTMetadata
              return ContractHandler.SendRequestAsync(removeUrlForPKPFunction);
         }
 
-        public Task<TransactionReceipt> RemoveUrlForPKPRequestAndWaitForReceiptAsync(BigInteger tokenId, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> RemoveUrlForPKPRequestAndWaitForReceiptAsync(BigInteger tokenId, CancellationTokenSource cancellationToken = null)
         {
             var removeUrlForPKPFunction = new RemoveUrlForPKPFunction();
                 removeUrlForPKPFunction.TokenId = tokenId;
@@ -231,7 +231,7 @@ namespace LitContracts.PKPNFTMetadata
              return ContractHandler.SendRequestAsync(renounceRoleFunction);
         }
 
-        public Task<TransactionReceipt> RenounceRoleRequestAndWaitForReceiptAsync(RenounceRoleFunction renounceRoleFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> RenounceRoleRequestAndWaitForReceiptAsync(RenounceRoleFunction renounceRoleFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(renounceRoleFunction, cancellationToken);
         }
@@ -245,7 +245,7 @@ namespace LitContracts.PKPNFTMetadata
              return ContractHandler.SendRequestAsync(renounceRoleFunction);
         }
 
-        public Task<TransactionReceipt> RenounceRoleRequestAndWaitForReceiptAsync(byte[] role, string account, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> RenounceRoleRequestAndWaitForReceiptAsync(byte[] role, string account, CancellationTokenSource cancellationToken = null)
         {
             var renounceRoleFunction = new RenounceRoleFunction();
                 renounceRoleFunction.Role = role;
@@ -259,7 +259,7 @@ namespace LitContracts.PKPNFTMetadata
              return ContractHandler.SendRequestAsync(revokeRoleFunction);
         }
 
-        public Task<TransactionReceipt> RevokeRoleRequestAndWaitForReceiptAsync(RevokeRoleFunction revokeRoleFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> RevokeRoleRequestAndWaitForReceiptAsync(RevokeRoleFunction revokeRoleFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(revokeRoleFunction, cancellationToken);
         }
@@ -273,7 +273,7 @@ namespace LitContracts.PKPNFTMetadata
              return ContractHandler.SendRequestAsync(revokeRoleFunction);
         }
 
-        public Task<TransactionReceipt> RevokeRoleRequestAndWaitForReceiptAsync(byte[] role, string account, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> RevokeRoleRequestAndWaitForReceiptAsync(byte[] role, string account, CancellationTokenSource cancellationToken = null)
         {
             var revokeRoleFunction = new RevokeRoleFunction();
                 revokeRoleFunction.Role = role;
@@ -287,7 +287,7 @@ namespace LitContracts.PKPNFTMetadata
              return ContractHandler.SendRequestAsync(setPKPHelperWriterAddressFunction);
         }
 
-        public Task<TransactionReceipt> SetPKPHelperWriterAddressRequestAndWaitForReceiptAsync(SetPKPHelperWriterAddressFunction setPKPHelperWriterAddressFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> SetPKPHelperWriterAddressRequestAndWaitForReceiptAsync(SetPKPHelperWriterAddressFunction setPKPHelperWriterAddressFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(setPKPHelperWriterAddressFunction, cancellationToken);
         }
@@ -300,7 +300,7 @@ namespace LitContracts.PKPNFTMetadata
              return ContractHandler.SendRequestAsync(setPKPHelperWriterAddressFunction);
         }
 
-        public Task<TransactionReceipt> SetPKPHelperWriterAddressRequestAndWaitForReceiptAsync(string pkpHelperWriterAddress, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> SetPKPHelperWriterAddressRequestAndWaitForReceiptAsync(string pkpHelperWriterAddress, CancellationTokenSource cancellationToken = null)
         {
             var setPKPHelperWriterAddressFunction = new SetPKPHelperWriterAddressFunction();
                 setPKPHelperWriterAddressFunction.PkpHelperWriterAddress = pkpHelperWriterAddress;
@@ -313,7 +313,7 @@ namespace LitContracts.PKPNFTMetadata
              return ContractHandler.SendRequestAsync(setProfileForPKPFunction);
         }
 
-        public Task<TransactionReceipt> SetProfileForPKPRequestAndWaitForReceiptAsync(SetProfileForPKPFunction setProfileForPKPFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> SetProfileForPKPRequestAndWaitForReceiptAsync(SetProfileForPKPFunction setProfileForPKPFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(setProfileForPKPFunction, cancellationToken);
         }
@@ -327,7 +327,7 @@ namespace LitContracts.PKPNFTMetadata
              return ContractHandler.SendRequestAsync(setProfileForPKPFunction);
         }
 
-        public Task<TransactionReceipt> SetProfileForPKPRequestAndWaitForReceiptAsync(BigInteger tokenId, string imgUrl, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> SetProfileForPKPRequestAndWaitForReceiptAsync(BigInteger tokenId, string imgUrl, CancellationTokenSource cancellationToken = null)
         {
             var setProfileForPKPFunction = new SetProfileForPKPFunction();
                 setProfileForPKPFunction.TokenId = tokenId;
@@ -341,7 +341,7 @@ namespace LitContracts.PKPNFTMetadata
              return ContractHandler.SendRequestAsync(setUrlForPKPFunction);
         }
 
-        public Task<TransactionReceipt> SetUrlForPKPRequestAndWaitForReceiptAsync(SetUrlForPKPFunction setUrlForPKPFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> SetUrlForPKPRequestAndWaitForReceiptAsync(SetUrlForPKPFunction setUrlForPKPFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(setUrlForPKPFunction, cancellationToken);
         }
@@ -355,7 +355,7 @@ namespace LitContracts.PKPNFTMetadata
              return ContractHandler.SendRequestAsync(setUrlForPKPFunction);
         }
 
-        public Task<TransactionReceipt> SetUrlForPKPRequestAndWaitForReceiptAsync(BigInteger tokenId, string url, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> SetUrlForPKPRequestAndWaitForReceiptAsync(BigInteger tokenId, string url, CancellationTokenSource cancellationToken = null)
         {
             var setUrlForPKPFunction = new SetUrlForPKPFunction();
                 setUrlForPKPFunction.TokenId = tokenId;
@@ -364,13 +364,13 @@ namespace LitContracts.PKPNFTMetadata
              return ContractHandler.SendRequestAndWaitForReceiptAsync(setUrlForPKPFunction, cancellationToken);
         }
 
-        public Task<bool> SupportsInterfaceQueryAsync(SupportsInterfaceFunction supportsInterfaceFunction, BlockParameter? blockParameter = null)
+        public Task<bool> SupportsInterfaceQueryAsync(SupportsInterfaceFunction supportsInterfaceFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<SupportsInterfaceFunction, bool>(supportsInterfaceFunction, blockParameter);
         }
 
         
-        public Task<bool> SupportsInterfaceQueryAsync(byte[] interfaceId, BlockParameter? blockParameter = null)
+        public Task<bool> SupportsInterfaceQueryAsync(byte[] interfaceId, BlockParameter blockParameter = null)
         {
             var supportsInterfaceFunction = new SupportsInterfaceFunction();
                 supportsInterfaceFunction.InterfaceId = interfaceId;
@@ -378,13 +378,13 @@ namespace LitContracts.PKPNFTMetadata
             return ContractHandler.QueryAsync<SupportsInterfaceFunction, bool>(supportsInterfaceFunction, blockParameter);
         }
 
-        public Task<string> TokenURIQueryAsync(TokenURIFunction tokenURIFunction, BlockParameter? blockParameter = null)
+        public Task<string> TokenURIQueryAsync(TokenURIFunction tokenURIFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<TokenURIFunction, string>(tokenURIFunction, blockParameter);
         }
 
         
-        public Task<string> TokenURIQueryAsync(BigInteger tokenId, byte[] pubKey, string ethAddress, BlockParameter? blockParameter = null)
+        public Task<string> TokenURIQueryAsync(BigInteger tokenId, byte[] pubKey, string ethAddress, BlockParameter blockParameter = null)
         {
             var tokenURIFunction = new TokenURIFunction();
                 tokenURIFunction.TokenId = tokenId;

@@ -9,7 +9,7 @@ using Nethereum.Contracts.CQS;
 using Nethereum.Contracts;
 using System.Threading;
 
-namespace LitContracts.BackupRecovery.ContractDefinition
+namespace LitSharp.Contracts.BackupRecovery.ContractDefinition
 {
 
 
@@ -91,6 +91,14 @@ namespace LitContracts.BackupRecovery.ContractDefinition
         public virtual string NewOwner { get; set; }
     }
 
+    public partial class BaseEcOpAddressFunction : BaseEcOpAddressFunctionBase { }
+
+    [Function("BASE_EC_OP_ADDRESS", "address")]
+    public class BaseEcOpAddressFunctionBase : FunctionMessage
+    {
+
+    }
+
     public partial class CalculatePartyThresholdFunction : CalculatePartyThresholdFunctionBase { }
 
     [Function("_calculatePartyThreshold", "uint256")]
@@ -156,6 +164,14 @@ namespace LitContracts.BackupRecovery.ContractDefinition
 
     }
 
+    public partial class GetNextBackupStateFunction : GetNextBackupStateFunctionBase { }
+
+    [Function("getNextBackupState", typeof(GetNextBackupStateOutputDTO))]
+    public class GetNextBackupStateFunctionBase : FunctionMessage
+    {
+
+    }
+
     public partial class GetNodeAddressesForDkgFunction : GetNodeAddressesForDkgFunctionBase { }
 
     [Function("getNodeAddressesForDkg", "address[]")]
@@ -179,6 +195,14 @@ namespace LitContracts.BackupRecovery.ContractDefinition
     {
         [Parameter("bytes", "sessionId", 1)]
         public virtual byte[] SessionId { get; set; }
+    }
+
+    public partial class GetProofSubmissionForBackupPartyMemberFunction : GetProofSubmissionForBackupPartyMemberFunctionBase { }
+
+    [Function("getProofSubmissionForBackupPartyMember", "uint256")]
+    public class GetProofSubmissionForBackupPartyMemberFunctionBase : FunctionMessage
+    {
+
     }
 
     public partial class GetStakerAddressesForDkgFunction : GetStakerAddressesForDkgFunctionBase { }
@@ -216,6 +240,24 @@ namespace LitContracts.BackupRecovery.ContractDefinition
         public virtual byte[] EncryptedKey { get; set; }
         [Parameter("bytes", "sessionId", 3)]
         public virtual byte[] SessionId { get; set; }
+    }
+
+    public partial class RecieveProofBls12381G1Function : RecieveProofBls12381G1FunctionBase { }
+
+    [Function("recieveProofBls12381G1", "bool")]
+    public class RecieveProofBls12381G1FunctionBase : FunctionMessage
+    {
+        [Parameter("bytes", "proof", 1)]
+        public virtual byte[] Proof { get; set; }
+    }
+
+    public partial class RecieveProofsK256Function : RecieveProofsK256FunctionBase { }
+
+    [Function("recieveProofsK256", "bool")]
+    public class RecieveProofsK256FunctionBase : FunctionMessage
+    {
+        [Parameter("bytes", "proof", 1)]
+        public virtual byte[] Proof { get; set; }
     }
 
     public partial class RegisterNewBackupPartyFunction : RegisterNewBackupPartyFunctionBase { }
@@ -510,6 +552,18 @@ namespace LitContracts.BackupRecovery.ContractDefinition
         public virtual string Addr { get; set; }
     }
 
+    public partial class ProofExpiredError : ProofExpiredErrorBase { }
+    [Error("ProofExpired")]
+    public class ProofExpiredErrorBase : IErrorDTO
+    {
+    }
+
+    public partial class WrongVerificationVersionError : WrongVerificationVersionErrorBase { }
+    [Error("WrongVerificationVersion")]
+    public class WrongVerificationVersionErrorBase : IErrorDTO
+    {
+    }
+
 
 
     public partial class FacetAddressOutputDTO : FacetAddressOutputDTOBase { }
@@ -558,6 +612,15 @@ namespace LitContracts.BackupRecovery.ContractDefinition
     }
 
 
+
+    public partial class BaseEcOpAddressOutputDTO : BaseEcOpAddressOutputDTOBase { }
+
+    [FunctionOutput]
+    public class BaseEcOpAddressOutputDTOBase : IFunctionOutputDTO 
+    {
+        [Parameter("address", "", 1)]
+        public virtual string ReturnValue1 { get; set; }
+    }
 
     public partial class CalculatePartyThresholdOutputDTO : CalculatePartyThresholdOutputDTOBase { }
 
@@ -631,6 +694,15 @@ namespace LitContracts.BackupRecovery.ContractDefinition
         public virtual List<string> BackupMembers { get; set; }
     }
 
+    public partial class GetNextBackupStateOutputDTO : GetNextBackupStateOutputDTOBase { }
+
+    [FunctionOutput]
+    public class GetNextBackupStateOutputDTOBase : IFunctionOutputDTO 
+    {
+        [Parameter("tuple", "nextState", 1)]
+        public virtual NextStateDownloadable NextState { get; set; }
+    }
+
     public partial class GetNodeAddressesForDkgOutputDTO : GetNodeAddressesForDkgOutputDTOBase { }
 
     [FunctionOutput]
@@ -656,6 +728,15 @@ namespace LitContracts.BackupRecovery.ContractDefinition
     {
         [Parameter("tuple", "partyState", 1)]
         public virtual BackupRecoveryState PartyState { get; set; }
+    }
+
+    public partial class GetProofSubmissionForBackupPartyMemberOutputDTO : GetProofSubmissionForBackupPartyMemberOutputDTOBase { }
+
+    [FunctionOutput]
+    public class GetProofSubmissionForBackupPartyMemberOutputDTOBase : IFunctionOutputDTO 
+    {
+        [Parameter("uint256", "", 1)]
+        public virtual BigInteger ReturnValue1 { get; set; }
     }
 
     public partial class GetStakerAddressesForDkgOutputDTO : GetStakerAddressesForDkgOutputDTOBase { }
@@ -686,6 +767,17 @@ namespace LitContracts.BackupRecovery.ContractDefinition
     }
 
 
+
+
+
+    public partial class RecieveProofsK256OutputDTO : RecieveProofsK256OutputDTOBase { }
+
+    [FunctionOutput]
+    public class RecieveProofsK256OutputDTOBase : IFunctionOutputDTO 
+    {
+        [Parameter("bool", "", 1)]
+        public virtual bool ReturnValue1 { get; set; }
+    }
 
 
 

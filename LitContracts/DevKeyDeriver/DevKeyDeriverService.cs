@@ -16,7 +16,7 @@ namespace LitContracts.DevKeyDeriver
 {
     public partial class DevKeyDeriverService
     {
-        public static Task<TransactionReceipt> DeployContractAndWaitForReceiptAsync(Nethereum.Web3.Web3 web3, DevKeyDeriverDeployment devKeyDeriverDeployment, CancellationTokenSource? cancellationTokenSource = null)
+        public static Task<TransactionReceipt> DeployContractAndWaitForReceiptAsync(Nethereum.Web3.Web3 web3, DevKeyDeriverDeployment devKeyDeriverDeployment, CancellationTokenSource cancellationTokenSource = null)
         {
             return web3.Eth.GetContractDeploymentHandler<DevKeyDeriverDeployment>().SendRequestAndWaitForReceiptAsync(devKeyDeriverDeployment, cancellationTokenSource);
         }
@@ -26,7 +26,7 @@ namespace LitContracts.DevKeyDeriver
             return web3.Eth.GetContractDeploymentHandler<DevKeyDeriverDeployment>().SendRequestAsync(devKeyDeriverDeployment);
         }
 
-        public static async Task<DevKeyDeriverService> DeployContractAndGetServiceAsync(Nethereum.Web3.Web3 web3, DevKeyDeriverDeployment devKeyDeriverDeployment, CancellationTokenSource? cancellationTokenSource = null)
+        public static async Task<DevKeyDeriverService> DeployContractAndGetServiceAsync(Nethereum.Web3.Web3 web3, DevKeyDeriverDeployment devKeyDeriverDeployment, CancellationTokenSource cancellationTokenSource = null)
         {
             var receipt = await DeployContractAndWaitForReceiptAsync(web3, devKeyDeriverDeployment, cancellationTokenSource);
             return new DevKeyDeriverService(web3, receipt.ContractAddress);
@@ -48,12 +48,12 @@ namespace LitContracts.DevKeyDeriver
             ContractHandler = web3.Eth.GetContractHandler(contractAddress);
         }
 
-        public Task<ComputeHDPubKeyOutputDTO> ComputeHDPubKeyQueryAsync(ComputeHDPubKeyFunction computeHDPubKeyFunction, BlockParameter? blockParameter = null)
+        public Task<ComputeHDPubKeyOutputDTO> ComputeHDPubKeyQueryAsync(ComputeHDPubKeyFunction computeHDPubKeyFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryDeserializingToObjectAsync<ComputeHDPubKeyFunction, ComputeHDPubKeyOutputDTO>(computeHDPubKeyFunction, blockParameter);
         }
 
-        public Task<ComputeHDPubKeyOutputDTO> ComputeHDPubKeyQueryAsync(byte[] derivedKeyId, List<RootKey> rootHDKeys, BigInteger keyType, BlockParameter? blockParameter = null)
+        public Task<ComputeHDPubKeyOutputDTO> ComputeHDPubKeyQueryAsync(byte[] derivedKeyId, List<RootKey> rootHDKeys, BigInteger keyType, BlockParameter blockParameter = null)
         {
             var computeHDPubKeyFunction = new ComputeHDPubKeyFunction();
                 computeHDPubKeyFunction.DerivedKeyId = derivedKeyId;

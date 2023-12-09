@@ -216,6 +216,12 @@ namespace LitContracts.Staking.ContractDefinition
         public virtual List<BigInteger> NewKeyTypes { get; set; }
         [Parameter("uint256", "newMinimumValidatorCount", 5)]
         public virtual BigInteger NewMinimumValidatorCount { get; set; }
+        [Parameter("uint256", "newMaxConcurrentRequests", 6)]
+        public virtual BigInteger NewMaxConcurrentRequests { get; set; }
+        [Parameter("uint256", "newMaxTripleCount", 7)]
+        public virtual BigInteger NewMaxTripleCount { get; set; }
+        [Parameter("uint256", "newMinTripleCount", 8)]
+        public virtual BigInteger NewMinTripleCount { get; set; }
     }
 
     public partial class SetContractResolverFunction : SetContractResolverFunctionBase { }
@@ -685,6 +691,12 @@ namespace LitContracts.Staking.ContractDefinition
         public virtual List<BigInteger> NewKeyTypes { get; set; }
         [Parameter("uint256", "newMinimumValidatorCount", 5, false )]
         public virtual BigInteger NewMinimumValidatorCount { get; set; }
+        [Parameter("uint256", "newMaxConcurrentRequests", 6, false )]
+        public virtual BigInteger NewMaxConcurrentRequests { get; set; }
+        [Parameter("uint256", "newMaxTripleCount", 7, false )]
+        public virtual BigInteger NewMaxTripleCount { get; set; }
+        [Parameter("uint256", "newMinTripleCount", 8, false )]
+        public virtual BigInteger NewMinTripleCount { get; set; }
     }
 
     public partial class EpochEndTimeSetEventDTO : EpochEndTimeSetEventDTOBase { }
@@ -977,6 +989,12 @@ namespace LitContracts.Staking.ContractDefinition
     public partial class CallerNotOwnerError : CallerNotOwnerErrorBase { }
     [Error("CallerNotOwner")]
     public class CallerNotOwnerErrorBase : IErrorDTO
+    {
+    }
+
+    public partial class CannotKickBelowCurrentValidatorThresholdError : CannotKickBelowCurrentValidatorThresholdErrorBase { }
+    [Error("CannotKickBelowCurrentValidatorThreshold")]
+    public class CannotKickBelowCurrentValidatorThresholdErrorBase : IErrorDTO
     {
     }
 

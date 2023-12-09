@@ -16,7 +16,7 @@ namespace LitContracts.LITToken
 {
     public partial class LITTokenService
     {
-        public static Task<TransactionReceipt> DeployContractAndWaitForReceiptAsync(Nethereum.Web3.Web3 web3, LITTokenDeployment lITTokenDeployment, CancellationTokenSource? cancellationTokenSource = null)
+        public static Task<TransactionReceipt> DeployContractAndWaitForReceiptAsync(Nethereum.Web3.Web3 web3, LITTokenDeployment lITTokenDeployment, CancellationTokenSource cancellationTokenSource = null)
         {
             return web3.Eth.GetContractDeploymentHandler<LITTokenDeployment>().SendRequestAndWaitForReceiptAsync(lITTokenDeployment, cancellationTokenSource);
         }
@@ -26,7 +26,7 @@ namespace LitContracts.LITToken
             return web3.Eth.GetContractDeploymentHandler<LITTokenDeployment>().SendRequestAsync(lITTokenDeployment);
         }
 
-        public static async Task<LITTokenService> DeployContractAndGetServiceAsync(Nethereum.Web3.Web3 web3, LITTokenDeployment lITTokenDeployment, CancellationTokenSource? cancellationTokenSource = null)
+        public static async Task<LITTokenService> DeployContractAndGetServiceAsync(Nethereum.Web3.Web3 web3, LITTokenDeployment lITTokenDeployment, CancellationTokenSource cancellationTokenSource = null)
         {
             var receipt = await DeployContractAndWaitForReceiptAsync(web3, lITTokenDeployment, cancellationTokenSource);
             return new LITTokenService(web3, receipt.ContractAddress);
@@ -48,79 +48,79 @@ namespace LitContracts.LITToken
             ContractHandler = web3.Eth.GetContractHandler(contractAddress);
         }
 
-        public Task<byte[]> AdminRoleQueryAsync(AdminRoleFunction adminRoleFunction, BlockParameter? blockParameter = null)
+        public Task<byte[]> AdminRoleQueryAsync(AdminRoleFunction adminRoleFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<AdminRoleFunction, byte[]>(adminRoleFunction, blockParameter);
         }
 
         
-        public Task<byte[]> AdminRoleQueryAsync(BlockParameter? blockParameter = null)
+        public Task<byte[]> AdminRoleQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<AdminRoleFunction, byte[]>(null, blockParameter);
         }
 
-        public Task<string> ClockModeQueryAsync(ClockModeFunction clockModeFunction, BlockParameter? blockParameter = null)
+        public Task<string> ClockModeQueryAsync(ClockModeFunction clockModeFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<ClockModeFunction, string>(clockModeFunction, blockParameter);
         }
 
         
-        public Task<string> ClockModeQueryAsync(BlockParameter? blockParameter = null)
+        public Task<string> ClockModeQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<ClockModeFunction, string>(null, blockParameter);
         }
 
-        public Task<byte[]> DefaultAdminRoleQueryAsync(DefaultAdminRoleFunction defaultAdminRoleFunction, BlockParameter? blockParameter = null)
+        public Task<byte[]> DefaultAdminRoleQueryAsync(DefaultAdminRoleFunction defaultAdminRoleFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<DefaultAdminRoleFunction, byte[]>(defaultAdminRoleFunction, blockParameter);
         }
 
         
-        public Task<byte[]> DefaultAdminRoleQueryAsync(BlockParameter? blockParameter = null)
+        public Task<byte[]> DefaultAdminRoleQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<DefaultAdminRoleFunction, byte[]>(null, blockParameter);
         }
 
-        public Task<byte[]> DomainSeparatorQueryAsync(DomainSeparatorFunction domainSeparatorFunction, BlockParameter? blockParameter = null)
+        public Task<byte[]> DomainSeparatorQueryAsync(DomainSeparatorFunction domainSeparatorFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<DomainSeparatorFunction, byte[]>(domainSeparatorFunction, blockParameter);
         }
 
         
-        public Task<byte[]> DomainSeparatorQueryAsync(BlockParameter? blockParameter = null)
+        public Task<byte[]> DomainSeparatorQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<DomainSeparatorFunction, byte[]>(null, blockParameter);
         }
 
-        public Task<byte[]> MinterRoleQueryAsync(MinterRoleFunction minterRoleFunction, BlockParameter? blockParameter = null)
+        public Task<byte[]> MinterRoleQueryAsync(MinterRoleFunction minterRoleFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<MinterRoleFunction, byte[]>(minterRoleFunction, blockParameter);
         }
 
         
-        public Task<byte[]> MinterRoleQueryAsync(BlockParameter? blockParameter = null)
+        public Task<byte[]> MinterRoleQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<MinterRoleFunction, byte[]>(null, blockParameter);
         }
 
-        public Task<byte[]> PauserRoleQueryAsync(PauserRoleFunction pauserRoleFunction, BlockParameter? blockParameter = null)
+        public Task<byte[]> PauserRoleQueryAsync(PauserRoleFunction pauserRoleFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<PauserRoleFunction, byte[]>(pauserRoleFunction, blockParameter);
         }
 
         
-        public Task<byte[]> PauserRoleQueryAsync(BlockParameter? blockParameter = null)
+        public Task<byte[]> PauserRoleQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<PauserRoleFunction, byte[]>(null, blockParameter);
         }
 
-        public Task<BigInteger> AllowanceQueryAsync(AllowanceFunction allowanceFunction, BlockParameter? blockParameter = null)
+        public Task<BigInteger> AllowanceQueryAsync(AllowanceFunction allowanceFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<AllowanceFunction, BigInteger>(allowanceFunction, blockParameter);
         }
 
         
-        public Task<BigInteger> AllowanceQueryAsync(string owner, string spender, BlockParameter? blockParameter = null)
+        public Task<BigInteger> AllowanceQueryAsync(string owner, string spender, BlockParameter blockParameter = null)
         {
             var allowanceFunction = new AllowanceFunction();
                 allowanceFunction.Owner = owner;
@@ -134,7 +134,7 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAsync(approveFunction);
         }
 
-        public Task<TransactionReceipt> ApproveRequestAndWaitForReceiptAsync(ApproveFunction approveFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> ApproveRequestAndWaitForReceiptAsync(ApproveFunction approveFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(approveFunction, cancellationToken);
         }
@@ -148,7 +148,7 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAsync(approveFunction);
         }
 
-        public Task<TransactionReceipt> ApproveRequestAndWaitForReceiptAsync(string spender, BigInteger amount, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> ApproveRequestAndWaitForReceiptAsync(string spender, BigInteger amount, CancellationTokenSource cancellationToken = null)
         {
             var approveFunction = new ApproveFunction();
                 approveFunction.Spender = spender;
@@ -157,13 +157,13 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAndWaitForReceiptAsync(approveFunction, cancellationToken);
         }
 
-        public Task<BigInteger> BalanceOfQueryAsync(BalanceOfFunction balanceOfFunction, BlockParameter? blockParameter = null)
+        public Task<BigInteger> BalanceOfQueryAsync(BalanceOfFunction balanceOfFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<BalanceOfFunction, BigInteger>(balanceOfFunction, blockParameter);
         }
 
         
-        public Task<BigInteger> BalanceOfQueryAsync(string account, BlockParameter? blockParameter = null)
+        public Task<BigInteger> BalanceOfQueryAsync(string account, BlockParameter blockParameter = null)
         {
             var balanceOfFunction = new BalanceOfFunction();
                 balanceOfFunction.Account = account;
@@ -176,7 +176,7 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAsync(burnFunction);
         }
 
-        public Task<TransactionReceipt> BurnRequestAndWaitForReceiptAsync(BurnFunction burnFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> BurnRequestAndWaitForReceiptAsync(BurnFunction burnFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(burnFunction, cancellationToken);
         }
@@ -189,7 +189,7 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAsync(burnFunction);
         }
 
-        public Task<TransactionReceipt> BurnRequestAndWaitForReceiptAsync(BigInteger amount, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> BurnRequestAndWaitForReceiptAsync(BigInteger amount, CancellationTokenSource cancellationToken = null)
         {
             var burnFunction = new BurnFunction();
                 burnFunction.Amount = amount;
@@ -202,7 +202,7 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAsync(burnFromFunction);
         }
 
-        public Task<TransactionReceipt> BurnFromRequestAndWaitForReceiptAsync(BurnFromFunction burnFromFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> BurnFromRequestAndWaitForReceiptAsync(BurnFromFunction burnFromFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(burnFromFunction, cancellationToken);
         }
@@ -216,7 +216,7 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAsync(burnFromFunction);
         }
 
-        public Task<TransactionReceipt> BurnFromRequestAndWaitForReceiptAsync(string account, BigInteger amount, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> BurnFromRequestAndWaitForReceiptAsync(string account, BigInteger amount, CancellationTokenSource cancellationToken = null)
         {
             var burnFromFunction = new BurnFromFunction();
                 burnFromFunction.Account = account;
@@ -225,23 +225,23 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAndWaitForReceiptAsync(burnFromFunction, cancellationToken);
         }
 
-        public Task<BigInteger> CapQueryAsync(CapFunction capFunction, BlockParameter? blockParameter = null)
+        public Task<BigInteger> CapQueryAsync(CapFunction capFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<CapFunction, BigInteger>(capFunction, blockParameter);
         }
 
         
-        public Task<BigInteger> CapQueryAsync(BlockParameter? blockParameter = null)
+        public Task<BigInteger> CapQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<CapFunction, BigInteger>(null, blockParameter);
         }
 
-        public Task<CheckpointsOutputDTO> CheckpointsQueryAsync(CheckpointsFunction checkpointsFunction, BlockParameter? blockParameter = null)
+        public Task<CheckpointsOutputDTO> CheckpointsQueryAsync(CheckpointsFunction checkpointsFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryDeserializingToObjectAsync<CheckpointsFunction, CheckpointsOutputDTO>(checkpointsFunction, blockParameter);
         }
 
-        public Task<CheckpointsOutputDTO> CheckpointsQueryAsync(string account, uint pos, BlockParameter? blockParameter = null)
+        public Task<CheckpointsOutputDTO> CheckpointsQueryAsync(string account, uint pos, BlockParameter blockParameter = null)
         {
             var checkpointsFunction = new CheckpointsFunction();
                 checkpointsFunction.Account = account;
@@ -250,24 +250,24 @@ namespace LitContracts.LITToken
             return ContractHandler.QueryDeserializingToObjectAsync<CheckpointsFunction, CheckpointsOutputDTO>(checkpointsFunction, blockParameter);
         }
 
-        public Task<ulong> ClockQueryAsync(ClockFunction clockFunction, BlockParameter? blockParameter = null)
+        public Task<ulong> ClockQueryAsync(ClockFunction clockFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<ClockFunction, ulong>(clockFunction, blockParameter);
         }
 
         
-        public Task<ulong> ClockQueryAsync(BlockParameter? blockParameter = null)
+        public Task<ulong> ClockQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<ClockFunction, ulong>(null, blockParameter);
         }
 
-        public Task<byte> DecimalsQueryAsync(DecimalsFunction decimalsFunction, BlockParameter? blockParameter = null)
+        public Task<byte> DecimalsQueryAsync(DecimalsFunction decimalsFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<DecimalsFunction, byte>(decimalsFunction, blockParameter);
         }
 
         
-        public Task<byte> DecimalsQueryAsync(BlockParameter? blockParameter = null)
+        public Task<byte> DecimalsQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<DecimalsFunction, byte>(null, blockParameter);
         }
@@ -277,7 +277,7 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAsync(decreaseAllowanceFunction);
         }
 
-        public Task<TransactionReceipt> DecreaseAllowanceRequestAndWaitForReceiptAsync(DecreaseAllowanceFunction decreaseAllowanceFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> DecreaseAllowanceRequestAndWaitForReceiptAsync(DecreaseAllowanceFunction decreaseAllowanceFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(decreaseAllowanceFunction, cancellationToken);
         }
@@ -291,7 +291,7 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAsync(decreaseAllowanceFunction);
         }
 
-        public Task<TransactionReceipt> DecreaseAllowanceRequestAndWaitForReceiptAsync(string spender, BigInteger subtractedValue, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> DecreaseAllowanceRequestAndWaitForReceiptAsync(string spender, BigInteger subtractedValue, CancellationTokenSource cancellationToken = null)
         {
             var decreaseAllowanceFunction = new DecreaseAllowanceFunction();
                 decreaseAllowanceFunction.Spender = spender;
@@ -305,7 +305,7 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAsync(@delegateFunction);
         }
 
-        public Task<TransactionReceipt> DelegateRequestAndWaitForReceiptAsync(DelegateFunction @delegateFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> DelegateRequestAndWaitForReceiptAsync(DelegateFunction @delegateFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(@delegateFunction, cancellationToken);
         }
@@ -318,7 +318,7 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAsync(@delegateFunction);
         }
 
-        public Task<TransactionReceipt> DelegateRequestAndWaitForReceiptAsync(string delegatee, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> DelegateRequestAndWaitForReceiptAsync(string delegatee, CancellationTokenSource cancellationToken = null)
         {
             var @delegateFunction = new DelegateFunction();
                 @delegateFunction.Delegatee = delegatee;
@@ -331,7 +331,7 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAsync(delegateBySigFunction);
         }
 
-        public Task<TransactionReceipt> DelegateBySigRequestAndWaitForReceiptAsync(DelegateBySigFunction delegateBySigFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> DelegateBySigRequestAndWaitForReceiptAsync(DelegateBySigFunction delegateBySigFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(delegateBySigFunction, cancellationToken);
         }
@@ -349,7 +349,7 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAsync(delegateBySigFunction);
         }
 
-        public Task<TransactionReceipt> DelegateBySigRequestAndWaitForReceiptAsync(string delegatee, BigInteger nonce, BigInteger expiry, byte v, byte[] r, byte[] s, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> DelegateBySigRequestAndWaitForReceiptAsync(string delegatee, BigInteger nonce, BigInteger expiry, byte v, byte[] r, byte[] s, CancellationTokenSource cancellationToken = null)
         {
             var delegateBySigFunction = new DelegateBySigFunction();
                 delegateBySigFunction.Delegatee = delegatee;
@@ -362,13 +362,13 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAndWaitForReceiptAsync(delegateBySigFunction, cancellationToken);
         }
 
-        public Task<string> DelegatesQueryAsync(DelegatesFunction delegatesFunction, BlockParameter? blockParameter = null)
+        public Task<string> DelegatesQueryAsync(DelegatesFunction delegatesFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<DelegatesFunction, string>(delegatesFunction, blockParameter);
         }
 
         
-        public Task<string> DelegatesQueryAsync(string account, BlockParameter? blockParameter = null)
+        public Task<string> DelegatesQueryAsync(string account, BlockParameter blockParameter = null)
         {
             var delegatesFunction = new DelegatesFunction();
                 delegatesFunction.Account = account;
@@ -376,23 +376,23 @@ namespace LitContracts.LITToken
             return ContractHandler.QueryAsync<DelegatesFunction, string>(delegatesFunction, blockParameter);
         }
 
-        public Task<Eip712DomainOutputDTO> Eip712DomainQueryAsync(Eip712DomainFunction eip712DomainFunction, BlockParameter? blockParameter = null)
+        public Task<Eip712DomainOutputDTO> Eip712DomainQueryAsync(Eip712DomainFunction eip712DomainFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryDeserializingToObjectAsync<Eip712DomainFunction, Eip712DomainOutputDTO>(eip712DomainFunction, blockParameter);
         }
 
-        public Task<Eip712DomainOutputDTO> Eip712DomainQueryAsync(BlockParameter? blockParameter = null)
+        public Task<Eip712DomainOutputDTO> Eip712DomainQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryDeserializingToObjectAsync<Eip712DomainFunction, Eip712DomainOutputDTO>(null, blockParameter);
         }
 
-        public Task<BigInteger> GetPastTotalSupplyQueryAsync(GetPastTotalSupplyFunction getPastTotalSupplyFunction, BlockParameter? blockParameter = null)
+        public Task<BigInteger> GetPastTotalSupplyQueryAsync(GetPastTotalSupplyFunction getPastTotalSupplyFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetPastTotalSupplyFunction, BigInteger>(getPastTotalSupplyFunction, blockParameter);
         }
 
         
-        public Task<BigInteger> GetPastTotalSupplyQueryAsync(BigInteger timepoint, BlockParameter? blockParameter = null)
+        public Task<BigInteger> GetPastTotalSupplyQueryAsync(BigInteger timepoint, BlockParameter blockParameter = null)
         {
             var getPastTotalSupplyFunction = new GetPastTotalSupplyFunction();
                 getPastTotalSupplyFunction.Timepoint = timepoint;
@@ -400,13 +400,13 @@ namespace LitContracts.LITToken
             return ContractHandler.QueryAsync<GetPastTotalSupplyFunction, BigInteger>(getPastTotalSupplyFunction, blockParameter);
         }
 
-        public Task<BigInteger> GetPastVotesQueryAsync(GetPastVotesFunction getPastVotesFunction, BlockParameter? blockParameter = null)
+        public Task<BigInteger> GetPastVotesQueryAsync(GetPastVotesFunction getPastVotesFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetPastVotesFunction, BigInteger>(getPastVotesFunction, blockParameter);
         }
 
         
-        public Task<BigInteger> GetPastVotesQueryAsync(string account, BigInteger timepoint, BlockParameter? blockParameter = null)
+        public Task<BigInteger> GetPastVotesQueryAsync(string account, BigInteger timepoint, BlockParameter blockParameter = null)
         {
             var getPastVotesFunction = new GetPastVotesFunction();
                 getPastVotesFunction.Account = account;
@@ -415,13 +415,13 @@ namespace LitContracts.LITToken
             return ContractHandler.QueryAsync<GetPastVotesFunction, BigInteger>(getPastVotesFunction, blockParameter);
         }
 
-        public Task<byte[]> GetRoleAdminQueryAsync(GetRoleAdminFunction getRoleAdminFunction, BlockParameter? blockParameter = null)
+        public Task<byte[]> GetRoleAdminQueryAsync(GetRoleAdminFunction getRoleAdminFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetRoleAdminFunction, byte[]>(getRoleAdminFunction, blockParameter);
         }
 
         
-        public Task<byte[]> GetRoleAdminQueryAsync(byte[] role, BlockParameter? blockParameter = null)
+        public Task<byte[]> GetRoleAdminQueryAsync(byte[] role, BlockParameter blockParameter = null)
         {
             var getRoleAdminFunction = new GetRoleAdminFunction();
                 getRoleAdminFunction.Role = role;
@@ -429,13 +429,13 @@ namespace LitContracts.LITToken
             return ContractHandler.QueryAsync<GetRoleAdminFunction, byte[]>(getRoleAdminFunction, blockParameter);
         }
 
-        public Task<BigInteger> GetVotesQueryAsync(GetVotesFunction getVotesFunction, BlockParameter? blockParameter = null)
+        public Task<BigInteger> GetVotesQueryAsync(GetVotesFunction getVotesFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetVotesFunction, BigInteger>(getVotesFunction, blockParameter);
         }
 
         
-        public Task<BigInteger> GetVotesQueryAsync(string account, BlockParameter? blockParameter = null)
+        public Task<BigInteger> GetVotesQueryAsync(string account, BlockParameter blockParameter = null)
         {
             var getVotesFunction = new GetVotesFunction();
                 getVotesFunction.Account = account;
@@ -448,7 +448,7 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAsync(grantRoleFunction);
         }
 
-        public Task<TransactionReceipt> GrantRoleRequestAndWaitForReceiptAsync(GrantRoleFunction grantRoleFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> GrantRoleRequestAndWaitForReceiptAsync(GrantRoleFunction grantRoleFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(grantRoleFunction, cancellationToken);
         }
@@ -462,7 +462,7 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAsync(grantRoleFunction);
         }
 
-        public Task<TransactionReceipt> GrantRoleRequestAndWaitForReceiptAsync(byte[] role, string account, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> GrantRoleRequestAndWaitForReceiptAsync(byte[] role, string account, CancellationTokenSource cancellationToken = null)
         {
             var grantRoleFunction = new GrantRoleFunction();
                 grantRoleFunction.Role = role;
@@ -471,13 +471,13 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAndWaitForReceiptAsync(grantRoleFunction, cancellationToken);
         }
 
-        public Task<bool> HasRoleQueryAsync(HasRoleFunction hasRoleFunction, BlockParameter? blockParameter = null)
+        public Task<bool> HasRoleQueryAsync(HasRoleFunction hasRoleFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<HasRoleFunction, bool>(hasRoleFunction, blockParameter);
         }
 
         
-        public Task<bool> HasRoleQueryAsync(byte[] role, string account, BlockParameter? blockParameter = null)
+        public Task<bool> HasRoleQueryAsync(byte[] role, string account, BlockParameter blockParameter = null)
         {
             var hasRoleFunction = new HasRoleFunction();
                 hasRoleFunction.Role = role;
@@ -491,7 +491,7 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAsync(increaseAllowanceFunction);
         }
 
-        public Task<TransactionReceipt> IncreaseAllowanceRequestAndWaitForReceiptAsync(IncreaseAllowanceFunction increaseAllowanceFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> IncreaseAllowanceRequestAndWaitForReceiptAsync(IncreaseAllowanceFunction increaseAllowanceFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(increaseAllowanceFunction, cancellationToken);
         }
@@ -505,7 +505,7 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAsync(increaseAllowanceFunction);
         }
 
-        public Task<TransactionReceipt> IncreaseAllowanceRequestAndWaitForReceiptAsync(string spender, BigInteger addedValue, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> IncreaseAllowanceRequestAndWaitForReceiptAsync(string spender, BigInteger addedValue, CancellationTokenSource cancellationToken = null)
         {
             var increaseAllowanceFunction = new IncreaseAllowanceFunction();
                 increaseAllowanceFunction.Spender = spender;
@@ -519,7 +519,7 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAsync(mintFunction);
         }
 
-        public Task<TransactionReceipt> MintRequestAndWaitForReceiptAsync(MintFunction mintFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> MintRequestAndWaitForReceiptAsync(MintFunction mintFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(mintFunction, cancellationToken);
         }
@@ -533,7 +533,7 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAsync(mintFunction);
         }
 
-        public Task<TransactionReceipt> MintRequestAndWaitForReceiptAsync(string recipient, BigInteger amount, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> MintRequestAndWaitForReceiptAsync(string recipient, BigInteger amount, CancellationTokenSource cancellationToken = null)
         {
             var mintFunction = new MintFunction();
                 mintFunction.Recipient = recipient;
@@ -542,24 +542,24 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAndWaitForReceiptAsync(mintFunction, cancellationToken);
         }
 
-        public Task<string> NameQueryAsync(NameFunction nameFunction, BlockParameter? blockParameter = null)
+        public Task<string> NameQueryAsync(NameFunction nameFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<NameFunction, string>(nameFunction, blockParameter);
         }
 
         
-        public Task<string> NameQueryAsync(BlockParameter? blockParameter = null)
+        public Task<string> NameQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<NameFunction, string>(null, blockParameter);
         }
 
-        public Task<BigInteger> NoncesQueryAsync(NoncesFunction noncesFunction, BlockParameter? blockParameter = null)
+        public Task<BigInteger> NoncesQueryAsync(NoncesFunction noncesFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<NoncesFunction, BigInteger>(noncesFunction, blockParameter);
         }
 
         
-        public Task<BigInteger> NoncesQueryAsync(string owner, BlockParameter? blockParameter = null)
+        public Task<BigInteger> NoncesQueryAsync(string owner, BlockParameter blockParameter = null)
         {
             var noncesFunction = new NoncesFunction();
                 noncesFunction.Owner = owner;
@@ -567,13 +567,13 @@ namespace LitContracts.LITToken
             return ContractHandler.QueryAsync<NoncesFunction, BigInteger>(noncesFunction, blockParameter);
         }
 
-        public Task<uint> NumCheckpointsQueryAsync(NumCheckpointsFunction numCheckpointsFunction, BlockParameter? blockParameter = null)
+        public Task<uint> NumCheckpointsQueryAsync(NumCheckpointsFunction numCheckpointsFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<NumCheckpointsFunction, uint>(numCheckpointsFunction, blockParameter);
         }
 
         
-        public Task<uint> NumCheckpointsQueryAsync(string account, BlockParameter? blockParameter = null)
+        public Task<uint> NumCheckpointsQueryAsync(string account, BlockParameter blockParameter = null)
         {
             var numCheckpointsFunction = new NumCheckpointsFunction();
                 numCheckpointsFunction.Account = account;
@@ -591,23 +591,23 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAsync<PauseFunction>();
         }
 
-        public Task<TransactionReceipt> PauseRequestAndWaitForReceiptAsync(PauseFunction pauseFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> PauseRequestAndWaitForReceiptAsync(PauseFunction pauseFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(pauseFunction, cancellationToken);
         }
 
-        public Task<TransactionReceipt> PauseRequestAndWaitForReceiptAsync(CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> PauseRequestAndWaitForReceiptAsync(CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync<PauseFunction>(null, cancellationToken);
         }
 
-        public Task<bool> PausedQueryAsync(PausedFunction pausedFunction, BlockParameter? blockParameter = null)
+        public Task<bool> PausedQueryAsync(PausedFunction pausedFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<PausedFunction, bool>(pausedFunction, blockParameter);
         }
 
         
-        public Task<bool> PausedQueryAsync(BlockParameter? blockParameter = null)
+        public Task<bool> PausedQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<PausedFunction, bool>(null, blockParameter);
         }
@@ -617,7 +617,7 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAsync(permitFunction);
         }
 
-        public Task<TransactionReceipt> PermitRequestAndWaitForReceiptAsync(PermitFunction permitFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> PermitRequestAndWaitForReceiptAsync(PermitFunction permitFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(permitFunction, cancellationToken);
         }
@@ -636,7 +636,7 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAsync(permitFunction);
         }
 
-        public Task<TransactionReceipt> PermitRequestAndWaitForReceiptAsync(string owner, string spender, BigInteger value, BigInteger deadline, byte v, byte[] r, byte[] s, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> PermitRequestAndWaitForReceiptAsync(string owner, string spender, BigInteger value, BigInteger deadline, byte v, byte[] r, byte[] s, CancellationTokenSource cancellationToken = null)
         {
             var permitFunction = new PermitFunction();
                 permitFunction.Owner = owner;
@@ -655,7 +655,7 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAsync(renounceRoleFunction);
         }
 
-        public Task<TransactionReceipt> RenounceRoleRequestAndWaitForReceiptAsync(RenounceRoleFunction renounceRoleFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> RenounceRoleRequestAndWaitForReceiptAsync(RenounceRoleFunction renounceRoleFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(renounceRoleFunction, cancellationToken);
         }
@@ -669,7 +669,7 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAsync(renounceRoleFunction);
         }
 
-        public Task<TransactionReceipt> RenounceRoleRequestAndWaitForReceiptAsync(byte[] role, string account, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> RenounceRoleRequestAndWaitForReceiptAsync(byte[] role, string account, CancellationTokenSource cancellationToken = null)
         {
             var renounceRoleFunction = new RenounceRoleFunction();
                 renounceRoleFunction.Role = role;
@@ -683,7 +683,7 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAsync(revokeRoleFunction);
         }
 
-        public Task<TransactionReceipt> RevokeRoleRequestAndWaitForReceiptAsync(RevokeRoleFunction revokeRoleFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> RevokeRoleRequestAndWaitForReceiptAsync(RevokeRoleFunction revokeRoleFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(revokeRoleFunction, cancellationToken);
         }
@@ -697,7 +697,7 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAsync(revokeRoleFunction);
         }
 
-        public Task<TransactionReceipt> RevokeRoleRequestAndWaitForReceiptAsync(byte[] role, string account, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> RevokeRoleRequestAndWaitForReceiptAsync(byte[] role, string account, CancellationTokenSource cancellationToken = null)
         {
             var revokeRoleFunction = new RevokeRoleFunction();
                 revokeRoleFunction.Role = role;
@@ -706,13 +706,13 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAndWaitForReceiptAsync(revokeRoleFunction, cancellationToken);
         }
 
-        public Task<bool> SupportsInterfaceQueryAsync(SupportsInterfaceFunction supportsInterfaceFunction, BlockParameter? blockParameter = null)
+        public Task<bool> SupportsInterfaceQueryAsync(SupportsInterfaceFunction supportsInterfaceFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<SupportsInterfaceFunction, bool>(supportsInterfaceFunction, blockParameter);
         }
 
         
-        public Task<bool> SupportsInterfaceQueryAsync(byte[] interfaceId, BlockParameter? blockParameter = null)
+        public Task<bool> SupportsInterfaceQueryAsync(byte[] interfaceId, BlockParameter blockParameter = null)
         {
             var supportsInterfaceFunction = new SupportsInterfaceFunction();
                 supportsInterfaceFunction.InterfaceId = interfaceId;
@@ -720,24 +720,24 @@ namespace LitContracts.LITToken
             return ContractHandler.QueryAsync<SupportsInterfaceFunction, bool>(supportsInterfaceFunction, blockParameter);
         }
 
-        public Task<string> SymbolQueryAsync(SymbolFunction symbolFunction, BlockParameter? blockParameter = null)
+        public Task<string> SymbolQueryAsync(SymbolFunction symbolFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<SymbolFunction, string>(symbolFunction, blockParameter);
         }
 
         
-        public Task<string> SymbolQueryAsync(BlockParameter? blockParameter = null)
+        public Task<string> SymbolQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<SymbolFunction, string>(null, blockParameter);
         }
 
-        public Task<BigInteger> TotalSupplyQueryAsync(TotalSupplyFunction totalSupplyFunction, BlockParameter? blockParameter = null)
+        public Task<BigInteger> TotalSupplyQueryAsync(TotalSupplyFunction totalSupplyFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<TotalSupplyFunction, BigInteger>(totalSupplyFunction, blockParameter);
         }
 
         
-        public Task<BigInteger> TotalSupplyQueryAsync(BlockParameter? blockParameter = null)
+        public Task<BigInteger> TotalSupplyQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<TotalSupplyFunction, BigInteger>(null, blockParameter);
         }
@@ -747,7 +747,7 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAsync(transferFunction);
         }
 
-        public Task<TransactionReceipt> TransferRequestAndWaitForReceiptAsync(TransferFunction transferFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> TransferRequestAndWaitForReceiptAsync(TransferFunction transferFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(transferFunction, cancellationToken);
         }
@@ -761,7 +761,7 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAsync(transferFunction);
         }
 
-        public Task<TransactionReceipt> TransferRequestAndWaitForReceiptAsync(string to, BigInteger amount, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> TransferRequestAndWaitForReceiptAsync(string to, BigInteger amount, CancellationTokenSource cancellationToken = null)
         {
             var transferFunction = new TransferFunction();
                 transferFunction.To = to;
@@ -775,7 +775,7 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAsync(transferFromFunction);
         }
 
-        public Task<TransactionReceipt> TransferFromRequestAndWaitForReceiptAsync(TransferFromFunction transferFromFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> TransferFromRequestAndWaitForReceiptAsync(TransferFromFunction transferFromFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(transferFromFunction, cancellationToken);
         }
@@ -790,7 +790,7 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAsync(transferFromFunction);
         }
 
-        public Task<TransactionReceipt> TransferFromRequestAndWaitForReceiptAsync(string from, string to, BigInteger amount, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> TransferFromRequestAndWaitForReceiptAsync(string from, string to, BigInteger amount, CancellationTokenSource cancellationToken = null)
         {
             var transferFromFunction = new TransferFromFunction();
                 transferFromFunction.From = from;
@@ -810,12 +810,12 @@ namespace LitContracts.LITToken
              return ContractHandler.SendRequestAsync<UnpauseFunction>();
         }
 
-        public Task<TransactionReceipt> UnpauseRequestAndWaitForReceiptAsync(UnpauseFunction unpauseFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> UnpauseRequestAndWaitForReceiptAsync(UnpauseFunction unpauseFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(unpauseFunction, cancellationToken);
         }
 
-        public Task<TransactionReceipt> UnpauseRequestAndWaitForReceiptAsync(CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> UnpauseRequestAndWaitForReceiptAsync(CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync<UnpauseFunction>(null, cancellationToken);
         }

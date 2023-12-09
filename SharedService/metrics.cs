@@ -35,7 +35,7 @@ public class NodeMetricRoot
     public List<Metric>? metrics { get; set; }
     public List<NewAction>? new_actions { get; set; }
     public List<Peer>? peers { get; set; }
-    public List<TripleCount>? triple_counts { get; set; }
+    public List<TripleCount>? triple_count { get; set; }
     public Timestamp? timestamp { get; set; }
 }
 
@@ -45,13 +45,19 @@ public class Timestamp
     public int nanos_since_epoch { get; set; }
 }
 
-public class TripleCount
-{
-    public int peer_group_id { get; set; }
-    public int count { get; set; }
+public class NodeTripleCount {
     
-    // missing the triple keys
+    public string name { get { return "Node #" + (idx + 1).ToString(); } }
+    public int idx { get; set; }
+    public List<TripleCount>? triples { get; set; }
+    public int total_count { get { return triples == null ? 0 :  triples.Sum(x => x.count); } }
 }
+public class TripleCount
+    {
+        public ulong peer_group_id { get; set; }
+        public int count { get; set; }
+        public List<object>? peer_keys { get; set; }
+    }
 
 
 
@@ -62,14 +68,14 @@ public class NodeMetric {
 }
 
 public class ActiveActions {
-    public string type_id { get; set; }
+    public string? type_id { get; set; }
     public List<int>? ids { get; set; }
 }
 
 public class OutMessages {
     public int src {get; set;}
     public int dst {get; set;}  
-    public string name {get; set;}  
+    public string? name {get; set;}  
     public int count {get; set;}
 }
 
@@ -77,67 +83,91 @@ public class NetworkHistory
 {
     private int history_count = 0;
     private int node_count = 0;
+
+    private List<String> raw_metrics = new List<String>();
     private List<List<NodeMetric>> historic_metrics = new List<List<NodeMetric>>();
 
     private List<ActiveActions> active_actions = new List<ActiveActions>();
     
+    private List<NodeTripleCount> node_triples = new List<NodeTripleCount>();
+
     public NetworkHistory(int historiy_length, int node_length)
     {
         history_count = historiy_length;        
         node_count = node_length;
-        historic_metrics = new List<List<NodeMetric>>();
-        
+        historic_metrics = new List<List<NodeMetric>>();      
+          
+        node_triples = new List<NodeTripleCount>();
+        for (int i = 0; i < node_count; i++) {
+            node_triples.Add(new NodeTripleCount { idx = i, triples = new List<TripleCount>() });
+        }
     } 
 
     public List<ActiveActions> get_active_actions() {
         return active_actions;
     }
  
-    public void add(List<NodeMetricRoot> new_metrics) {
+    public void add(List<NodeMetricRoot> incoming_node_metrics, List<string> raw_metrics) {
 
-        if ( new_metrics.Count == 0 )  {
+
+        if ( incoming_node_metrics.Count == 0 )  {
             return;
         }
 
-        new_metrics.Sort((x, y) => x.idx.CompareTo(y.idx));
+        this.raw_metrics = raw_metrics;
+
+        incoming_node_metrics.Sort((x, y) => x.idx.CompareTo(y.idx));
         var new_node_metrics = new List<NodeMetric>();
 
-        foreach (var node_metric in new_metrics) {
-            node_metric.metrics.Sort((x, y) => x.idx.CompareTo(y.idx));
-            var new_node_metric = new NodeMetric { node_index = node_metric.idx, metrics = node_metric.metrics };
-            new_node_metrics.Add(new_node_metric);
-            
-            if (node_metric.new_actions != null) {
-                foreach (var action in node_metric.new_actions) {
-                    if (action.is_start) { // add
-                        if (active_actions.Where(x => x.type_id == action.type_id).Count() == 0) {
-                            active_actions.Add(new ActiveActions { type_id = action.type_id, ids = new List<int>() });
-                        }
-                        
-                        foreach (ActiveActions active_action in active_actions) {
-                            if (active_action.type_id == action.type_id) {
-                                if (active_action.ids == null) {
-                                    active_action.ids = new List<int>();
-                                }
-                                active_action.ids.Add(action.txn_id);                                
-                            }
-                        }                        
-                    }
-                    else{ // remove
-                        foreach (ActiveActions active_action in active_actions) {
-                            if (active_action.type_id == action.type_id) {
-                                if (active_action.ids != null) {
-                                    active_action.ids.Remove(action.txn_id);
-                                }
-                                break;
-                            }
-                        }                        
-                    }
-
-                }
+        foreach (var node_metric in incoming_node_metrics) {
+            if (node_metric.metrics != null) 
+            {
+                // node_metric.metrics.Sort((x, y) => x.idx.CompareTo(y.idx));
+                var new_node_metric = new NodeMetric { node_index = node_metric.idx, metrics = node_metric.metrics };
+                new_node_metrics.Add(new_node_metric);
             }
 
-        }
+            
+
+            if (node_metric.triple_count != null && node_metric.triple_count.Count > 0)
+            {
+                Console.WriteLine("Node: " + node_metric.idx.ToString() + " Triple Count: " + node_metric.triple_count[0].count.ToString());
+                // Console.WriteLine("Node: " + node_metric.idx.ToString() + " Triple Count: " + node_metric.triple_count.Count.ToString());
+                node_triples[node_metric.idx].triples =  node_metric.triple_count;
+                
+            }
+                        
+            // if (node_metric.new_actions != null) {
+            //     foreach (var action in node_metric.new_actions) {
+            //         if (action.is_start) { // add
+            //             if (active_actions.Where(x => x.type_id == action.type_id).Count() == 0) {
+            //                 active_actions.Add(new ActiveActions { type_id = action.type_id, ids = new List<int>() });
+            //             }
+                        
+            //             foreach (ActiveActions active_action in active_actions) {
+            //                 if (active_action.type_id == action.type_id) {
+            //                     if (active_action.ids == null) {
+            //                         active_action.ids = new List<int>();
+            //                     }
+            //                     active_action.ids.Add(action.txn_id);                                
+            //                 }
+            //             }                        
+            //         }
+            //         else{ // remove
+            //             foreach (ActiveActions active_action in active_actions) {
+            //                 if (active_action.type_id == action.type_id) {
+            //                     if (active_action.ids != null) {
+            //                         active_action.ids.Remove(action.txn_id);
+            //                     }
+            //                     break;
+            //                 }
+            //             }                        
+            //         }
+
+            //     }
+            // }
+
+        } 
 
         historic_metrics.Add(new_node_metrics);
         if (historic_metrics.Count > history_count) {
@@ -146,10 +176,28 @@ public class NetworkHistory
         }        
 
     }
+
+    public List<string> get_raw_metrics() {
+        return raw_metrics;
+    }
+    public List<NodeMetric> get_lastest_metrics() {
+        if (historic_metrics.Count == 0) {
+            Console.WriteLine("No metrics");
+            return new List<NodeMetric>();
+        }
+        return historic_metrics[historic_metrics.Count - 1];
+    }
+
+    public List<NodeTripleCount> get_lastest_triples() {
+        return node_triples;
+    }
     public List<OutMessages> get_out_messages () {
         var out_messages = new List<OutMessages>();
         foreach (var historic_metric in historic_metrics) {
             foreach (var node_metric in historic_metric) {
+                if (node_metric.metrics == null) 
+                    continue;
+                
                 foreach (var metric in node_metric.metrics) {
                     var join_name = node_metric.node_index.ToString() + "-" + metric.idx.ToString();
                     if ( out_messages.Select(x => x.name).Contains(join_name)) {
@@ -172,6 +220,9 @@ public class NetworkHistory
         var count = 0;
         foreach (var historic_metric in historic_metrics) {
             foreach (var m in historic_metric) {
+                if (m.metrics == null) {
+                    continue;
+                }
                 foreach (var metric in m.metrics) 
                 {
                     sum_incoming += metric.inmsg;
@@ -180,6 +231,11 @@ public class NetworkHistory
                 count++;
             }
         }
+        if (count == 0)
+        {
+            return new Metric { inmsg = 0, outmsg = 0 };
+        }
+
         var avg_incoming = sum_incoming / count;
         var avg_outgoing = sum_outgoing / count;
         return new Metric { inmsg = avg_incoming, outmsg = avg_outgoing };
@@ -188,10 +244,8 @@ public class NetworkHistory
     public List<Metric> node_average() {
         var node_metrics = new List<Metric>();
 
-        if (historic_metrics.Count == 0) {
+        if (historic_metrics.Count == 0) 
             return node_metrics;
-        }
-
         
         for (int i =0; i < node_count ;i++) {
             node_metrics.Add(new Metric { inmsg = 0, outmsg = 0 });

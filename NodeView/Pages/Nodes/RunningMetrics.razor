@@ -1,89 +1,42 @@
 @page "/nodes/runningmetrics"
-@inject Blazored.LocalStorage.ILocalStorageService localStorage
-@inject HttpClient Http
-@using System.Net.Http.Json
+@inherits BaseDataCollection
 @using SharedService;
 
 <PageTitle>Raw Metrics</PageTitle>
-
 <h1>RealTime Raw Metrics</h1>
-
 <p>Ouput:</p>
-
 @output
 
-
 @code {
-
     string output = "... gathering metrics ...";
-    private LitContracts.Staking.ContractDefinition.Validator[]? nodes;
     PeriodicTimer periodicTimer = new (TimeSpan.FromMilliseconds(500));
-    protected override async Task OnInitializedAsync(){  
-        
-        try
-        {        
-            var resolver = new Resolver(localStorage);
-            var stakingService = await resolver.GetStakingService();
-            
-            var validators = await stakingService.GetValidatorsStructsInCurrentEpochQueryAsync();   
-            nodes = validators.ReturnValue1.Select(x => new LitContracts.Staking.ContractDefinition.Validator
-                {
-                    Ip = x.Ip,
-                    Ipv6 = x.Ipv6,
-                    NodeAddress = x.NodeAddress,
-                    Port = x.Port,
-                }).ToArray();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e.Message);
-        }
-
-     
-        RunTimer();
+    protected override Task OnInitializedAsync() {        
+       RunTimer();
+       return base.OnInitializedAsync();
     }
 
-    
-
+    public new void Dispose()
+    {        
+        periodicTimer.Dispose();
+        base.Dispose();
+    }
+ 
     async void RunTimer()
     {
         while (await periodicTimer.WaitForNextTickAsync()) { 
-            HttpClient client = new HttpClient();
-            client.Timeout = TimeSpan.FromMilliseconds(1000);
-
-            if(nodes != null) {
-                var combined_output = new System.Text.StringBuilder();
-                List<Task> handles = new List<Task>();
-                foreach ( var node in nodes ) {
-                    var handle = Task.Run(async () => {
-                        try {
-                            var response = await client.GetAsync("http://localhost:" + node.Port.ToString() +  "/web/rt/metrics");
-                            if (response.StatusCode == System.Net.HttpStatusCode.OK) {
-                                var result = await response.Content.ReadAsStringAsync();
-                                combined_output.AppendLine(result);                                                                                
-                                combined_output.AppendLine("**********");
-                            }
-                        } catch (Exception e) {
-                            @output = e.Message;
-                        }
-                    });
-
-                    handles.Add(handle);
-
-                }
-                await Task.WhenAll(handles);
+            var combined_output = new System.Text.StringBuilder();
+            if (base.history != null) {
+            var metrics = base.history.get_raw_metrics();
+                foreach (var metric in metrics) {
+                    combined_output.AppendLine(metric);
+                }                                                                
                 if (combined_output.Length > 0) {
                     output = combined_output.ToString();
-                }
-                StateHasChanged();
+                } 
             }
+            StateHasChanged();
         }    
     }
-
-
-    public void Dispose()
-    {
-        periodicTimer?.Dispose();
-    }
+  
 }
       

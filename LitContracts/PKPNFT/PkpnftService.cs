@@ -16,7 +16,7 @@ namespace LitContracts.PKPNFT
 {
     public partial class PkpnftService
     {
-        public static Task<TransactionReceipt> DeployContractAndWaitForReceiptAsync(Nethereum.Web3.Web3 web3, PkpnftDeployment pkpnftDeployment, CancellationTokenSource? cancellationTokenSource = null)
+        public static Task<TransactionReceipt> DeployContractAndWaitForReceiptAsync(Nethereum.Web3.Web3 web3, PkpnftDeployment pkpnftDeployment, CancellationTokenSource cancellationTokenSource = null)
         {
             return web3.Eth.GetContractDeploymentHandler<PkpnftDeployment>().SendRequestAndWaitForReceiptAsync(pkpnftDeployment, cancellationTokenSource);
         }
@@ -26,7 +26,7 @@ namespace LitContracts.PKPNFT
             return web3.Eth.GetContractDeploymentHandler<PkpnftDeployment>().SendRequestAsync(pkpnftDeployment);
         }
 
-        public static async Task<PkpnftService> DeployContractAndGetServiceAsync(Nethereum.Web3.Web3 web3, PkpnftDeployment pkpnftDeployment, CancellationTokenSource? cancellationTokenSource = null)
+        public static async Task<PkpnftService> DeployContractAndGetServiceAsync(Nethereum.Web3.Web3 web3, PkpnftDeployment pkpnftDeployment, CancellationTokenSource cancellationTokenSource = null)
         {
             var receipt = await DeployContractAndWaitForReceiptAsync(web3, pkpnftDeployment, cancellationTokenSource);
             return new PkpnftService(web3, receipt.ContractAddress);
@@ -53,7 +53,7 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAsync(diamondCutFunction);
         }
 
-        public Task<TransactionReceipt> DiamondCutRequestAndWaitForReceiptAsync(DiamondCutFunction diamondCutFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> DiamondCutRequestAndWaitForReceiptAsync(DiamondCutFunction diamondCutFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(diamondCutFunction, cancellationToken);
         }
@@ -68,7 +68,7 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAsync(diamondCutFunction);
         }
 
-        public Task<TransactionReceipt> DiamondCutRequestAndWaitForReceiptAsync(List<FacetCut> diamondCut, string init, byte[] calldata, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> DiamondCutRequestAndWaitForReceiptAsync(List<FacetCut> diamondCut, string init, byte[] calldata, CancellationTokenSource cancellationToken = null)
         {
             var diamondCutFunction = new DiamondCutFunction();
                 diamondCutFunction.DiamondCut = diamondCut;
@@ -78,13 +78,13 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAndWaitForReceiptAsync(diamondCutFunction, cancellationToken);
         }
 
-        public Task<string> FacetAddressQueryAsync(FacetAddressFunction facetAddressFunction, BlockParameter? blockParameter = null)
+        public Task<string> FacetAddressQueryAsync(FacetAddressFunction facetAddressFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<FacetAddressFunction, string>(facetAddressFunction, blockParameter);
         }
 
         
-        public Task<string> FacetAddressQueryAsync(byte[] functionSelector, BlockParameter? blockParameter = null)
+        public Task<string> FacetAddressQueryAsync(byte[] functionSelector, BlockParameter blockParameter = null)
         {
             var facetAddressFunction = new FacetAddressFunction();
                 facetAddressFunction.FunctionSelector = functionSelector;
@@ -92,24 +92,24 @@ namespace LitContracts.PKPNFT
             return ContractHandler.QueryAsync<FacetAddressFunction, string>(facetAddressFunction, blockParameter);
         }
 
-        public Task<List<string>> FacetAddressesQueryAsync(FacetAddressesFunction facetAddressesFunction, BlockParameter? blockParameter = null)
+        public Task<List<string>> FacetAddressesQueryAsync(FacetAddressesFunction facetAddressesFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<FacetAddressesFunction, List<string>>(facetAddressesFunction, blockParameter);
         }
 
         
-        public Task<List<string>> FacetAddressesQueryAsync(BlockParameter? blockParameter = null)
+        public Task<List<string>> FacetAddressesQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<FacetAddressesFunction, List<string>>(null, blockParameter);
         }
 
-        public Task<List<byte[]>> FacetFunctionSelectorsQueryAsync(FacetFunctionSelectorsFunction facetFunctionSelectorsFunction, BlockParameter? blockParameter = null)
+        public Task<List<byte[]>> FacetFunctionSelectorsQueryAsync(FacetFunctionSelectorsFunction facetFunctionSelectorsFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<FacetFunctionSelectorsFunction, List<byte[]>>(facetFunctionSelectorsFunction, blockParameter);
         }
 
         
-        public Task<List<byte[]>> FacetFunctionSelectorsQueryAsync(string facet, BlockParameter? blockParameter = null)
+        public Task<List<byte[]>> FacetFunctionSelectorsQueryAsync(string facet, BlockParameter blockParameter = null)
         {
             var facetFunctionSelectorsFunction = new FacetFunctionSelectorsFunction();
                 facetFunctionSelectorsFunction.Facet = facet;
@@ -117,23 +117,23 @@ namespace LitContracts.PKPNFT
             return ContractHandler.QueryAsync<FacetFunctionSelectorsFunction, List<byte[]>>(facetFunctionSelectorsFunction, blockParameter);
         }
 
-        public Task<FacetsOutputDTO> FacetsQueryAsync(FacetsFunction facetsFunction, BlockParameter? blockParameter = null)
+        public Task<FacetsOutputDTO> FacetsQueryAsync(FacetsFunction facetsFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryDeserializingToObjectAsync<FacetsFunction, FacetsOutputDTO>(facetsFunction, blockParameter);
         }
 
-        public Task<FacetsOutputDTO> FacetsQueryAsync(BlockParameter? blockParameter = null)
+        public Task<FacetsOutputDTO> FacetsQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryDeserializingToObjectAsync<FacetsFunction, FacetsOutputDTO>(null, blockParameter);
         }
 
-        public Task<string> OwnerQueryAsync(OwnerFunction ownerFunction, BlockParameter? blockParameter = null)
+        public Task<string> OwnerQueryAsync(OwnerFunction ownerFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<OwnerFunction, string>(ownerFunction, blockParameter);
         }
 
         
-        public Task<string> OwnerQueryAsync(BlockParameter? blockParameter = null)
+        public Task<string> OwnerQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<OwnerFunction, string>(null, blockParameter);
         }
@@ -143,7 +143,7 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAsync(transferOwnershipFunction);
         }
 
-        public Task<TransactionReceipt> TransferOwnershipRequestAndWaitForReceiptAsync(TransferOwnershipFunction transferOwnershipFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> TransferOwnershipRequestAndWaitForReceiptAsync(TransferOwnershipFunction transferOwnershipFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(transferOwnershipFunction, cancellationToken);
         }
@@ -156,7 +156,7 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAsync(transferOwnershipFunction);
         }
 
-        public Task<TransactionReceipt> TransferOwnershipRequestAndWaitForReceiptAsync(string newOwner, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> TransferOwnershipRequestAndWaitForReceiptAsync(string newOwner, CancellationTokenSource cancellationToken = null)
         {
             var transferOwnershipFunction = new TransferOwnershipFunction();
                 transferOwnershipFunction.NewOwner = newOwner;
@@ -169,7 +169,7 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAsync(approveFunction);
         }
 
-        public Task<TransactionReceipt> ApproveRequestAndWaitForReceiptAsync(ApproveFunction approveFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> ApproveRequestAndWaitForReceiptAsync(ApproveFunction approveFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(approveFunction, cancellationToken);
         }
@@ -183,7 +183,7 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAsync(approveFunction);
         }
 
-        public Task<TransactionReceipt> ApproveRequestAndWaitForReceiptAsync(string to, BigInteger tokenId, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> ApproveRequestAndWaitForReceiptAsync(string to, BigInteger tokenId, CancellationTokenSource cancellationToken = null)
         {
             var approveFunction = new ApproveFunction();
                 approveFunction.To = to;
@@ -192,13 +192,13 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAndWaitForReceiptAsync(approveFunction, cancellationToken);
         }
 
-        public Task<BigInteger> BalanceOfQueryAsync(BalanceOfFunction balanceOfFunction, BlockParameter? blockParameter = null)
+        public Task<BigInteger> BalanceOfQueryAsync(BalanceOfFunction balanceOfFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<BalanceOfFunction, BigInteger>(balanceOfFunction, blockParameter);
         }
 
         
-        public Task<BigInteger> BalanceOfQueryAsync(string owner, BlockParameter? blockParameter = null)
+        public Task<BigInteger> BalanceOfQueryAsync(string owner, BlockParameter blockParameter = null)
         {
             var balanceOfFunction = new BalanceOfFunction();
                 balanceOfFunction.Owner = owner;
@@ -211,7 +211,7 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAsync(burnFunction);
         }
 
-        public Task<TransactionReceipt> BurnRequestAndWaitForReceiptAsync(BurnFunction burnFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> BurnRequestAndWaitForReceiptAsync(BurnFunction burnFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(burnFunction, cancellationToken);
         }
@@ -224,7 +224,7 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAsync(burnFunction);
         }
 
-        public Task<TransactionReceipt> BurnRequestAndWaitForReceiptAsync(BigInteger tokenId, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> BurnRequestAndWaitForReceiptAsync(BigInteger tokenId, CancellationTokenSource cancellationToken = null)
         {
             var burnFunction = new BurnFunction();
                 burnFunction.TokenId = tokenId;
@@ -237,7 +237,7 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAsync(claimAndMintFunction);
         }
 
-        public Task<TransactionReceipt> ClaimAndMintRequestAndWaitForReceiptAsync(ClaimAndMintFunction claimAndMintFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> ClaimAndMintRequestAndWaitForReceiptAsync(ClaimAndMintFunction claimAndMintFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(claimAndMintFunction, cancellationToken);
         }
@@ -252,7 +252,7 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAsync(claimAndMintFunction);
         }
 
-        public Task<TransactionReceipt> ClaimAndMintRequestAndWaitForReceiptAsync(BigInteger keyType, byte[] derivedKeyId, List<Signature> signatures, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> ClaimAndMintRequestAndWaitForReceiptAsync(BigInteger keyType, byte[] derivedKeyId, List<Signature> signatures, CancellationTokenSource cancellationToken = null)
         {
             var claimAndMintFunction = new ClaimAndMintFunction();
                 claimAndMintFunction.KeyType = keyType;
@@ -262,13 +262,13 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAndWaitForReceiptAsync(claimAndMintFunction, cancellationToken);
         }
 
-        public Task<bool> ExistsQueryAsync(ExistsFunction existsFunction, BlockParameter? blockParameter = null)
+        public Task<bool> ExistsQueryAsync(ExistsFunction existsFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<ExistsFunction, bool>(existsFunction, blockParameter);
         }
 
         
-        public Task<bool> ExistsQueryAsync(BigInteger tokenId, BlockParameter? blockParameter = null)
+        public Task<bool> ExistsQueryAsync(BigInteger tokenId, BlockParameter blockParameter = null)
         {
             var existsFunction = new ExistsFunction();
                 existsFunction.TokenId = tokenId;
@@ -276,24 +276,24 @@ namespace LitContracts.PKPNFT
             return ContractHandler.QueryAsync<ExistsFunction, bool>(existsFunction, blockParameter);
         }
 
-        public Task<string> FreeMintSignerQueryAsync(FreeMintSignerFunction freeMintSignerFunction, BlockParameter? blockParameter = null)
+        public Task<string> FreeMintSignerQueryAsync(FreeMintSignerFunction freeMintSignerFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<FreeMintSignerFunction, string>(freeMintSignerFunction, blockParameter);
         }
 
         
-        public Task<string> FreeMintSignerQueryAsync(BlockParameter? blockParameter = null)
+        public Task<string> FreeMintSignerQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<FreeMintSignerFunction, string>(null, blockParameter);
         }
 
-        public Task<string> GetApprovedQueryAsync(GetApprovedFunction getApprovedFunction, BlockParameter? blockParameter = null)
+        public Task<string> GetApprovedQueryAsync(GetApprovedFunction getApprovedFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetApprovedFunction, string>(getApprovedFunction, blockParameter);
         }
 
         
-        public Task<string> GetApprovedQueryAsync(BigInteger tokenId, BlockParameter? blockParameter = null)
+        public Task<string> GetApprovedQueryAsync(BigInteger tokenId, BlockParameter blockParameter = null)
         {
             var getApprovedFunction = new GetApprovedFunction();
                 getApprovedFunction.TokenId = tokenId;
@@ -301,13 +301,13 @@ namespace LitContracts.PKPNFT
             return ContractHandler.QueryAsync<GetApprovedFunction, string>(getApprovedFunction, blockParameter);
         }
 
-        public Task<string> GetEthAddressQueryAsync(GetEthAddressFunction getEthAddressFunction, BlockParameter? blockParameter = null)
+        public Task<string> GetEthAddressQueryAsync(GetEthAddressFunction getEthAddressFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetEthAddressFunction, string>(getEthAddressFunction, blockParameter);
         }
 
         
-        public Task<string> GetEthAddressQueryAsync(BigInteger tokenId, BlockParameter? blockParameter = null)
+        public Task<string> GetEthAddressQueryAsync(BigInteger tokenId, BlockParameter blockParameter = null)
         {
             var getEthAddressFunction = new GetEthAddressFunction();
                 getEthAddressFunction.TokenId = tokenId;
@@ -315,46 +315,46 @@ namespace LitContracts.PKPNFT
             return ContractHandler.QueryAsync<GetEthAddressFunction, string>(getEthAddressFunction, blockParameter);
         }
 
-        public Task<byte[]> GetNextDerivedKeyIdQueryAsync(GetNextDerivedKeyIdFunction getNextDerivedKeyIdFunction, BlockParameter? blockParameter = null)
+        public Task<byte[]> GetNextDerivedKeyIdQueryAsync(GetNextDerivedKeyIdFunction getNextDerivedKeyIdFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetNextDerivedKeyIdFunction, byte[]>(getNextDerivedKeyIdFunction, blockParameter);
         }
 
         
-        public Task<byte[]> GetNextDerivedKeyIdQueryAsync(BlockParameter? blockParameter = null)
+        public Task<byte[]> GetNextDerivedKeyIdQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetNextDerivedKeyIdFunction, byte[]>(null, blockParameter);
         }
 
-        public Task<string> GetPkpNftMetadataAddressQueryAsync(GetPkpNftMetadataAddressFunction getPkpNftMetadataAddressFunction, BlockParameter? blockParameter = null)
+        public Task<string> GetPkpNftMetadataAddressQueryAsync(GetPkpNftMetadataAddressFunction getPkpNftMetadataAddressFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetPkpNftMetadataAddressFunction, string>(getPkpNftMetadataAddressFunction, blockParameter);
         }
 
         
-        public Task<string> GetPkpNftMetadataAddressQueryAsync(BlockParameter? blockParameter = null)
+        public Task<string> GetPkpNftMetadataAddressQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetPkpNftMetadataAddressFunction, string>(null, blockParameter);
         }
 
-        public Task<string> GetPkpPermissionsAddressQueryAsync(GetPkpPermissionsAddressFunction getPkpPermissionsAddressFunction, BlockParameter? blockParameter = null)
+        public Task<string> GetPkpPermissionsAddressQueryAsync(GetPkpPermissionsAddressFunction getPkpPermissionsAddressFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetPkpPermissionsAddressFunction, string>(getPkpPermissionsAddressFunction, blockParameter);
         }
 
         
-        public Task<string> GetPkpPermissionsAddressQueryAsync(BlockParameter? blockParameter = null)
+        public Task<string> GetPkpPermissionsAddressQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetPkpPermissionsAddressFunction, string>(null, blockParameter);
         }
 
-        public Task<byte[]> GetPubkeyQueryAsync(GetPubkeyFunction getPubkeyFunction, BlockParameter? blockParameter = null)
+        public Task<byte[]> GetPubkeyQueryAsync(GetPubkeyFunction getPubkeyFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetPubkeyFunction, byte[]>(getPubkeyFunction, blockParameter);
         }
 
         
-        public Task<byte[]> GetPubkeyQueryAsync(BigInteger tokenId, BlockParameter? blockParameter = null)
+        public Task<byte[]> GetPubkeyQueryAsync(BigInteger tokenId, BlockParameter blockParameter = null)
         {
             var getPubkeyFunction = new GetPubkeyFunction();
                 getPubkeyFunction.TokenId = tokenId;
@@ -362,24 +362,24 @@ namespace LitContracts.PKPNFT
             return ContractHandler.QueryAsync<GetPubkeyFunction, byte[]>(getPubkeyFunction, blockParameter);
         }
 
-        public Task<string> GetRouterAddressQueryAsync(GetRouterAddressFunction getRouterAddressFunction, BlockParameter? blockParameter = null)
+        public Task<string> GetRouterAddressQueryAsync(GetRouterAddressFunction getRouterAddressFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetRouterAddressFunction, string>(getRouterAddressFunction, blockParameter);
         }
 
         
-        public Task<string> GetRouterAddressQueryAsync(BlockParameter? blockParameter = null)
+        public Task<string> GetRouterAddressQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetRouterAddressFunction, string>(null, blockParameter);
         }
 
-        public Task<string> GetStakingAddressQueryAsync(GetStakingAddressFunction getStakingAddressFunction, BlockParameter? blockParameter = null)
+        public Task<string> GetStakingAddressQueryAsync(GetStakingAddressFunction getStakingAddressFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetStakingAddressFunction, string>(getStakingAddressFunction, blockParameter);
         }
 
         
-        public Task<string> GetStakingAddressQueryAsync(BlockParameter? blockParameter = null)
+        public Task<string> GetStakingAddressQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetStakingAddressFunction, string>(null, blockParameter);
         }
@@ -394,23 +394,23 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAsync<InitializeFunction>();
         }
 
-        public Task<TransactionReceipt> InitializeRequestAndWaitForReceiptAsync(InitializeFunction initializeFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> InitializeRequestAndWaitForReceiptAsync(InitializeFunction initializeFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(initializeFunction, cancellationToken);
         }
 
-        public Task<TransactionReceipt> InitializeRequestAndWaitForReceiptAsync(CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> InitializeRequestAndWaitForReceiptAsync(CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync<InitializeFunction>(null, cancellationToken);
         }
 
-        public Task<bool> IsApprovedForAllQueryAsync(IsApprovedForAllFunction isApprovedForAllFunction, BlockParameter? blockParameter = null)
+        public Task<bool> IsApprovedForAllQueryAsync(IsApprovedForAllFunction isApprovedForAllFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<IsApprovedForAllFunction, bool>(isApprovedForAllFunction, blockParameter);
         }
 
         
-        public Task<bool> IsApprovedForAllQueryAsync(string owner, string @operator, BlockParameter? blockParameter = null)
+        public Task<bool> IsApprovedForAllQueryAsync(string owner, string @operator, BlockParameter blockParameter = null)
         {
             var isApprovedForAllFunction = new IsApprovedForAllFunction();
                 isApprovedForAllFunction.Owner = owner;
@@ -419,13 +419,13 @@ namespace LitContracts.PKPNFT
             return ContractHandler.QueryAsync<IsApprovedForAllFunction, bool>(isApprovedForAllFunction, blockParameter);
         }
 
-        public Task<BigInteger> MintCostQueryAsync(MintCostFunction mintCostFunction, BlockParameter? blockParameter = null)
+        public Task<BigInteger> MintCostQueryAsync(MintCostFunction mintCostFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<MintCostFunction, BigInteger>(mintCostFunction, blockParameter);
         }
 
         
-        public Task<BigInteger> MintCostQueryAsync(BlockParameter? blockParameter = null)
+        public Task<BigInteger> MintCostQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<MintCostFunction, BigInteger>(null, blockParameter);
         }
@@ -435,7 +435,7 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAsync(mintGrantAndBurnNextFunction);
         }
 
-        public Task<TransactionReceipt> MintGrantAndBurnNextRequestAndWaitForReceiptAsync(MintGrantAndBurnNextFunction mintGrantAndBurnNextFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> MintGrantAndBurnNextRequestAndWaitForReceiptAsync(MintGrantAndBurnNextFunction mintGrantAndBurnNextFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(mintGrantAndBurnNextFunction, cancellationToken);
         }
@@ -449,7 +449,7 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAsync(mintGrantAndBurnNextFunction);
         }
 
-        public Task<TransactionReceipt> MintGrantAndBurnNextRequestAndWaitForReceiptAsync(BigInteger keyType, byte[] ipfsCID, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> MintGrantAndBurnNextRequestAndWaitForReceiptAsync(BigInteger keyType, byte[] ipfsCID, CancellationTokenSource cancellationToken = null)
         {
             var mintGrantAndBurnNextFunction = new MintGrantAndBurnNextFunction();
                 mintGrantAndBurnNextFunction.KeyType = keyType;
@@ -463,7 +463,7 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAsync(mintNextFunction);
         }
 
-        public Task<TransactionReceipt> MintNextRequestAndWaitForReceiptAsync(MintNextFunction mintNextFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> MintNextRequestAndWaitForReceiptAsync(MintNextFunction mintNextFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(mintNextFunction, cancellationToken);
         }
@@ -476,7 +476,7 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAsync(mintNextFunction);
         }
 
-        public Task<TransactionReceipt> MintNextRequestAndWaitForReceiptAsync(BigInteger keyType, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> MintNextRequestAndWaitForReceiptAsync(BigInteger keyType, CancellationTokenSource cancellationToken = null)
         {
             var mintNextFunction = new MintNextFunction();
                 mintNextFunction.KeyType = keyType;
@@ -484,24 +484,24 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAndWaitForReceiptAsync(mintNextFunction, cancellationToken);
         }
 
-        public Task<string> NameQueryAsync(NameFunction nameFunction, BlockParameter? blockParameter = null)
+        public Task<string> NameQueryAsync(NameFunction nameFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<NameFunction, string>(nameFunction, blockParameter);
         }
 
         
-        public Task<string> NameQueryAsync(BlockParameter? blockParameter = null)
+        public Task<string> NameQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<NameFunction, string>(null, blockParameter);
         }
 
-        public Task<string> OwnerOfQueryAsync(OwnerOfFunction ownerOfFunction, BlockParameter? blockParameter = null)
+        public Task<string> OwnerOfQueryAsync(OwnerOfFunction ownerOfFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<OwnerOfFunction, string>(ownerOfFunction, blockParameter);
         }
 
         
-        public Task<string> OwnerOfQueryAsync(BigInteger tokenId, BlockParameter? blockParameter = null)
+        public Task<string> OwnerOfQueryAsync(BigInteger tokenId, BlockParameter blockParameter = null)
         {
             var ownerOfFunction = new OwnerOfFunction();
                 ownerOfFunction.TokenId = tokenId;
@@ -509,13 +509,13 @@ namespace LitContracts.PKPNFT
             return ContractHandler.QueryAsync<OwnerOfFunction, string>(ownerOfFunction, blockParameter);
         }
 
-        public Task<byte[]> PrefixedQueryAsync(PrefixedFunction prefixedFunction, BlockParameter? blockParameter = null)
+        public Task<byte[]> PrefixedQueryAsync(PrefixedFunction prefixedFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<PrefixedFunction, byte[]>(prefixedFunction, blockParameter);
         }
 
         
-        public Task<byte[]> PrefixedQueryAsync(byte[] hash, BlockParameter? blockParameter = null)
+        public Task<byte[]> PrefixedQueryAsync(byte[] hash, BlockParameter blockParameter = null)
         {
             var prefixedFunction = new PrefixedFunction();
                 prefixedFunction.Hash = hash;
@@ -523,13 +523,13 @@ namespace LitContracts.PKPNFT
             return ContractHandler.QueryAsync<PrefixedFunction, byte[]>(prefixedFunction, blockParameter);
         }
 
-        public Task<bool> RedeemedFreeMintIdsQueryAsync(RedeemedFreeMintIdsFunction redeemedFreeMintIdsFunction, BlockParameter? blockParameter = null)
+        public Task<bool> RedeemedFreeMintIdsQueryAsync(RedeemedFreeMintIdsFunction redeemedFreeMintIdsFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<RedeemedFreeMintIdsFunction, bool>(redeemedFreeMintIdsFunction, blockParameter);
         }
 
         
-        public Task<bool> RedeemedFreeMintIdsQueryAsync(BigInteger tokenId, BlockParameter? blockParameter = null)
+        public Task<bool> RedeemedFreeMintIdsQueryAsync(BigInteger tokenId, BlockParameter blockParameter = null)
         {
             var redeemedFreeMintIdsFunction = new RedeemedFreeMintIdsFunction();
                 redeemedFreeMintIdsFunction.TokenId = tokenId;
@@ -542,7 +542,7 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAsync(safeTransferFromFunction);
         }
 
-        public Task<TransactionReceipt> SafeTransferFromRequestAndWaitForReceiptAsync(SafeTransferFromFunction safeTransferFromFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> SafeTransferFromRequestAndWaitForReceiptAsync(SafeTransferFromFunction safeTransferFromFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(safeTransferFromFunction, cancellationToken);
         }
@@ -557,7 +557,7 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAsync(safeTransferFromFunction);
         }
 
-        public Task<TransactionReceipt> SafeTransferFromRequestAndWaitForReceiptAsync(string from, string to, BigInteger tokenId, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> SafeTransferFromRequestAndWaitForReceiptAsync(string from, string to, BigInteger tokenId, CancellationTokenSource cancellationToken = null)
         {
             var safeTransferFromFunction = new SafeTransferFromFunction();
                 safeTransferFromFunction.From = from;
@@ -572,7 +572,7 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAsync(safeTransferFrom1Function);
         }
 
-        public Task<TransactionReceipt> SafeTransferFromRequestAndWaitForReceiptAsync(SafeTransferFrom1Function safeTransferFrom1Function, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> SafeTransferFromRequestAndWaitForReceiptAsync(SafeTransferFrom1Function safeTransferFrom1Function, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(safeTransferFrom1Function, cancellationToken);
         }
@@ -588,7 +588,7 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAsync(safeTransferFrom1Function);
         }
 
-        public Task<TransactionReceipt> SafeTransferFromRequestAndWaitForReceiptAsync(string from, string to, BigInteger tokenId, byte[] data, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> SafeTransferFromRequestAndWaitForReceiptAsync(string from, string to, BigInteger tokenId, byte[] data, CancellationTokenSource cancellationToken = null)
         {
             var safeTransferFrom1Function = new SafeTransferFrom1Function();
                 safeTransferFrom1Function.From = from;
@@ -604,7 +604,7 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAsync(setApprovalForAllFunction);
         }
 
-        public Task<TransactionReceipt> SetApprovalForAllRequestAndWaitForReceiptAsync(SetApprovalForAllFunction setApprovalForAllFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> SetApprovalForAllRequestAndWaitForReceiptAsync(SetApprovalForAllFunction setApprovalForAllFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(setApprovalForAllFunction, cancellationToken);
         }
@@ -618,7 +618,7 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAsync(setApprovalForAllFunction);
         }
 
-        public Task<TransactionReceipt> SetApprovalForAllRequestAndWaitForReceiptAsync(string @operator, bool approved, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> SetApprovalForAllRequestAndWaitForReceiptAsync(string @operator, bool approved, CancellationTokenSource cancellationToken = null)
         {
             var setApprovalForAllFunction = new SetApprovalForAllFunction();
                 setApprovalForAllFunction.Operator = @operator;
@@ -632,7 +632,7 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAsync(setContractResolverFunction);
         }
 
-        public Task<TransactionReceipt> SetContractResolverRequestAndWaitForReceiptAsync(SetContractResolverFunction setContractResolverFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> SetContractResolverRequestAndWaitForReceiptAsync(SetContractResolverFunction setContractResolverFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(setContractResolverFunction, cancellationToken);
         }
@@ -645,7 +645,7 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAsync(setContractResolverFunction);
         }
 
-        public Task<TransactionReceipt> SetContractResolverRequestAndWaitForReceiptAsync(string newResolverAddress, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> SetContractResolverRequestAndWaitForReceiptAsync(string newResolverAddress, CancellationTokenSource cancellationToken = null)
         {
             var setContractResolverFunction = new SetContractResolverFunction();
                 setContractResolverFunction.NewResolverAddress = newResolverAddress;
@@ -658,7 +658,7 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAsync(setFreeMintSignerFunction);
         }
 
-        public Task<TransactionReceipt> SetFreeMintSignerRequestAndWaitForReceiptAsync(SetFreeMintSignerFunction setFreeMintSignerFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> SetFreeMintSignerRequestAndWaitForReceiptAsync(SetFreeMintSignerFunction setFreeMintSignerFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(setFreeMintSignerFunction, cancellationToken);
         }
@@ -671,7 +671,7 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAsync(setFreeMintSignerFunction);
         }
 
-        public Task<TransactionReceipt> SetFreeMintSignerRequestAndWaitForReceiptAsync(string newFreeMintSigner, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> SetFreeMintSignerRequestAndWaitForReceiptAsync(string newFreeMintSigner, CancellationTokenSource cancellationToken = null)
         {
             var setFreeMintSignerFunction = new SetFreeMintSignerFunction();
                 setFreeMintSignerFunction.NewFreeMintSigner = newFreeMintSigner;
@@ -684,7 +684,7 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAsync(setMintCostFunction);
         }
 
-        public Task<TransactionReceipt> SetMintCostRequestAndWaitForReceiptAsync(SetMintCostFunction setMintCostFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> SetMintCostRequestAndWaitForReceiptAsync(SetMintCostFunction setMintCostFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(setMintCostFunction, cancellationToken);
         }
@@ -697,7 +697,7 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAsync(setMintCostFunction);
         }
 
-        public Task<TransactionReceipt> SetMintCostRequestAndWaitForReceiptAsync(BigInteger newMintCost, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> SetMintCostRequestAndWaitForReceiptAsync(BigInteger newMintCost, CancellationTokenSource cancellationToken = null)
         {
             var setMintCostFunction = new SetMintCostFunction();
                 setMintCostFunction.NewMintCost = newMintCost;
@@ -705,13 +705,13 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAndWaitForReceiptAsync(setMintCostFunction, cancellationToken);
         }
 
-        public Task<bool> SupportsInterfaceQueryAsync(SupportsInterfaceFunction supportsInterfaceFunction, BlockParameter? blockParameter = null)
+        public Task<bool> SupportsInterfaceQueryAsync(SupportsInterfaceFunction supportsInterfaceFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<SupportsInterfaceFunction, bool>(supportsInterfaceFunction, blockParameter);
         }
 
         
-        public Task<bool> SupportsInterfaceQueryAsync(byte[] interfaceId, BlockParameter? blockParameter = null)
+        public Task<bool> SupportsInterfaceQueryAsync(byte[] interfaceId, BlockParameter blockParameter = null)
         {
             var supportsInterfaceFunction = new SupportsInterfaceFunction();
                 supportsInterfaceFunction.InterfaceId = interfaceId;
@@ -719,24 +719,24 @@ namespace LitContracts.PKPNFT
             return ContractHandler.QueryAsync<SupportsInterfaceFunction, bool>(supportsInterfaceFunction, blockParameter);
         }
 
-        public Task<string> SymbolQueryAsync(SymbolFunction symbolFunction, BlockParameter? blockParameter = null)
+        public Task<string> SymbolQueryAsync(SymbolFunction symbolFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<SymbolFunction, string>(symbolFunction, blockParameter);
         }
 
         
-        public Task<string> SymbolQueryAsync(BlockParameter? blockParameter = null)
+        public Task<string> SymbolQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<SymbolFunction, string>(null, blockParameter);
         }
 
-        public Task<BigInteger> TokenByIndexQueryAsync(TokenByIndexFunction tokenByIndexFunction, BlockParameter? blockParameter = null)
+        public Task<BigInteger> TokenByIndexQueryAsync(TokenByIndexFunction tokenByIndexFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<TokenByIndexFunction, BigInteger>(tokenByIndexFunction, blockParameter);
         }
 
         
-        public Task<BigInteger> TokenByIndexQueryAsync(BigInteger index, BlockParameter? blockParameter = null)
+        public Task<BigInteger> TokenByIndexQueryAsync(BigInteger index, BlockParameter blockParameter = null)
         {
             var tokenByIndexFunction = new TokenByIndexFunction();
                 tokenByIndexFunction.Index = index;
@@ -744,13 +744,13 @@ namespace LitContracts.PKPNFT
             return ContractHandler.QueryAsync<TokenByIndexFunction, BigInteger>(tokenByIndexFunction, blockParameter);
         }
 
-        public Task<BigInteger> TokenOfOwnerByIndexQueryAsync(TokenOfOwnerByIndexFunction tokenOfOwnerByIndexFunction, BlockParameter? blockParameter = null)
+        public Task<BigInteger> TokenOfOwnerByIndexQueryAsync(TokenOfOwnerByIndexFunction tokenOfOwnerByIndexFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<TokenOfOwnerByIndexFunction, BigInteger>(tokenOfOwnerByIndexFunction, blockParameter);
         }
 
         
-        public Task<BigInteger> TokenOfOwnerByIndexQueryAsync(string owner, BigInteger index, BlockParameter? blockParameter = null)
+        public Task<BigInteger> TokenOfOwnerByIndexQueryAsync(string owner, BigInteger index, BlockParameter blockParameter = null)
         {
             var tokenOfOwnerByIndexFunction = new TokenOfOwnerByIndexFunction();
                 tokenOfOwnerByIndexFunction.Owner = owner;
@@ -759,13 +759,13 @@ namespace LitContracts.PKPNFT
             return ContractHandler.QueryAsync<TokenOfOwnerByIndexFunction, BigInteger>(tokenOfOwnerByIndexFunction, blockParameter);
         }
 
-        public Task<string> TokenURIQueryAsync(TokenURIFunction tokenURIFunction, BlockParameter? blockParameter = null)
+        public Task<string> TokenURIQueryAsync(TokenURIFunction tokenURIFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<TokenURIFunction, string>(tokenURIFunction, blockParameter);
         }
 
         
-        public Task<string> TokenURIQueryAsync(BigInteger tokenId, BlockParameter? blockParameter = null)
+        public Task<string> TokenURIQueryAsync(BigInteger tokenId, BlockParameter blockParameter = null)
         {
             var tokenURIFunction = new TokenURIFunction();
                 tokenURIFunction.TokenId = tokenId;
@@ -773,13 +773,13 @@ namespace LitContracts.PKPNFT
             return ContractHandler.QueryAsync<TokenURIFunction, string>(tokenURIFunction, blockParameter);
         }
 
-        public Task<BigInteger> TotalSupplyQueryAsync(TotalSupplyFunction totalSupplyFunction, BlockParameter? blockParameter = null)
+        public Task<BigInteger> TotalSupplyQueryAsync(TotalSupplyFunction totalSupplyFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<TotalSupplyFunction, BigInteger>(totalSupplyFunction, blockParameter);
         }
 
         
-        public Task<BigInteger> TotalSupplyQueryAsync(BlockParameter? blockParameter = null)
+        public Task<BigInteger> TotalSupplyQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<TotalSupplyFunction, BigInteger>(null, blockParameter);
         }
@@ -789,7 +789,7 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAsync(transferFromFunction);
         }
 
-        public Task<TransactionReceipt> TransferFromRequestAndWaitForReceiptAsync(TransferFromFunction transferFromFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> TransferFromRequestAndWaitForReceiptAsync(TransferFromFunction transferFromFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(transferFromFunction, cancellationToken);
         }
@@ -804,7 +804,7 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAsync(transferFromFunction);
         }
 
-        public Task<TransactionReceipt> TransferFromRequestAndWaitForReceiptAsync(string from, string to, BigInteger tokenId, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> TransferFromRequestAndWaitForReceiptAsync(string from, string to, BigInteger tokenId, CancellationTokenSource cancellationToken = null)
         {
             var transferFromFunction = new TransferFromFunction();
                 transferFromFunction.From = from;
@@ -824,12 +824,12 @@ namespace LitContracts.PKPNFT
              return ContractHandler.SendRequestAsync<WithdrawFunction>();
         }
 
-        public Task<TransactionReceipt> WithdrawRequestAndWaitForReceiptAsync(WithdrawFunction withdrawFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> WithdrawRequestAndWaitForReceiptAsync(WithdrawFunction withdrawFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(withdrawFunction, cancellationToken);
         }
 
-        public Task<TransactionReceipt> WithdrawRequestAndWaitForReceiptAsync(CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> WithdrawRequestAndWaitForReceiptAsync(CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync<WithdrawFunction>(null, cancellationToken);
         }

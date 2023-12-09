@@ -38,8 +38,8 @@ Network Configuration
         config.Add(new ConfigItem { name = "KeyTypes", value = String.Join(",", c.KeyTypes.ToArray() ) } );
         config.Add(new ConfigItem { name = "MinimumValidatorCount", value = c.MinimumValidatorCount.ToString() });
         config.Add(new ConfigItem { name = "TokenRewardPerTokenPerEpoch", value = c.TokenRewardPerTokenPerEpoch.ToString() });
-        @* config.Add(new ConfigItem { name = "maxConcurrentRequests", value = c.maxConcurrentRequests.ToString() });
-        config.Add(new ConfigItem { name = "maxTripleCount", value = c.maxTripleCount.ToString() });
-        config.Add(new ConfigItem { name = "minTripleCount", value = c.minTripleCount.ToString() }); *@
+        config.Add(new ConfigItem { name = "maxConcurrentRequests", value = c.MaxConcurrentRequests.ToString() });
+        config.Add(new ConfigItem { name = "maxTripleCount", value = c.MaxTripleCount.ToString() });
+        config.Add(new ConfigItem { name = "minTripleCount", value = c.MinTripleCount.ToString() });
     }
 }

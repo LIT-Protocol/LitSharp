@@ -172,6 +172,15 @@ namespace LitContracts.ContractResolver.ContractDefinition
 
     }
 
+    public partial class AddAdminFunction : AddAdminFunctionBase { }
+
+    [Function("addAdmin")]
+    public class AddAdminFunctionBase : FunctionMessage
+    {
+        [Parameter("address", "newAdmin", 1)]
+        public virtual string NewAdmin { get; set; }
+    }
+
     public partial class AddAllowedEnvFunction : AddAllowedEnvFunctionBase { }
 
     [Function("addAllowedEnv")]
@@ -223,6 +232,15 @@ namespace LitContracts.ContractResolver.ContractDefinition
         public virtual string Account { get; set; }
     }
 
+    public partial class RemoveAdminFunction : RemoveAdminFunctionBase { }
+
+    [Function("removeAdmin")]
+    public class RemoveAdminFunctionBase : FunctionMessage
+    {
+        [Parameter("address", "adminBeingRemoved", 1)]
+        public virtual string AdminBeingRemoved { get; set; }
+    }
+
     public partial class RemoveAllowedEnvFunction : RemoveAllowedEnvFunctionBase { }
 
     [Function("removeAllowedEnv")]
@@ -252,15 +270,6 @@ namespace LitContracts.ContractResolver.ContractDefinition
         public virtual byte[] Role { get; set; }
         [Parameter("address", "account", 2)]
         public virtual string Account { get; set; }
-    }
-
-    public partial class SetAdminFunction : SetAdminFunctionBase { }
-
-    [Function("setAdmin")]
-    public class SetAdminFunctionBase : FunctionMessage
-    {
-        [Parameter("address", "newAdmin", 1)]
-        public virtual string NewAdmin { get; set; }
     }
 
     public partial class SetContractFunction : SetContractFunctionBase { }
@@ -533,6 +542,8 @@ namespace LitContracts.ContractResolver.ContractDefinition
         [Parameter("bytes32", "", 1)]
         public virtual byte[] ReturnValue1 { get; set; }
     }
+
+
 
 
 

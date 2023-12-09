@@ -1,9 +1,8 @@
 @namespace NodeView.Pages
 @page "/nodes/nodemessaging"
-@inject HttpClient Http
-@inject Blazored.LocalStorage.ILocalStorageService localStorage
-@using System.Net.Http.Json
+@inherits BaseDataCollection
 @using SharedService;
+
 <PageTitle>Node Messaging</PageTitle>
 
 <h2>Realtime InterNode Messaging</h2>
@@ -28,83 +27,47 @@
     </RadzenChart>
     @* @System.Text.Json.JsonSerializer.Serialize(  node_averages); *@
 <br>
-    @foreach (ActiveActions actions in history.get_active_actions()) {
+
+    @* @foreach (ActiveActions actions in history.get_active_actions()) {
         @if (actions.ids.Count > 0) {
             <a>Nodes running @actions.type_id</a> <b>: @actions.ids.Count</b> 
             <b> ( @actions.ids.GroupBy(i => i).Count() unique ) </b>
          <br/>
         }
-    }
+    } *@
 
 }
         </div>
     </div>
 </div>
 
-
 @code {
-
     private string output = "... gathering metrics ...";
-    private LitContracts.Staking.ContractDefinition.Validator[]? nodes;
-    PeriodicTimer periodicTimer = new (TimeSpan.FromMilliseconds(500));
-
     private List<Metric>? node_averages;
-    private  NetworkHistory? history;
-    protected override async Task OnInitializedAsync(){  
-        
-        var resolver = new Resolver(localStorage);
-        
-        var stakingService = await resolver.GetStakingService();
-        
-        var validators = await stakingService.GetValidatorsStructsInCurrentEpochQueryAsync();   
-        nodes = validators.ReturnValue1.Select(x => new LitContracts.Staking.ContractDefinition.Validator
-            {
-                Ip = x.Ip,
-                Ipv6 = x.Ipv6,
-                NodeAddress = x.NodeAddress,
-                Port = x.Port,
-            }).ToArray();
+    PeriodicTimer periodicTimer = new (TimeSpan.FromMilliseconds(500));
+    protected override Task OnInitializedAsync() {        
+       RunTimer();
+       return base.OnInitializedAsync();
+    }
 
-        history = new NetworkHistory(5, nodes.Length);
-        RunTimer();
+    public new void Dispose()
+    {        
+        periodicTimer.Dispose();
+        base.Dispose();
     }
 
     async void RunTimer()
-    {
+    {       
         while (await periodicTimer.WaitForNextTickAsync()) { 
-            HttpClient client = new HttpClient();
-            List<NodeMetricRoot> new_metrics = new List<NodeMetricRoot>();
-            if(nodes != null) {
-                foreach ( var node in nodes ) {
-                    await client.GetAsync("http://localhost:" + node.Port.ToString() +  "/web/rt/metrics").ContinueWith(
-                        (requestTask) =>
-                        {
-                            HttpResponseMessage response = requestTask.Result;
-                            response.EnsureSuccessStatusCode();
-                            return response.Content.ReadAsStringAsync();
-                        }
-                    ).Unwrap().ContinueWith(
-                        (readTask) =>
-                        {
-                            var result = readTask.Result;                            
-                            var current_metrics = System.Text.Json.JsonSerializer.Deserialize<NodeMetricRoot>(result);
-                            if (current_metrics != null) {
-                                new_metrics.Add(current_metrics);
-                            }                            
-                        }
-                    );                    
-                }
-            }               
-            history.add(new_metrics);
-            var net_average = history.network_average();
-            node_averages = history.node_average();           
+            if (base.history == null) {
+                continue;
+            }
+            base.history.network_average();
+            node_averages = base.history.node_average();           
             StateHasChanged();           
         }    
     }
 
-    public void Dispose()
-    {
-        periodicTimer.Dispose();
-    }
+
 }
       

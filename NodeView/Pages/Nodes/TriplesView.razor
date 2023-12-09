@@ -1,0 +1,61 @@
+@page "/nodes/triplesview"
+@inherits BaseDataCollection
+@using SharedService;
+
+<PageTitle>Beaver Triples</PageTitle>
+
+<h2>Beaver Triples Supply</h2>
+<NodeView.Components.NetworkState />
+<NodeView.Components.Triples />
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+        @if (triples != null) {
+            <RadzenChart style="height: 400px">                 
+                <RadzenStackedColumnSeries Data="@triples" CategoryProperty="name" Title="Count (Leader)" LineType="LineType.Dashed" ValueProperty="total_count">
+                    <RadzenSeriesDataLabels Visible="true" />
+                </RadzenStackedColumnSeries>                
+                <RadzenValueAxis Min="0" Max="100" Step="25">
+                    <RadzenGridLines Visible="true" />
+                    <RadzenAxisTitle Text="Triples" />
+                </RadzenValueAxis>
+                <RadzenColumnOptions Radius="5" />
+            </RadzenChart>
+        }   
+        </div>
+    </div>
+</div>
+@output
+
+@code {
+    private string output = "... gathering metrics ...";
+    private List<NodeTripleCount>? triples;
+    PeriodicTimer periodicTimer = new (TimeSpan.FromMilliseconds(500));
+    protected override Task OnInitializedAsync() {        
+       RunTimer();
+       return base.OnInitializedAsync();
+    }
+
+    public new void Dispose()
+    {        
+        periodicTimer.Dispose();
+        base.Dispose();
+    }
+
+    async void RunTimer()
+    {       
+        while (await periodicTimer.WaitForNextTickAsync()) { 
+            if (base.history == null) {
+                continue;
+            }
+            triples = base.history.get_lastest_triples();      
+            @* output = System.Text.Json.JsonSerializer.Serialize(triples);      *@
+            output = "";
+            StateHasChanged();           
+        }    
+    }
+
+
+}
+      

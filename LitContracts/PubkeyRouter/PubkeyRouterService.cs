@@ -16,7 +16,7 @@ namespace LitContracts.PubkeyRouter
 {
     public partial class PubkeyRouterService
     {
-        public static Task<TransactionReceipt> DeployContractAndWaitForReceiptAsync(Nethereum.Web3.Web3 web3, PubkeyRouterDeployment pubkeyRouterDeployment, CancellationTokenSource? cancellationTokenSource = null)
+        public static Task<TransactionReceipt> DeployContractAndWaitForReceiptAsync(Nethereum.Web3.Web3 web3, PubkeyRouterDeployment pubkeyRouterDeployment, CancellationTokenSource cancellationTokenSource = null)
         {
             return web3.Eth.GetContractDeploymentHandler<PubkeyRouterDeployment>().SendRequestAndWaitForReceiptAsync(pubkeyRouterDeployment, cancellationTokenSource);
         }
@@ -26,7 +26,7 @@ namespace LitContracts.PubkeyRouter
             return web3.Eth.GetContractDeploymentHandler<PubkeyRouterDeployment>().SendRequestAsync(pubkeyRouterDeployment);
         }
 
-        public static async Task<PubkeyRouterService> DeployContractAndGetServiceAsync(Nethereum.Web3.Web3 web3, PubkeyRouterDeployment pubkeyRouterDeployment, CancellationTokenSource? cancellationTokenSource = null)
+        public static async Task<PubkeyRouterService> DeployContractAndGetServiceAsync(Nethereum.Web3.Web3 web3, PubkeyRouterDeployment pubkeyRouterDeployment, CancellationTokenSource cancellationTokenSource = null)
         {
             var receipt = await DeployContractAndWaitForReceiptAsync(web3, pubkeyRouterDeployment, cancellationTokenSource);
             return new PubkeyRouterService(web3, receipt.ContractAddress);
@@ -53,7 +53,7 @@ namespace LitContracts.PubkeyRouter
              return ContractHandler.SendRequestAsync(diamondCutFunction);
         }
 
-        public Task<TransactionReceipt> DiamondCutRequestAndWaitForReceiptAsync(DiamondCutFunction diamondCutFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> DiamondCutRequestAndWaitForReceiptAsync(DiamondCutFunction diamondCutFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(diamondCutFunction, cancellationToken);
         }
@@ -68,7 +68,7 @@ namespace LitContracts.PubkeyRouter
              return ContractHandler.SendRequestAsync(diamondCutFunction);
         }
 
-        public Task<TransactionReceipt> DiamondCutRequestAndWaitForReceiptAsync(List<FacetCut> diamondCut, string init, byte[] calldata, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> DiamondCutRequestAndWaitForReceiptAsync(List<FacetCut> diamondCut, string init, byte[] calldata, CancellationTokenSource cancellationToken = null)
         {
             var diamondCutFunction = new DiamondCutFunction();
                 diamondCutFunction.DiamondCut = diamondCut;
@@ -78,13 +78,13 @@ namespace LitContracts.PubkeyRouter
              return ContractHandler.SendRequestAndWaitForReceiptAsync(diamondCutFunction, cancellationToken);
         }
 
-        public Task<string> FacetAddressQueryAsync(FacetAddressFunction facetAddressFunction, BlockParameter? blockParameter = null)
+        public Task<string> FacetAddressQueryAsync(FacetAddressFunction facetAddressFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<FacetAddressFunction, string>(facetAddressFunction, blockParameter);
         }
 
         
-        public Task<string> FacetAddressQueryAsync(byte[] functionSelector, BlockParameter? blockParameter = null)
+        public Task<string> FacetAddressQueryAsync(byte[] functionSelector, BlockParameter blockParameter = null)
         {
             var facetAddressFunction = new FacetAddressFunction();
                 facetAddressFunction.FunctionSelector = functionSelector;
@@ -92,24 +92,24 @@ namespace LitContracts.PubkeyRouter
             return ContractHandler.QueryAsync<FacetAddressFunction, string>(facetAddressFunction, blockParameter);
         }
 
-        public Task<List<string>> FacetAddressesQueryAsync(FacetAddressesFunction facetAddressesFunction, BlockParameter? blockParameter = null)
+        public Task<List<string>> FacetAddressesQueryAsync(FacetAddressesFunction facetAddressesFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<FacetAddressesFunction, List<string>>(facetAddressesFunction, blockParameter);
         }
 
         
-        public Task<List<string>> FacetAddressesQueryAsync(BlockParameter? blockParameter = null)
+        public Task<List<string>> FacetAddressesQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<FacetAddressesFunction, List<string>>(null, blockParameter);
         }
 
-        public Task<List<byte[]>> FacetFunctionSelectorsQueryAsync(FacetFunctionSelectorsFunction facetFunctionSelectorsFunction, BlockParameter? blockParameter = null)
+        public Task<List<byte[]>> FacetFunctionSelectorsQueryAsync(FacetFunctionSelectorsFunction facetFunctionSelectorsFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<FacetFunctionSelectorsFunction, List<byte[]>>(facetFunctionSelectorsFunction, blockParameter);
         }
 
         
-        public Task<List<byte[]>> FacetFunctionSelectorsQueryAsync(string facet, BlockParameter? blockParameter = null)
+        public Task<List<byte[]>> FacetFunctionSelectorsQueryAsync(string facet, BlockParameter blockParameter = null)
         {
             var facetFunctionSelectorsFunction = new FacetFunctionSelectorsFunction();
                 facetFunctionSelectorsFunction.Facet = facet;
@@ -117,23 +117,23 @@ namespace LitContracts.PubkeyRouter
             return ContractHandler.QueryAsync<FacetFunctionSelectorsFunction, List<byte[]>>(facetFunctionSelectorsFunction, blockParameter);
         }
 
-        public Task<FacetsOutputDTO> FacetsQueryAsync(FacetsFunction facetsFunction, BlockParameter? blockParameter = null)
+        public Task<FacetsOutputDTO> FacetsQueryAsync(FacetsFunction facetsFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryDeserializingToObjectAsync<FacetsFunction, FacetsOutputDTO>(facetsFunction, blockParameter);
         }
 
-        public Task<FacetsOutputDTO> FacetsQueryAsync(BlockParameter? blockParameter = null)
+        public Task<FacetsOutputDTO> FacetsQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryDeserializingToObjectAsync<FacetsFunction, FacetsOutputDTO>(null, blockParameter);
         }
 
-        public Task<bool> SupportsInterfaceQueryAsync(SupportsInterfaceFunction supportsInterfaceFunction, BlockParameter? blockParameter = null)
+        public Task<bool> SupportsInterfaceQueryAsync(SupportsInterfaceFunction supportsInterfaceFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<SupportsInterfaceFunction, bool>(supportsInterfaceFunction, blockParameter);
         }
 
         
-        public Task<bool> SupportsInterfaceQueryAsync(byte[] interfaceId, BlockParameter? blockParameter = null)
+        public Task<bool> SupportsInterfaceQueryAsync(byte[] interfaceId, BlockParameter blockParameter = null)
         {
             var supportsInterfaceFunction = new SupportsInterfaceFunction();
                 supportsInterfaceFunction.InterfaceId = interfaceId;
@@ -141,13 +141,13 @@ namespace LitContracts.PubkeyRouter
             return ContractHandler.QueryAsync<SupportsInterfaceFunction, bool>(supportsInterfaceFunction, blockParameter);
         }
 
-        public Task<string> OwnerQueryAsync(OwnerFunction ownerFunction, BlockParameter? blockParameter = null)
+        public Task<string> OwnerQueryAsync(OwnerFunction ownerFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<OwnerFunction, string>(ownerFunction, blockParameter);
         }
 
         
-        public Task<string> OwnerQueryAsync(BlockParameter? blockParameter = null)
+        public Task<string> OwnerQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<OwnerFunction, string>(null, blockParameter);
         }
@@ -157,7 +157,7 @@ namespace LitContracts.PubkeyRouter
              return ContractHandler.SendRequestAsync(transferOwnershipFunction);
         }
 
-        public Task<TransactionReceipt> TransferOwnershipRequestAndWaitForReceiptAsync(TransferOwnershipFunction transferOwnershipFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> TransferOwnershipRequestAndWaitForReceiptAsync(TransferOwnershipFunction transferOwnershipFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(transferOwnershipFunction, cancellationToken);
         }
@@ -170,7 +170,7 @@ namespace LitContracts.PubkeyRouter
              return ContractHandler.SendRequestAsync(transferOwnershipFunction);
         }
 
-        public Task<TransactionReceipt> TransferOwnershipRequestAndWaitForReceiptAsync(string newOwner, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> TransferOwnershipRequestAndWaitForReceiptAsync(string newOwner, CancellationTokenSource cancellationToken = null)
         {
             var transferOwnershipFunction = new TransferOwnershipFunction();
                 transferOwnershipFunction.NewOwner = newOwner;
@@ -178,13 +178,13 @@ namespace LitContracts.PubkeyRouter
              return ContractHandler.SendRequestAndWaitForReceiptAsync(transferOwnershipFunction, cancellationToken);
         }
 
-        public Task<bool> CheckNodeSignaturesQueryAsync(CheckNodeSignaturesFunction checkNodeSignaturesFunction, BlockParameter? blockParameter = null)
+        public Task<bool> CheckNodeSignaturesQueryAsync(CheckNodeSignaturesFunction checkNodeSignaturesFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<CheckNodeSignaturesFunction, bool>(checkNodeSignaturesFunction, blockParameter);
         }
 
         
-        public Task<bool> CheckNodeSignaturesQueryAsync(List<Signature> signatures, byte[] signedMessage, string stakingContractAddress, BlockParameter? blockParameter = null)
+        public Task<bool> CheckNodeSignaturesQueryAsync(List<Signature> signatures, byte[] signedMessage, string stakingContractAddress, BlockParameter blockParameter = null)
         {
             var checkNodeSignaturesFunction = new CheckNodeSignaturesFunction();
                 checkNodeSignaturesFunction.Signatures = signatures;
@@ -194,13 +194,13 @@ namespace LitContracts.PubkeyRouter
             return ContractHandler.QueryAsync<CheckNodeSignaturesFunction, bool>(checkNodeSignaturesFunction, blockParameter);
         }
 
-        public Task<string> DeriveEthAddressFromPubkeyQueryAsync(DeriveEthAddressFromPubkeyFunction deriveEthAddressFromPubkeyFunction, BlockParameter? blockParameter = null)
+        public Task<string> DeriveEthAddressFromPubkeyQueryAsync(DeriveEthAddressFromPubkeyFunction deriveEthAddressFromPubkeyFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<DeriveEthAddressFromPubkeyFunction, string>(deriveEthAddressFromPubkeyFunction, blockParameter);
         }
 
         
-        public Task<string> DeriveEthAddressFromPubkeyQueryAsync(byte[] pubkey, BlockParameter? blockParameter = null)
+        public Task<string> DeriveEthAddressFromPubkeyQueryAsync(byte[] pubkey, BlockParameter blockParameter = null)
         {
             var deriveEthAddressFromPubkeyFunction = new DeriveEthAddressFromPubkeyFunction();
                 deriveEthAddressFromPubkeyFunction.Pubkey = pubkey;
@@ -208,13 +208,13 @@ namespace LitContracts.PubkeyRouter
             return ContractHandler.QueryAsync<DeriveEthAddressFromPubkeyFunction, string>(deriveEthAddressFromPubkeyFunction, blockParameter);
         }
 
-        public Task<BigInteger> EthAddressToPkpIdQueryAsync(EthAddressToPkpIdFunction ethAddressToPkpIdFunction, BlockParameter? blockParameter = null)
+        public Task<BigInteger> EthAddressToPkpIdQueryAsync(EthAddressToPkpIdFunction ethAddressToPkpIdFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<EthAddressToPkpIdFunction, BigInteger>(ethAddressToPkpIdFunction, blockParameter);
         }
 
         
-        public Task<BigInteger> EthAddressToPkpIdQueryAsync(string ethAddress, BlockParameter? blockParameter = null)
+        public Task<BigInteger> EthAddressToPkpIdQueryAsync(string ethAddress, BlockParameter blockParameter = null)
         {
             var ethAddressToPkpIdFunction = new EthAddressToPkpIdFunction();
                 ethAddressToPkpIdFunction.EthAddress = ethAddress;
@@ -222,13 +222,13 @@ namespace LitContracts.PubkeyRouter
             return ContractHandler.QueryAsync<EthAddressToPkpIdFunction, BigInteger>(ethAddressToPkpIdFunction, blockParameter);
         }
 
-        public Task<byte[]> GetDerivedPubkeyQueryAsync(GetDerivedPubkeyFunction getDerivedPubkeyFunction, BlockParameter? blockParameter = null)
+        public Task<byte[]> GetDerivedPubkeyQueryAsync(GetDerivedPubkeyFunction getDerivedPubkeyFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetDerivedPubkeyFunction, byte[]>(getDerivedPubkeyFunction, blockParameter);
         }
 
         
-        public Task<byte[]> GetDerivedPubkeyQueryAsync(string stakingContract, byte[] derivedKeyId, BlockParameter? blockParameter = null)
+        public Task<byte[]> GetDerivedPubkeyQueryAsync(string stakingContract, byte[] derivedKeyId, BlockParameter blockParameter = null)
         {
             var getDerivedPubkeyFunction = new GetDerivedPubkeyFunction();
                 getDerivedPubkeyFunction.StakingContract = stakingContract;
@@ -237,13 +237,13 @@ namespace LitContracts.PubkeyRouter
             return ContractHandler.QueryAsync<GetDerivedPubkeyFunction, byte[]>(getDerivedPubkeyFunction, blockParameter);
         }
 
-        public Task<string> GetEthAddressQueryAsync(GetEthAddressFunction getEthAddressFunction, BlockParameter? blockParameter = null)
+        public Task<string> GetEthAddressQueryAsync(GetEthAddressFunction getEthAddressFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetEthAddressFunction, string>(getEthAddressFunction, blockParameter);
         }
 
         
-        public Task<string> GetEthAddressQueryAsync(BigInteger tokenId, BlockParameter? blockParameter = null)
+        public Task<string> GetEthAddressQueryAsync(BigInteger tokenId, BlockParameter blockParameter = null)
         {
             var getEthAddressFunction = new GetEthAddressFunction();
                 getEthAddressFunction.TokenId = tokenId;
@@ -251,24 +251,24 @@ namespace LitContracts.PubkeyRouter
             return ContractHandler.QueryAsync<GetEthAddressFunction, string>(getEthAddressFunction, blockParameter);
         }
 
-        public Task<string> GetPkpNftAddressQueryAsync(GetPkpNftAddressFunction getPkpNftAddressFunction, BlockParameter? blockParameter = null)
+        public Task<string> GetPkpNftAddressQueryAsync(GetPkpNftAddressFunction getPkpNftAddressFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetPkpNftAddressFunction, string>(getPkpNftAddressFunction, blockParameter);
         }
 
         
-        public Task<string> GetPkpNftAddressQueryAsync(BlockParameter? blockParameter = null)
+        public Task<string> GetPkpNftAddressQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetPkpNftAddressFunction, string>(null, blockParameter);
         }
 
-        public Task<byte[]> GetPubkeyQueryAsync(GetPubkeyFunction getPubkeyFunction, BlockParameter? blockParameter = null)
+        public Task<byte[]> GetPubkeyQueryAsync(GetPubkeyFunction getPubkeyFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetPubkeyFunction, byte[]>(getPubkeyFunction, blockParameter);
         }
 
         
-        public Task<byte[]> GetPubkeyQueryAsync(BigInteger tokenId, BlockParameter? blockParameter = null)
+        public Task<byte[]> GetPubkeyQueryAsync(BigInteger tokenId, BlockParameter blockParameter = null)
         {
             var getPubkeyFunction = new GetPubkeyFunction();
                 getPubkeyFunction.TokenId = tokenId;
@@ -276,12 +276,12 @@ namespace LitContracts.PubkeyRouter
             return ContractHandler.QueryAsync<GetPubkeyFunction, byte[]>(getPubkeyFunction, blockParameter);
         }
 
-        public Task<GetRootKeysOutputDTO> GetRootKeysQueryAsync(GetRootKeysFunction getRootKeysFunction, BlockParameter? blockParameter = null)
+        public Task<GetRootKeysOutputDTO> GetRootKeysQueryAsync(GetRootKeysFunction getRootKeysFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryDeserializingToObjectAsync<GetRootKeysFunction, GetRootKeysOutputDTO>(getRootKeysFunction, blockParameter);
         }
 
-        public Task<GetRootKeysOutputDTO> GetRootKeysQueryAsync(string stakingContract, BlockParameter? blockParameter = null)
+        public Task<GetRootKeysOutputDTO> GetRootKeysQueryAsync(string stakingContract, BlockParameter blockParameter = null)
         {
             var getRootKeysFunction = new GetRootKeysFunction();
                 getRootKeysFunction.StakingContract = stakingContract;
@@ -289,12 +289,12 @@ namespace LitContracts.PubkeyRouter
             return ContractHandler.QueryDeserializingToObjectAsync<GetRootKeysFunction, GetRootKeysOutputDTO>(getRootKeysFunction, blockParameter);
         }
 
-        public Task<GetRoutingDataOutputDTO> GetRoutingDataQueryAsync(GetRoutingDataFunction getRoutingDataFunction, BlockParameter? blockParameter = null)
+        public Task<GetRoutingDataOutputDTO> GetRoutingDataQueryAsync(GetRoutingDataFunction getRoutingDataFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryDeserializingToObjectAsync<GetRoutingDataFunction, GetRoutingDataOutputDTO>(getRoutingDataFunction, blockParameter);
         }
 
-        public Task<GetRoutingDataOutputDTO> GetRoutingDataQueryAsync(BigInteger tokenId, BlockParameter? blockParameter = null)
+        public Task<GetRoutingDataOutputDTO> GetRoutingDataQueryAsync(BigInteger tokenId, BlockParameter blockParameter = null)
         {
             var getRoutingDataFunction = new GetRoutingDataFunction();
                 getRoutingDataFunction.TokenId = tokenId;
@@ -302,13 +302,13 @@ namespace LitContracts.PubkeyRouter
             return ContractHandler.QueryDeserializingToObjectAsync<GetRoutingDataFunction, GetRoutingDataOutputDTO>(getRoutingDataFunction, blockParameter);
         }
 
-        public Task<bool> IsRoutedQueryAsync(IsRoutedFunction isRoutedFunction, BlockParameter? blockParameter = null)
+        public Task<bool> IsRoutedQueryAsync(IsRoutedFunction isRoutedFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<IsRoutedFunction, bool>(isRoutedFunction, blockParameter);
         }
 
         
-        public Task<bool> IsRoutedQueryAsync(BigInteger tokenId, BlockParameter? blockParameter = null)
+        public Task<bool> IsRoutedQueryAsync(BigInteger tokenId, BlockParameter blockParameter = null)
         {
             var isRoutedFunction = new IsRoutedFunction();
                 isRoutedFunction.TokenId = tokenId;
@@ -316,12 +316,12 @@ namespace LitContracts.PubkeyRouter
             return ContractHandler.QueryAsync<IsRoutedFunction, bool>(isRoutedFunction, blockParameter);
         }
 
-        public Task<PubkeysOutputDTO> PubkeysQueryAsync(PubkeysFunction pubkeysFunction, BlockParameter? blockParameter = null)
+        public Task<PubkeysOutputDTO> PubkeysQueryAsync(PubkeysFunction pubkeysFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryDeserializingToObjectAsync<PubkeysFunction, PubkeysOutputDTO>(pubkeysFunction, blockParameter);
         }
 
-        public Task<PubkeysOutputDTO> PubkeysQueryAsync(BigInteger tokenId, BlockParameter? blockParameter = null)
+        public Task<PubkeysOutputDTO> PubkeysQueryAsync(BigInteger tokenId, BlockParameter blockParameter = null)
         {
             var pubkeysFunction = new PubkeysFunction();
                 pubkeysFunction.TokenId = tokenId;
@@ -334,7 +334,7 @@ namespace LitContracts.PubkeyRouter
              return ContractHandler.SendRequestAsync(setContractResolverFunction);
         }
 
-        public Task<TransactionReceipt> SetContractResolverRequestAndWaitForReceiptAsync(SetContractResolverFunction setContractResolverFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> SetContractResolverRequestAndWaitForReceiptAsync(SetContractResolverFunction setContractResolverFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(setContractResolverFunction, cancellationToken);
         }
@@ -347,7 +347,7 @@ namespace LitContracts.PubkeyRouter
              return ContractHandler.SendRequestAsync(setContractResolverFunction);
         }
 
-        public Task<TransactionReceipt> SetContractResolverRequestAndWaitForReceiptAsync(string newResolverAddress, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> SetContractResolverRequestAndWaitForReceiptAsync(string newResolverAddress, CancellationTokenSource cancellationToken = null)
         {
             var setContractResolverFunction = new SetContractResolverFunction();
                 setContractResolverFunction.NewResolverAddress = newResolverAddress;
@@ -360,7 +360,7 @@ namespace LitContracts.PubkeyRouter
              return ContractHandler.SendRequestAsync(setRoutingDataFunction);
         }
 
-        public Task<TransactionReceipt> SetRoutingDataRequestAndWaitForReceiptAsync(SetRoutingDataFunction setRoutingDataFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> SetRoutingDataRequestAndWaitForReceiptAsync(SetRoutingDataFunction setRoutingDataFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(setRoutingDataFunction, cancellationToken);
         }
@@ -377,7 +377,7 @@ namespace LitContracts.PubkeyRouter
              return ContractHandler.SendRequestAsync(setRoutingDataFunction);
         }
 
-        public Task<TransactionReceipt> SetRoutingDataRequestAndWaitForReceiptAsync(BigInteger tokenId, byte[] pubkey, string stakingContractAddress, BigInteger keyType, byte[] derivedKeyId, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> SetRoutingDataRequestAndWaitForReceiptAsync(BigInteger tokenId, byte[] pubkey, string stakingContractAddress, BigInteger keyType, byte[] derivedKeyId, CancellationTokenSource cancellationToken = null)
         {
             var setRoutingDataFunction = new SetRoutingDataFunction();
                 setRoutingDataFunction.TokenId = tokenId;
@@ -394,7 +394,7 @@ namespace LitContracts.PubkeyRouter
              return ContractHandler.SendRequestAsync(setRoutingDataAsAdminFunction);
         }
 
-        public Task<TransactionReceipt> SetRoutingDataAsAdminRequestAndWaitForReceiptAsync(SetRoutingDataAsAdminFunction setRoutingDataAsAdminFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> SetRoutingDataAsAdminRequestAndWaitForReceiptAsync(SetRoutingDataAsAdminFunction setRoutingDataAsAdminFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(setRoutingDataAsAdminFunction, cancellationToken);
         }
@@ -411,7 +411,7 @@ namespace LitContracts.PubkeyRouter
              return ContractHandler.SendRequestAsync(setRoutingDataAsAdminFunction);
         }
 
-        public Task<TransactionReceipt> SetRoutingDataAsAdminRequestAndWaitForReceiptAsync(BigInteger tokenId, byte[] pubkey, string stakingContract, BigInteger keyType, byte[] derivedKeyId, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> SetRoutingDataAsAdminRequestAndWaitForReceiptAsync(BigInteger tokenId, byte[] pubkey, string stakingContract, BigInteger keyType, byte[] derivedKeyId, CancellationTokenSource cancellationToken = null)
         {
             var setRoutingDataAsAdminFunction = new SetRoutingDataAsAdminFunction();
                 setRoutingDataAsAdminFunction.TokenId = tokenId;
@@ -428,7 +428,7 @@ namespace LitContracts.PubkeyRouter
              return ContractHandler.SendRequestAsync(voteForRootKeysFunction);
         }
 
-        public Task<TransactionReceipt> VoteForRootKeysRequestAndWaitForReceiptAsync(VoteForRootKeysFunction voteForRootKeysFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> VoteForRootKeysRequestAndWaitForReceiptAsync(VoteForRootKeysFunction voteForRootKeysFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(voteForRootKeysFunction, cancellationToken);
         }
@@ -442,7 +442,7 @@ namespace LitContracts.PubkeyRouter
              return ContractHandler.SendRequestAsync(voteForRootKeysFunction);
         }
 
-        public Task<TransactionReceipt> VoteForRootKeysRequestAndWaitForReceiptAsync(string stakingContractAddress, List<RootKey> newRootKeys, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> VoteForRootKeysRequestAndWaitForReceiptAsync(string stakingContractAddress, List<RootKey> newRootKeys, CancellationTokenSource cancellationToken = null)
         {
             var voteForRootKeysFunction = new VoteForRootKeysFunction();
                 voteForRootKeysFunction.StakingContractAddress = stakingContractAddress;

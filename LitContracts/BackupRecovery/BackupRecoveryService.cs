@@ -10,13 +10,13 @@ using Nethereum.Contracts.CQS;
 using Nethereum.Contracts.ContractHandlers;
 using Nethereum.Contracts;
 using System.Threading;
-using LitContracts.BackupRecovery.ContractDefinition;
+using LitSharp.Contracts.BackupRecovery.ContractDefinition;
 
-namespace LitContracts.BackupRecovery
+namespace LitSharp.Contracts.BackupRecovery
 {
     public partial class BackupRecoveryService
     {
-        public static Task<TransactionReceipt> DeployContractAndWaitForReceiptAsync(Nethereum.Web3.Web3 web3, BackupRecoveryDeployment backupRecoveryDeployment, CancellationTokenSource? cancellationTokenSource = null)
+        public static Task<TransactionReceipt> DeployContractAndWaitForReceiptAsync(Nethereum.Web3.Web3 web3, BackupRecoveryDeployment backupRecoveryDeployment, CancellationTokenSource cancellationTokenSource = null)
         {
             return web3.Eth.GetContractDeploymentHandler<BackupRecoveryDeployment>().SendRequestAndWaitForReceiptAsync(backupRecoveryDeployment, cancellationTokenSource);
         }
@@ -26,7 +26,7 @@ namespace LitContracts.BackupRecovery
             return web3.Eth.GetContractDeploymentHandler<BackupRecoveryDeployment>().SendRequestAsync(backupRecoveryDeployment);
         }
 
-        public static async Task<BackupRecoveryService> DeployContractAndGetServiceAsync(Nethereum.Web3.Web3 web3, BackupRecoveryDeployment backupRecoveryDeployment, CancellationTokenSource? cancellationTokenSource = null)
+        public static async Task<BackupRecoveryService> DeployContractAndGetServiceAsync(Nethereum.Web3.Web3 web3, BackupRecoveryDeployment backupRecoveryDeployment, CancellationTokenSource cancellationTokenSource = null)
         {
             var receipt = await DeployContractAndWaitForReceiptAsync(web3, backupRecoveryDeployment, cancellationTokenSource);
             return new BackupRecoveryService(web3, receipt.ContractAddress);
@@ -53,7 +53,7 @@ namespace LitContracts.BackupRecovery
              return ContractHandler.SendRequestAsync(diamondCutFunction);
         }
 
-        public Task<TransactionReceipt> DiamondCutRequestAndWaitForReceiptAsync(DiamondCutFunction diamondCutFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> DiamondCutRequestAndWaitForReceiptAsync(DiamondCutFunction diamondCutFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(diamondCutFunction, cancellationToken);
         }
@@ -68,7 +68,7 @@ namespace LitContracts.BackupRecovery
              return ContractHandler.SendRequestAsync(diamondCutFunction);
         }
 
-        public Task<TransactionReceipt> DiamondCutRequestAndWaitForReceiptAsync(List<FacetCut> diamondCut, string init, byte[] calldata, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> DiamondCutRequestAndWaitForReceiptAsync(List<FacetCut> diamondCut, string init, byte[] calldata, CancellationTokenSource cancellationToken = null)
         {
             var diamondCutFunction = new DiamondCutFunction();
                 diamondCutFunction.DiamondCut = diamondCut;
@@ -78,13 +78,13 @@ namespace LitContracts.BackupRecovery
              return ContractHandler.SendRequestAndWaitForReceiptAsync(diamondCutFunction, cancellationToken);
         }
 
-        public Task<string> FacetAddressQueryAsync(FacetAddressFunction facetAddressFunction, BlockParameter? blockParameter = null)
+        public Task<string> FacetAddressQueryAsync(FacetAddressFunction facetAddressFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<FacetAddressFunction, string>(facetAddressFunction, blockParameter);
         }
 
         
-        public Task<string> FacetAddressQueryAsync(byte[] functionSelector, BlockParameter? blockParameter = null)
+        public Task<string> FacetAddressQueryAsync(byte[] functionSelector, BlockParameter blockParameter = null)
         {
             var facetAddressFunction = new FacetAddressFunction();
                 facetAddressFunction.FunctionSelector = functionSelector;
@@ -92,24 +92,24 @@ namespace LitContracts.BackupRecovery
             return ContractHandler.QueryAsync<FacetAddressFunction, string>(facetAddressFunction, blockParameter);
         }
 
-        public Task<List<string>> FacetAddressesQueryAsync(FacetAddressesFunction facetAddressesFunction, BlockParameter? blockParameter = null)
+        public Task<List<string>> FacetAddressesQueryAsync(FacetAddressesFunction facetAddressesFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<FacetAddressesFunction, List<string>>(facetAddressesFunction, blockParameter);
         }
 
         
-        public Task<List<string>> FacetAddressesQueryAsync(BlockParameter? blockParameter = null)
+        public Task<List<string>> FacetAddressesQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<FacetAddressesFunction, List<string>>(null, blockParameter);
         }
 
-        public Task<List<byte[]>> FacetFunctionSelectorsQueryAsync(FacetFunctionSelectorsFunction facetFunctionSelectorsFunction, BlockParameter? blockParameter = null)
+        public Task<List<byte[]>> FacetFunctionSelectorsQueryAsync(FacetFunctionSelectorsFunction facetFunctionSelectorsFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<FacetFunctionSelectorsFunction, List<byte[]>>(facetFunctionSelectorsFunction, blockParameter);
         }
 
         
-        public Task<List<byte[]>> FacetFunctionSelectorsQueryAsync(string facet, BlockParameter? blockParameter = null)
+        public Task<List<byte[]>> FacetFunctionSelectorsQueryAsync(string facet, BlockParameter blockParameter = null)
         {
             var facetFunctionSelectorsFunction = new FacetFunctionSelectorsFunction();
                 facetFunctionSelectorsFunction.Facet = facet;
@@ -117,23 +117,23 @@ namespace LitContracts.BackupRecovery
             return ContractHandler.QueryAsync<FacetFunctionSelectorsFunction, List<byte[]>>(facetFunctionSelectorsFunction, blockParameter);
         }
 
-        public Task<FacetsOutputDTO> FacetsQueryAsync(FacetsFunction facetsFunction, BlockParameter? blockParameter = null)
+        public Task<FacetsOutputDTO> FacetsQueryAsync(FacetsFunction facetsFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryDeserializingToObjectAsync<FacetsFunction, FacetsOutputDTO>(facetsFunction, blockParameter);
         }
 
-        public Task<FacetsOutputDTO> FacetsQueryAsync(BlockParameter? blockParameter = null)
+        public Task<FacetsOutputDTO> FacetsQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryDeserializingToObjectAsync<FacetsFunction, FacetsOutputDTO>(null, blockParameter);
         }
 
-        public Task<string> OwnerQueryAsync(OwnerFunction ownerFunction, BlockParameter? blockParameter = null)
+        public Task<string> OwnerQueryAsync(OwnerFunction ownerFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<OwnerFunction, string>(ownerFunction, blockParameter);
         }
 
         
-        public Task<string> OwnerQueryAsync(BlockParameter? blockParameter = null)
+        public Task<string> OwnerQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<OwnerFunction, string>(null, blockParameter);
         }
@@ -143,7 +143,7 @@ namespace LitContracts.BackupRecovery
              return ContractHandler.SendRequestAsync(transferOwnershipFunction);
         }
 
-        public Task<TransactionReceipt> TransferOwnershipRequestAndWaitForReceiptAsync(TransferOwnershipFunction transferOwnershipFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> TransferOwnershipRequestAndWaitForReceiptAsync(TransferOwnershipFunction transferOwnershipFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(transferOwnershipFunction, cancellationToken);
         }
@@ -156,7 +156,7 @@ namespace LitContracts.BackupRecovery
              return ContractHandler.SendRequestAsync(transferOwnershipFunction);
         }
 
-        public Task<TransactionReceipt> TransferOwnershipRequestAndWaitForReceiptAsync(string newOwner, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> TransferOwnershipRequestAndWaitForReceiptAsync(string newOwner, CancellationTokenSource cancellationToken = null)
         {
             var transferOwnershipFunction = new TransferOwnershipFunction();
                 transferOwnershipFunction.NewOwner = newOwner;
@@ -164,24 +164,35 @@ namespace LitContracts.BackupRecovery
              return ContractHandler.SendRequestAndWaitForReceiptAsync(transferOwnershipFunction, cancellationToken);
         }
 
-        public Task<BigInteger> CalculatePartyThresholdQueryAsync(CalculatePartyThresholdFunction calculatePartyThresholdFunction, BlockParameter? blockParameter = null)
+        public Task<string> BaseEcOpAddressQueryAsync(BaseEcOpAddressFunction baseEcOpAddressFunction, BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<BaseEcOpAddressFunction, string>(baseEcOpAddressFunction, blockParameter);
+        }
+
+        
+        public Task<string> BaseEcOpAddressQueryAsync(BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<BaseEcOpAddressFunction, string>(null, blockParameter);
+        }
+
+        public Task<BigInteger> CalculatePartyThresholdQueryAsync(CalculatePartyThresholdFunction calculatePartyThresholdFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<CalculatePartyThresholdFunction, BigInteger>(calculatePartyThresholdFunction, blockParameter);
         }
 
         
-        public Task<BigInteger> CalculatePartyThresholdQueryAsync(BlockParameter? blockParameter = null)
+        public Task<BigInteger> CalculatePartyThresholdQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<CalculatePartyThresholdFunction, BigInteger>(null, blockParameter);
         }
 
-        public Task<bool> CheckValidatorSetForAddressQueryAsync(CheckValidatorSetForAddressFunction checkValidatorSetForAddressFunction, BlockParameter? blockParameter = null)
+        public Task<bool> CheckValidatorSetForAddressQueryAsync(CheckValidatorSetForAddressFunction checkValidatorSetForAddressFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<CheckValidatorSetForAddressFunction, bool>(checkValidatorSetForAddressFunction, blockParameter);
         }
 
         
-        public Task<bool> CheckValidatorSetForAddressQueryAsync(string sender, BlockParameter? blockParameter = null)
+        public Task<bool> CheckValidatorSetForAddressQueryAsync(string sender, BlockParameter blockParameter = null)
         {
             var checkValidatorSetForAddressFunction = new CheckValidatorSetForAddressFunction();
                 checkValidatorSetForAddressFunction.Sender = sender;
@@ -189,99 +200,109 @@ namespace LitContracts.BackupRecovery
             return ContractHandler.QueryAsync<CheckValidatorSetForAddressFunction, bool>(checkValidatorSetForAddressFunction, blockParameter);
         }
 
-        public Task<string> GetStakingViewFacetQueryAsync(GetStakingViewFacetFunction getStakingViewFacetFunction, BlockParameter? blockParameter = null)
+        public Task<string> GetStakingViewFacetQueryAsync(GetStakingViewFacetFunction getStakingViewFacetFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetStakingViewFacetFunction, string>(getStakingViewFacetFunction, blockParameter);
         }
 
         
-        public Task<string> GetStakingViewFacetQueryAsync(BlockParameter? blockParameter = null)
+        public Task<string> GetStakingViewFacetQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetStakingViewFacetFunction, string>(null, blockParameter);
         }
 
-        public Task<bool> AllBackupMembersMappedQueryAsync(AllBackupMembersMappedFunction allBackupMembersMappedFunction, BlockParameter? blockParameter = null)
+        public Task<bool> AllBackupMembersMappedQueryAsync(AllBackupMembersMappedFunction allBackupMembersMappedFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<AllBackupMembersMappedFunction, bool>(allBackupMembersMappedFunction, blockParameter);
         }
 
         
-        public Task<bool> AllBackupMembersMappedQueryAsync(BlockParameter? blockParameter = null)
+        public Task<bool> AllBackupMembersMappedQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<AllBackupMembersMappedFunction, bool>(null, blockParameter);
         }
 
-        public Task<GetBackupPartyStateOutputDTO> GetBackupPartyStateQueryAsync(GetBackupPartyStateFunction getBackupPartyStateFunction, BlockParameter? blockParameter = null)
+        public Task<GetBackupPartyStateOutputDTO> GetBackupPartyStateQueryAsync(GetBackupPartyStateFunction getBackupPartyStateFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryDeserializingToObjectAsync<GetBackupPartyStateFunction, GetBackupPartyStateOutputDTO>(getBackupPartyStateFunction, blockParameter);
         }
 
-        public Task<GetBackupPartyStateOutputDTO> GetBackupPartyStateQueryAsync(BlockParameter? blockParameter = null)
+        public Task<GetBackupPartyStateOutputDTO> GetBackupPartyStateQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryDeserializingToObjectAsync<GetBackupPartyStateFunction, GetBackupPartyStateOutputDTO>(null, blockParameter);
         }
 
-        public Task<BigInteger> GetDecryptionThresholdQueryAsync(GetDecryptionThresholdFunction getDecryptionThresholdFunction, BlockParameter? blockParameter = null)
+        public Task<BigInteger> GetDecryptionThresholdQueryAsync(GetDecryptionThresholdFunction getDecryptionThresholdFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetDecryptionThresholdFunction, BigInteger>(getDecryptionThresholdFunction, blockParameter);
         }
 
         
-        public Task<BigInteger> GetDecryptionThresholdQueryAsync(BlockParameter? blockParameter = null)
+        public Task<BigInteger> GetDecryptionThresholdQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetDecryptionThresholdFunction, BigInteger>(null, blockParameter);
         }
 
-        public Task<string> GetMemberForNodeDkgQueryAsync(GetMemberForNodeDkgFunction getMemberForNodeDkgFunction, BlockParameter? blockParameter = null)
+        public Task<string> GetMemberForNodeDkgQueryAsync(GetMemberForNodeDkgFunction getMemberForNodeDkgFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetMemberForNodeDkgFunction, string>(getMemberForNodeDkgFunction, blockParameter);
         }
 
         
-        public Task<string> GetMemberForNodeDkgQueryAsync(BlockParameter? blockParameter = null)
+        public Task<string> GetMemberForNodeDkgQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetMemberForNodeDkgFunction, string>(null, blockParameter);
         }
 
-        public Task<List<string>> GetNextBackupPartyMembersQueryAsync(GetNextBackupPartyMembersFunction getNextBackupPartyMembersFunction, BlockParameter? blockParameter = null)
+        public Task<List<string>> GetNextBackupPartyMembersQueryAsync(GetNextBackupPartyMembersFunction getNextBackupPartyMembersFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetNextBackupPartyMembersFunction, List<string>>(getNextBackupPartyMembersFunction, blockParameter);
         }
 
         
-        public Task<List<string>> GetNextBackupPartyMembersQueryAsync(BlockParameter? blockParameter = null)
+        public Task<List<string>> GetNextBackupPartyMembersQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetNextBackupPartyMembersFunction, List<string>>(null, blockParameter);
         }
 
-        public Task<List<string>> GetNodeAddressesForDkgQueryAsync(GetNodeAddressesForDkgFunction getNodeAddressesForDkgFunction, BlockParameter? blockParameter = null)
+        public Task<GetNextBackupStateOutputDTO> GetNextBackupStateQueryAsync(GetNextBackupStateFunction getNextBackupStateFunction, BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryDeserializingToObjectAsync<GetNextBackupStateFunction, GetNextBackupStateOutputDTO>(getNextBackupStateFunction, blockParameter);
+        }
+
+        public Task<GetNextBackupStateOutputDTO> GetNextBackupStateQueryAsync(BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryDeserializingToObjectAsync<GetNextBackupStateFunction, GetNextBackupStateOutputDTO>(null, blockParameter);
+        }
+
+        public Task<List<string>> GetNodeAddressesForDkgQueryAsync(GetNodeAddressesForDkgFunction getNodeAddressesForDkgFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetNodeAddressesForDkgFunction, List<string>>(getNodeAddressesForDkgFunction, blockParameter);
         }
 
         
-        public Task<List<string>> GetNodeAddressesForDkgQueryAsync(BlockParameter? blockParameter = null)
+        public Task<List<string>> GetNodeAddressesForDkgQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetNodeAddressesForDkgFunction, List<string>>(null, blockParameter);
         }
 
-        public Task<string> GetNodeForBackupMemberQueryAsync(GetNodeForBackupMemberFunction getNodeForBackupMemberFunction, BlockParameter? blockParameter = null)
+        public Task<string> GetNodeForBackupMemberQueryAsync(GetNodeForBackupMemberFunction getNodeForBackupMemberFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetNodeForBackupMemberFunction, string>(getNodeForBackupMemberFunction, blockParameter);
         }
 
         
-        public Task<string> GetNodeForBackupMemberQueryAsync(BlockParameter? blockParameter = null)
+        public Task<string> GetNodeForBackupMemberQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetNodeForBackupMemberFunction, string>(null, blockParameter);
         }
 
-        public Task<GetPastBackupStateOutputDTO> GetPastBackupStateQueryAsync(GetPastBackupStateFunction getPastBackupStateFunction, BlockParameter? blockParameter = null)
+        public Task<GetPastBackupStateOutputDTO> GetPastBackupStateQueryAsync(GetPastBackupStateFunction getPastBackupStateFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryDeserializingToObjectAsync<GetPastBackupStateFunction, GetPastBackupStateOutputDTO>(getPastBackupStateFunction, blockParameter);
         }
 
-        public Task<GetPastBackupStateOutputDTO> GetPastBackupStateQueryAsync(byte[] sessionId, BlockParameter? blockParameter = null)
+        public Task<GetPastBackupStateOutputDTO> GetPastBackupStateQueryAsync(byte[] sessionId, BlockParameter blockParameter = null)
         {
             var getPastBackupStateFunction = new GetPastBackupStateFunction();
                 getPastBackupStateFunction.SessionId = sessionId;
@@ -289,35 +310,46 @@ namespace LitContracts.BackupRecovery
             return ContractHandler.QueryDeserializingToObjectAsync<GetPastBackupStateFunction, GetPastBackupStateOutputDTO>(getPastBackupStateFunction, blockParameter);
         }
 
-        public Task<List<string>> GetStakerAddressesForDkgQueryAsync(GetStakerAddressesForDkgFunction getStakerAddressesForDkgFunction, BlockParameter? blockParameter = null)
+        public Task<BigInteger> GetProofSubmissionForBackupPartyMemberQueryAsync(GetProofSubmissionForBackupPartyMemberFunction getProofSubmissionForBackupPartyMemberFunction, BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<GetProofSubmissionForBackupPartyMemberFunction, BigInteger>(getProofSubmissionForBackupPartyMemberFunction, blockParameter);
+        }
+
+        
+        public Task<BigInteger> GetProofSubmissionForBackupPartyMemberQueryAsync(BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<GetProofSubmissionForBackupPartyMemberFunction, BigInteger>(null, blockParameter);
+        }
+
+        public Task<List<string>> GetStakerAddressesForDkgQueryAsync(GetStakerAddressesForDkgFunction getStakerAddressesForDkgFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetStakerAddressesForDkgFunction, List<string>>(getStakerAddressesForDkgFunction, blockParameter);
         }
 
         
-        public Task<List<string>> GetStakerAddressesForDkgQueryAsync(BlockParameter? blockParameter = null)
+        public Task<List<string>> GetStakerAddressesForDkgQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetStakerAddressesForDkgFunction, List<string>>(null, blockParameter);
         }
 
-        public Task<bool> IsNodeForDkgQueryAsync(IsNodeForDkgFunction isNodeForDkgFunction, BlockParameter? blockParameter = null)
+        public Task<bool> IsNodeForDkgQueryAsync(IsNodeForDkgFunction isNodeForDkgFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<IsNodeForDkgFunction, bool>(isNodeForDkgFunction, blockParameter);
         }
 
         
-        public Task<bool> IsNodeForDkgQueryAsync(BlockParameter? blockParameter = null)
+        public Task<bool> IsNodeForDkgQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<IsNodeForDkgFunction, bool>(null, blockParameter);
         }
 
-        public Task<bool> IsRecoveryDkgCompletedQueryAsync(IsRecoveryDkgCompletedFunction isRecoveryDkgCompletedFunction, BlockParameter? blockParameter = null)
+        public Task<bool> IsRecoveryDkgCompletedQueryAsync(IsRecoveryDkgCompletedFunction isRecoveryDkgCompletedFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<IsRecoveryDkgCompletedFunction, bool>(isRecoveryDkgCompletedFunction, blockParameter);
         }
 
         
-        public Task<bool> IsRecoveryDkgCompletedQueryAsync(BlockParameter? blockParameter = null)
+        public Task<bool> IsRecoveryDkgCompletedQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<IsRecoveryDkgCompletedFunction, bool>(null, blockParameter);
         }
@@ -327,7 +359,7 @@ namespace LitContracts.BackupRecovery
              return ContractHandler.SendRequestAsync(recieveNewKeySetFunction);
         }
 
-        public Task<TransactionReceipt> RecieveNewKeySetRequestAndWaitForReceiptAsync(RecieveNewKeySetFunction recieveNewKeySetFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> RecieveNewKeySetRequestAndWaitForReceiptAsync(RecieveNewKeySetFunction recieveNewKeySetFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(recieveNewKeySetFunction, cancellationToken);
         }
@@ -342,7 +374,7 @@ namespace LitContracts.BackupRecovery
              return ContractHandler.SendRequestAsync(recieveNewKeySetFunction);
         }
 
-        public Task<TransactionReceipt> RecieveNewKeySetRequestAndWaitForReceiptAsync(byte[] publicKey, byte[] encryptedKey, byte[] sessionId, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> RecieveNewKeySetRequestAndWaitForReceiptAsync(byte[] publicKey, byte[] encryptedKey, byte[] sessionId, CancellationTokenSource cancellationToken = null)
         {
             var recieveNewKeySetFunction = new RecieveNewKeySetFunction();
                 recieveNewKeySetFunction.PublicKey = publicKey;
@@ -352,12 +384,52 @@ namespace LitContracts.BackupRecovery
              return ContractHandler.SendRequestAndWaitForReceiptAsync(recieveNewKeySetFunction, cancellationToken);
         }
 
+        public Task<string> RecieveProofBls12381G1RequestAsync(RecieveProofBls12381G1Function recieveProofBls12381G1Function)
+        {
+             return ContractHandler.SendRequestAsync(recieveProofBls12381G1Function);
+        }
+
+        public Task<TransactionReceipt> RecieveProofBls12381G1RequestAndWaitForReceiptAsync(RecieveProofBls12381G1Function recieveProofBls12381G1Function, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(recieveProofBls12381G1Function, cancellationToken);
+        }
+
+        public Task<string> RecieveProofBls12381G1RequestAsync(byte[] proof)
+        {
+            var recieveProofBls12381G1Function = new RecieveProofBls12381G1Function();
+                recieveProofBls12381G1Function.Proof = proof;
+            
+             return ContractHandler.SendRequestAsync(recieveProofBls12381G1Function);
+        }
+
+        public Task<TransactionReceipt> RecieveProofBls12381G1RequestAndWaitForReceiptAsync(byte[] proof, CancellationTokenSource cancellationToken = null)
+        {
+            var recieveProofBls12381G1Function = new RecieveProofBls12381G1Function();
+                recieveProofBls12381G1Function.Proof = proof;
+            
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(recieveProofBls12381G1Function, cancellationToken);
+        }
+
+        public Task<bool> RecieveProofsK256QueryAsync(RecieveProofsK256Function recieveProofsK256Function, BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<RecieveProofsK256Function, bool>(recieveProofsK256Function, blockParameter);
+        }
+
+        
+        public Task<bool> RecieveProofsK256QueryAsync(byte[] proof, BlockParameter blockParameter = null)
+        {
+            var recieveProofsK256Function = new RecieveProofsK256Function();
+                recieveProofsK256Function.Proof = proof;
+            
+            return ContractHandler.QueryAsync<RecieveProofsK256Function, bool>(recieveProofsK256Function, blockParameter);
+        }
+
         public Task<string> RegisterNewBackupPartyRequestAsync(RegisterNewBackupPartyFunction registerNewBackupPartyFunction)
         {
              return ContractHandler.SendRequestAsync(registerNewBackupPartyFunction);
         }
 
-        public Task<TransactionReceipt> RegisterNewBackupPartyRequestAndWaitForReceiptAsync(RegisterNewBackupPartyFunction registerNewBackupPartyFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> RegisterNewBackupPartyRequestAndWaitForReceiptAsync(RegisterNewBackupPartyFunction registerNewBackupPartyFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(registerNewBackupPartyFunction, cancellationToken);
         }
@@ -370,7 +442,7 @@ namespace LitContracts.BackupRecovery
              return ContractHandler.SendRequestAsync(registerNewBackupPartyFunction);
         }
 
-        public Task<TransactionReceipt> RegisterNewBackupPartyRequestAndWaitForReceiptAsync(List<string> partyMembers, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> RegisterNewBackupPartyRequestAndWaitForReceiptAsync(List<string> partyMembers, CancellationTokenSource cancellationToken = null)
         {
             var registerNewBackupPartyFunction = new RegisterNewBackupPartyFunction();
                 registerNewBackupPartyFunction.PartyMembers = partyMembers;
@@ -383,7 +455,7 @@ namespace LitContracts.BackupRecovery
              return ContractHandler.SendRequestAsync(registerRecoveryKeysFunction);
         }
 
-        public Task<TransactionReceipt> RegisterRecoveryKeysRequestAndWaitForReceiptAsync(RegisterRecoveryKeysFunction registerRecoveryKeysFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> RegisterRecoveryKeysRequestAndWaitForReceiptAsync(RegisterRecoveryKeysFunction registerRecoveryKeysFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(registerRecoveryKeysFunction, cancellationToken);
         }
@@ -396,7 +468,7 @@ namespace LitContracts.BackupRecovery
              return ContractHandler.SendRequestAsync(registerRecoveryKeysFunction);
         }
 
-        public Task<TransactionReceipt> RegisterRecoveryKeysRequestAndWaitForReceiptAsync(List<RecoveryKey> recoveryKeys, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> RegisterRecoveryKeysRequestAndWaitForReceiptAsync(List<RecoveryKey> recoveryKeys, CancellationTokenSource cancellationToken = null)
         {
             var registerRecoveryKeysFunction = new RegisterRecoveryKeysFunction();
                 registerRecoveryKeysFunction.RecoveryKeys = recoveryKeys;
@@ -414,12 +486,12 @@ namespace LitContracts.BackupRecovery
              return ContractHandler.SendRequestAsync<SetMemberForDkgFunction>();
         }
 
-        public Task<TransactionReceipt> SetMemberForDkgRequestAndWaitForReceiptAsync(SetMemberForDkgFunction setMemberForDkgFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> SetMemberForDkgRequestAndWaitForReceiptAsync(SetMemberForDkgFunction setMemberForDkgFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(setMemberForDkgFunction, cancellationToken);
         }
 
-        public Task<TransactionReceipt> SetMemberForDkgRequestAndWaitForReceiptAsync(CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> SetMemberForDkgRequestAndWaitForReceiptAsync(CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync<SetMemberForDkgFunction>(null, cancellationToken);
         }

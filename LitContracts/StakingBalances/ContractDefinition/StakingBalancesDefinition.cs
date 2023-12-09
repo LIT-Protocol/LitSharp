@@ -145,6 +145,14 @@ namespace LitContracts.StakingBalances.ContractDefinition
         public virtual string Account { get; set; }
     }
 
+    public partial class ContractResolverFunction : ContractResolverFunctionBase { }
+
+    [Function("contractResolver", "address")]
+    public class ContractResolverFunctionBase : FunctionMessage
+    {
+
+    }
+
     public partial class GetRewardFunction : GetRewardFunctionBase { }
 
     [Function("getReward")]
@@ -866,6 +874,15 @@ namespace LitContracts.StakingBalances.ContractDefinition
     {
         [Parameter("bool", "", 1)]
         public virtual bool ReturnValue1 { get; set; }
+    }
+
+    public partial class ContractResolverOutputDTO : ContractResolverOutputDTOBase { }
+
+    [FunctionOutput]
+    public class ContractResolverOutputDTOBase : IFunctionOutputDTO 
+    {
+        [Parameter("address", "", 1)]
+        public virtual string ReturnValue1 { get; set; }
     }
 
 

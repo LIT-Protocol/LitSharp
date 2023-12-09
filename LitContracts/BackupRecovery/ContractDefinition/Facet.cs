@@ -5,7 +5,7 @@ using System.Numerics;
 using Nethereum.Hex.HexTypes;
 using Nethereum.ABI.FunctionEncoding.Attributes;
 
-namespace LitContracts.BackupRecovery.ContractDefinition
+namespace LitSharp.Contracts.BackupRecovery.ContractDefinition
 {
     public partial class Facet : FacetBase { }
 

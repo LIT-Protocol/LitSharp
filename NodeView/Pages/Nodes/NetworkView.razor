@@ -1,5 +1,6 @@
 @namespace NodeView.Pages 
 @page "/nodes/networkview"
+@inherits BaseDataCollection;
 @inject HttpClient Http
 @using Blazor.Diagrams.Components;
 @using Blazor.Diagrams;
@@ -15,65 +16,52 @@
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 
 <PageTitle>Network Viewer</PageTitle>
-
 <h1>Network Viewer</h1>
-
 <NodeView.Components.NetworkState />
 
-@if (nodes == null)
+@if (base.history == null)
 {
     <p><em>Loading Network Information...</em></p>
 }
 else
 {
-<div style="width: 80%;
-    height: 800px;
-    border: 1px solid black;">
-    <CascadingValue Value="diagram" IsFixed="true">
-        <DiagramCanvas>        
-        </DiagramCanvas>
-    </CascadingValue>
+    <div style="width: 80%;
+        height: 800px;
+        border: 1px solid black;">
+        <CascadingValue Value="diagram" IsFixed="true">            
+            <DiagramCanvas></DiagramCanvas> 
+        </CascadingValue>
+        Out Messages  @System.Text.Json.JsonSerializer.Serialize(out_messages);
+    </div>
 
-    Out Messages  @System.Text.Json.JsonSerializer.Serialize(out_messages);
-
-</div>
-
-@if (history != null) {
-    @foreach (ActiveActions actions in history.get_active_actions()) {
-        @if (actions.ids != null && actions.ids.Count > 0) {
-            <a>Nodes running @actions.type_id</a> <b>: @actions.ids.Count</b> 
-            <b> ( @actions.ids.GroupBy(i => i).Count() unique ) </b>
-         <br/>
+    @if (base.history != null) {
+        @foreach (ActiveActions actions in base.history.get_active_actions()) {
+            @if (actions.ids != null && actions.ids.Count > 0) {
+                <a>Nodes running @actions.type_id</a> <b>: @actions.ids.Count</b> 
+                <b> ( @actions.ids.GroupBy(i => i).Count() unique ) </b>
+            <br/>
+            }
         }
     }
 }
 
-
-
-}
-
 @code {
-    private LitContracts.Staking.ContractDefinition.Validator[]? nodes;
-    private BlazorDiagram diagram { get; set; } = null;
+    private BlazorDiagram? diagram { get; set; } 
+    private List<OutMessages>? out_messages { get; set; }
     PeriodicTimer periodicTimer = new (TimeSpan.FromMilliseconds(500));
-    private List<Metric>? node_averages;
-    private  NetworkHistory? history;
+    protected override Task OnInitializedAsync() {               
+       Init_Diagram();
+       RunTimer();
+       return base.OnInitializedAsync();
+    }
+    public new void Dispose()
+    {        
+        periodicTimer.Dispose();
+        base.Dispose();
+    }
 
-    private List<OutMessages>? out_messages;
-    protected override async Task OnInitializedAsync()
-    {                
-        var resolver = new Resolver(localStorage);
-        var stakingService = await resolver.GetStakingService();
-        
-        var validators = await stakingService.GetValidatorsStructsInCurrentEpochQueryAsync();   
-        nodes = validators.ReturnValue1.Select(x => new LitContracts.Staking.ContractDefinition.Validator
-            {
-                Ip = x.Ip,
-                Ipv6 = x.Ipv6,
-                NodeAddress = x.NodeAddress,
-                Port = x.Port,
-            }).ToArray();
-
+    protected bool Init_Diagram() {                
+        Console.WriteLine("Init_Diagram");
         var options = new BlazorDiagramOptions
         {
             AllowMultiSelection = true,
@@ -85,45 +73,49 @@ else
             { 
                 DefaultRouter = new NormalRouter(),
                 DefaultPathGenerator = new SmoothPathGenerator()
-            },
+            }, 
         };
-
         diagram = new BlazorDiagram(options);
+        return true;
+    }
+
+    protected bool Set_Diagram_Nodes()
+    {                
+        Console.WriteLine("Init_Diagram"    );
+        if (base.nodes == null) {
+            return false;
+        }
+
+        if (diagram == null) {
+            return false;
+        }
+
+        Console.WriteLine("Node count: " + base.nodes.Length.ToString() );
 
         var center_point = new Blazor.Diagrams.Core.Geometry.Point(450, 450);
-        var node_count = nodes.Length;
-        var positions = GetCirclePoints(node_count, 400, center_point);
-        
-        @* var inner_positions = GetCirclePoints(node_count , 350, center_point);
-        var outer_positions = GetCirclePoints(node_count , 450, center_point); *@
+        var node_count = base.nodes.Length;
+        var positions = GetCirclePoints(node_count, 380, center_point);
 
         for (int i = 0; i < node_count; i++)
         {
             var node = diagram.Nodes.Add(new NodeModel(id: i.ToString(), position: positions[i])
             {
-                Title = "Node " + nodes[i].Port.ToString(),
-
+                Title = "Node " + base.nodes[i].Port.ToString(),
             });
-
         }
-
 
         for (int i = 0; i < node_count; i++)
         {
             for (int j = i; j < node_count; j++)
             {
                 if (i == j)
-                {
                     continue;
-                }
-
 
                 var link_id = i.ToString() + "-" + j.ToString();
                 var link = diagram.Links.Add(new LinkModel( link_id , diagram.Nodes[i], diagram.Nodes[j]));                                 
                 link.PathGenerator = new SmoothPathGenerator();
                 link.TargetMarker = LinkMarker.Arrow;
                 link.Width = 5;
-
 
                 var link_id2 = j.ToString() + "-" + i.ToString();
                 var targetAnchor = new Blazor.Diagrams.Core.Anchors.LinkAnchor(link, 20, 10,10);
@@ -144,17 +136,14 @@ else
 
                 var inner_point = new Blazor.Diagrams.Core.Geometry.Point(x - offset_y, y + offset_x);
                 var vertex1 = link.AddVertex( inner_point );
-                
 
                 var outer_point = new Blazor.Diagrams.Core.Geometry.Point(x + offset_y, y - offset_x);
                 var vertex2 = link2.AddVertex( outer_point );
-
             }
-         
         } 
 
-            history = new NetworkHistory(5, nodes.Length);
-        RunTimer();
+        Console.WriteLine("Done");
+        return true;
     }
 
     public List<Blazor.Diagrams.Core.Geometry.Point> GetCirclePoints(int points, double radius, Blazor.Diagrams.Core.Geometry.Point center)
@@ -175,42 +164,22 @@ else
  async void RunTimer()
     {
         while (await periodicTimer.WaitForNextTickAsync()) { 
-            HttpClient client = new HttpClient();
-            List<NodeMetricRoot> new_metrics = new List<NodeMetricRoot>();
-            List<Task> handles = new List<Task>();
-            if(nodes != null) {
-                foreach ( var node in nodes ) {
+            if (base.nodes == null ||  base.history == null || diagram == null)
+                continue;
 
-                    var handle = Task.Run(async () => {
-                        var response = await client.GetAsync("http://localhost:" + node.Port.ToString() +  "/web/rt/metrics");
-                        if (response.StatusCode == System.Net.HttpStatusCode.OK) {
-                            var result = await response.Content.ReadAsStringAsync();
-                            var current_metrics = System.Text.Json.JsonSerializer.Deserialize<NodeMetricRoot>(result);
-                            if (current_metrics != null) {
-                                new_metrics.Add(current_metrics);
-                            }                            
-                        }
-                    });
+            if (diagram.Nodes.Count == 0) {
+                Set_Diagram_Nodes();
+                continue;
+            }
 
-                    handles.Add(handle);
-
-                }
-            }            
-
-            await Task.WhenAll(handles);
-
-            history.add(new_metrics);
-            @* var net_average = history.network_average(); *@
-            @* node_averages = history.node_average();             *@
-            out_messages = history.get_out_messages();
-
+            out_messages = base.history.get_out_messages();
             foreach (LinkModel link in diagram.Links) {
-                var out_message = out_messages.First(x => x.name == link.Id);
-                if (out_message == null) {
+                if (out_messages.Count(x => x.name == link.Id) == 0) {
                     link.Color = "#CCCCCC";
                 }
                 else 
                 {
+                    var out_message = out_messages.First(x => x.name == link.Id);
                     link.Color = get_spectrum_color(out_message.count);
                 }
                 link.Refresh();
@@ -235,8 +204,5 @@ else
         }
     }
 
-    public void Dispose()
-    {
-        periodicTimer.Dispose(); 
-    }  
+  
 }

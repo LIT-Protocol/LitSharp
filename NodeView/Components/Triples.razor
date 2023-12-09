@@ -1,0 +1,46 @@
+@inherits NodeView.Pages.BaseDataCollection
+@using SharedService;
+
+@if ( triples == null ) {
+    <div class="spinner-border" role="status">
+    <span class="visually-hidden">Loading...</span>
+    </div>
+}
+else {
+    for (int i = 0; i < triples.Count; i++) {
+        <span class="badge bg-secondary">
+            @triples[i].name &nbsp;
+            <span class="@( triples[i].total_count < 5  ? "badge bg-danger" : "adge bg-success" ) ">
+                @triples[i].total_count
+            </span>
+        </span> 
+        <label >&nbsp; &nbsp; </label>
+        
+    }
+}
+
+@code {
+    List<NodeTripleCount>? triples = null;
+    PeriodicTimer periodicTimer = new (TimeSpan.FromMilliseconds(500));
+    protected override Task OnInitializedAsync() {        
+       RunTimer();
+       return base.OnInitializedAsync();
+    }
+    public new void Dispose()
+    {        
+        periodicTimer.Dispose();
+        base.Dispose();
+    }
+    async void RunTimer()
+    {
+        while (await periodicTimer.WaitForNextTickAsync()) { 
+            if (base.history == null) {
+                continue;
+            }
+            triples = base.history.get_lastest_triples();      
+            StateHasChanged();           
+        }        
+    }
+  
+}
+      

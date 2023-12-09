@@ -21,5 +21,11 @@ namespace LitContracts.Staking.ContractDefinition
         public virtual List<BigInteger> KeyTypes { get; set; }
         [Parameter("uint256", "minimumValidatorCount", 5)]
         public virtual BigInteger MinimumValidatorCount { get; set; }
+        [Parameter("uint256", "maxConcurrentRequests", 6)]
+        public virtual BigInteger MaxConcurrentRequests { get; set; }
+        [Parameter("uint256", "maxTripleCount", 7)]
+        public virtual BigInteger MaxTripleCount { get; set; }
+        [Parameter("uint256", "minTripleCount", 8)]
+        public virtual BigInteger MinTripleCount { get; set; }
     }
 }

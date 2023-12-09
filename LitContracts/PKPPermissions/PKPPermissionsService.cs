@@ -16,7 +16,7 @@ namespace LitContracts.PKPPermissions
 {
     public partial class PKPPermissionsService
     {
-        public static Task<TransactionReceipt> DeployContractAndWaitForReceiptAsync(Nethereum.Web3.Web3 web3, PKPPermissionsDeployment pKPPermissionsDeployment, CancellationTokenSource? cancellationTokenSource = null)
+        public static Task<TransactionReceipt> DeployContractAndWaitForReceiptAsync(Nethereum.Web3.Web3 web3, PKPPermissionsDeployment pKPPermissionsDeployment, CancellationTokenSource cancellationTokenSource = null)
         {
             return web3.Eth.GetContractDeploymentHandler<PKPPermissionsDeployment>().SendRequestAndWaitForReceiptAsync(pKPPermissionsDeployment, cancellationTokenSource);
         }
@@ -26,7 +26,7 @@ namespace LitContracts.PKPPermissions
             return web3.Eth.GetContractDeploymentHandler<PKPPermissionsDeployment>().SendRequestAsync(pKPPermissionsDeployment);
         }
 
-        public static async Task<PKPPermissionsService> DeployContractAndGetServiceAsync(Nethereum.Web3.Web3 web3, PKPPermissionsDeployment pKPPermissionsDeployment, CancellationTokenSource? cancellationTokenSource = null)
+        public static async Task<PKPPermissionsService> DeployContractAndGetServiceAsync(Nethereum.Web3.Web3 web3, PKPPermissionsDeployment pKPPermissionsDeployment, CancellationTokenSource cancellationTokenSource = null)
         {
             var receipt = await DeployContractAndWaitForReceiptAsync(web3, pKPPermissionsDeployment, cancellationTokenSource);
             return new PKPPermissionsService(web3, receipt.ContractAddress);
@@ -53,7 +53,7 @@ namespace LitContracts.PKPPermissions
              return ContractHandler.SendRequestAsync(diamondCutFunction);
         }
 
-        public Task<TransactionReceipt> DiamondCutRequestAndWaitForReceiptAsync(DiamondCutFunction diamondCutFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> DiamondCutRequestAndWaitForReceiptAsync(DiamondCutFunction diamondCutFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(diamondCutFunction, cancellationToken);
         }
@@ -68,7 +68,7 @@ namespace LitContracts.PKPPermissions
              return ContractHandler.SendRequestAsync(diamondCutFunction);
         }
 
-        public Task<TransactionReceipt> DiamondCutRequestAndWaitForReceiptAsync(List<FacetCut> diamondCut, string init, byte[] calldata, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> DiamondCutRequestAndWaitForReceiptAsync(List<FacetCut> diamondCut, string init, byte[] calldata, CancellationTokenSource cancellationToken = null)
         {
             var diamondCutFunction = new DiamondCutFunction();
                 diamondCutFunction.DiamondCut = diamondCut;
@@ -78,13 +78,13 @@ namespace LitContracts.PKPPermissions
              return ContractHandler.SendRequestAndWaitForReceiptAsync(diamondCutFunction, cancellationToken);
         }
 
-        public Task<string> FacetAddressQueryAsync(FacetAddressFunction facetAddressFunction, BlockParameter? blockParameter = null)
+        public Task<string> FacetAddressQueryAsync(FacetAddressFunction facetAddressFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<FacetAddressFunction, string>(facetAddressFunction, blockParameter);
         }
 
         
-        public Task<string> FacetAddressQueryAsync(byte[] functionSelector, BlockParameter? blockParameter = null)
+        public Task<string> FacetAddressQueryAsync(byte[] functionSelector, BlockParameter blockParameter = null)
         {
             var facetAddressFunction = new FacetAddressFunction();
                 facetAddressFunction.FunctionSelector = functionSelector;
@@ -92,24 +92,24 @@ namespace LitContracts.PKPPermissions
             return ContractHandler.QueryAsync<FacetAddressFunction, string>(facetAddressFunction, blockParameter);
         }
 
-        public Task<List<string>> FacetAddressesQueryAsync(FacetAddressesFunction facetAddressesFunction, BlockParameter? blockParameter = null)
+        public Task<List<string>> FacetAddressesQueryAsync(FacetAddressesFunction facetAddressesFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<FacetAddressesFunction, List<string>>(facetAddressesFunction, blockParameter);
         }
 
         
-        public Task<List<string>> FacetAddressesQueryAsync(BlockParameter? blockParameter = null)
+        public Task<List<string>> FacetAddressesQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<FacetAddressesFunction, List<string>>(null, blockParameter);
         }
 
-        public Task<List<byte[]>> FacetFunctionSelectorsQueryAsync(FacetFunctionSelectorsFunction facetFunctionSelectorsFunction, BlockParameter? blockParameter = null)
+        public Task<List<byte[]>> FacetFunctionSelectorsQueryAsync(FacetFunctionSelectorsFunction facetFunctionSelectorsFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<FacetFunctionSelectorsFunction, List<byte[]>>(facetFunctionSelectorsFunction, blockParameter);
         }
 
         
-        public Task<List<byte[]>> FacetFunctionSelectorsQueryAsync(string facet, BlockParameter? blockParameter = null)
+        public Task<List<byte[]>> FacetFunctionSelectorsQueryAsync(string facet, BlockParameter blockParameter = null)
         {
             var facetFunctionSelectorsFunction = new FacetFunctionSelectorsFunction();
                 facetFunctionSelectorsFunction.Facet = facet;
@@ -117,23 +117,23 @@ namespace LitContracts.PKPPermissions
             return ContractHandler.QueryAsync<FacetFunctionSelectorsFunction, List<byte[]>>(facetFunctionSelectorsFunction, blockParameter);
         }
 
-        public Task<FacetsOutputDTO> FacetsQueryAsync(FacetsFunction facetsFunction, BlockParameter? blockParameter = null)
+        public Task<FacetsOutputDTO> FacetsQueryAsync(FacetsFunction facetsFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryDeserializingToObjectAsync<FacetsFunction, FacetsOutputDTO>(facetsFunction, blockParameter);
         }
 
-        public Task<FacetsOutputDTO> FacetsQueryAsync(BlockParameter? blockParameter = null)
+        public Task<FacetsOutputDTO> FacetsQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryDeserializingToObjectAsync<FacetsFunction, FacetsOutputDTO>(null, blockParameter);
         }
 
-        public Task<bool> SupportsInterfaceQueryAsync(SupportsInterfaceFunction supportsInterfaceFunction, BlockParameter? blockParameter = null)
+        public Task<bool> SupportsInterfaceQueryAsync(SupportsInterfaceFunction supportsInterfaceFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<SupportsInterfaceFunction, bool>(supportsInterfaceFunction, blockParameter);
         }
 
         
-        public Task<bool> SupportsInterfaceQueryAsync(byte[] interfaceId, BlockParameter? blockParameter = null)
+        public Task<bool> SupportsInterfaceQueryAsync(byte[] interfaceId, BlockParameter blockParameter = null)
         {
             var supportsInterfaceFunction = new SupportsInterfaceFunction();
                 supportsInterfaceFunction.InterfaceId = interfaceId;
@@ -141,13 +141,13 @@ namespace LitContracts.PKPPermissions
             return ContractHandler.QueryAsync<SupportsInterfaceFunction, bool>(supportsInterfaceFunction, blockParameter);
         }
 
-        public Task<string> OwnerQueryAsync(OwnerFunction ownerFunction, BlockParameter? blockParameter = null)
+        public Task<string> OwnerQueryAsync(OwnerFunction ownerFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<OwnerFunction, string>(ownerFunction, blockParameter);
         }
 
         
-        public Task<string> OwnerQueryAsync(BlockParameter? blockParameter = null)
+        public Task<string> OwnerQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<OwnerFunction, string>(null, blockParameter);
         }
@@ -157,7 +157,7 @@ namespace LitContracts.PKPPermissions
              return ContractHandler.SendRequestAsync(transferOwnershipFunction);
         }
 
-        public Task<TransactionReceipt> TransferOwnershipRequestAndWaitForReceiptAsync(TransferOwnershipFunction transferOwnershipFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> TransferOwnershipRequestAndWaitForReceiptAsync(TransferOwnershipFunction transferOwnershipFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(transferOwnershipFunction, cancellationToken);
         }
@@ -170,7 +170,7 @@ namespace LitContracts.PKPPermissions
              return ContractHandler.SendRequestAsync(transferOwnershipFunction);
         }
 
-        public Task<TransactionReceipt> TransferOwnershipRequestAndWaitForReceiptAsync(string newOwner, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> TransferOwnershipRequestAndWaitForReceiptAsync(string newOwner, CancellationTokenSource cancellationToken = null)
         {
             var transferOwnershipFunction = new TransferOwnershipFunction();
                 transferOwnershipFunction.NewOwner = newOwner;
@@ -183,7 +183,7 @@ namespace LitContracts.PKPPermissions
              return ContractHandler.SendRequestAsync(addPermittedActionFunction);
         }
 
-        public Task<TransactionReceipt> AddPermittedActionRequestAndWaitForReceiptAsync(AddPermittedActionFunction addPermittedActionFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> AddPermittedActionRequestAndWaitForReceiptAsync(AddPermittedActionFunction addPermittedActionFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(addPermittedActionFunction, cancellationToken);
         }
@@ -198,7 +198,7 @@ namespace LitContracts.PKPPermissions
              return ContractHandler.SendRequestAsync(addPermittedActionFunction);
         }
 
-        public Task<TransactionReceipt> AddPermittedActionRequestAndWaitForReceiptAsync(BigInteger tokenId, byte[] ipfsCID, List<BigInteger> scopes, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> AddPermittedActionRequestAndWaitForReceiptAsync(BigInteger tokenId, byte[] ipfsCID, List<BigInteger> scopes, CancellationTokenSource cancellationToken = null)
         {
             var addPermittedActionFunction = new AddPermittedActionFunction();
                 addPermittedActionFunction.TokenId = tokenId;
@@ -213,7 +213,7 @@ namespace LitContracts.PKPPermissions
              return ContractHandler.SendRequestAsync(addPermittedAddressFunction);
         }
 
-        public Task<TransactionReceipt> AddPermittedAddressRequestAndWaitForReceiptAsync(AddPermittedAddressFunction addPermittedAddressFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> AddPermittedAddressRequestAndWaitForReceiptAsync(AddPermittedAddressFunction addPermittedAddressFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(addPermittedAddressFunction, cancellationToken);
         }
@@ -228,7 +228,7 @@ namespace LitContracts.PKPPermissions
              return ContractHandler.SendRequestAsync(addPermittedAddressFunction);
         }
 
-        public Task<TransactionReceipt> AddPermittedAddressRequestAndWaitForReceiptAsync(BigInteger tokenId, string user, List<BigInteger> scopes, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> AddPermittedAddressRequestAndWaitForReceiptAsync(BigInteger tokenId, string user, List<BigInteger> scopes, CancellationTokenSource cancellationToken = null)
         {
             var addPermittedAddressFunction = new AddPermittedAddressFunction();
                 addPermittedAddressFunction.TokenId = tokenId;
@@ -243,7 +243,7 @@ namespace LitContracts.PKPPermissions
              return ContractHandler.SendRequestAsync(addPermittedAuthMethodFunction);
         }
 
-        public Task<TransactionReceipt> AddPermittedAuthMethodRequestAndWaitForReceiptAsync(AddPermittedAuthMethodFunction addPermittedAuthMethodFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> AddPermittedAuthMethodRequestAndWaitForReceiptAsync(AddPermittedAuthMethodFunction addPermittedAuthMethodFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(addPermittedAuthMethodFunction, cancellationToken);
         }
@@ -258,7 +258,7 @@ namespace LitContracts.PKPPermissions
              return ContractHandler.SendRequestAsync(addPermittedAuthMethodFunction);
         }
 
-        public Task<TransactionReceipt> AddPermittedAuthMethodRequestAndWaitForReceiptAsync(BigInteger tokenId, AuthMethod authMethod, List<BigInteger> scopes, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> AddPermittedAuthMethodRequestAndWaitForReceiptAsync(BigInteger tokenId, AuthMethod authMethod, List<BigInteger> scopes, CancellationTokenSource cancellationToken = null)
         {
             var addPermittedAuthMethodFunction = new AddPermittedAuthMethodFunction();
                 addPermittedAuthMethodFunction.TokenId = tokenId;
@@ -273,7 +273,7 @@ namespace LitContracts.PKPPermissions
              return ContractHandler.SendRequestAsync(addPermittedAuthMethodScopeFunction);
         }
 
-        public Task<TransactionReceipt> AddPermittedAuthMethodScopeRequestAndWaitForReceiptAsync(AddPermittedAuthMethodScopeFunction addPermittedAuthMethodScopeFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> AddPermittedAuthMethodScopeRequestAndWaitForReceiptAsync(AddPermittedAuthMethodScopeFunction addPermittedAuthMethodScopeFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(addPermittedAuthMethodScopeFunction, cancellationToken);
         }
@@ -289,7 +289,7 @@ namespace LitContracts.PKPPermissions
              return ContractHandler.SendRequestAsync(addPermittedAuthMethodScopeFunction);
         }
 
-        public Task<TransactionReceipt> AddPermittedAuthMethodScopeRequestAndWaitForReceiptAsync(BigInteger tokenId, BigInteger authMethodType, byte[] id, BigInteger scopeId, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> AddPermittedAuthMethodScopeRequestAndWaitForReceiptAsync(BigInteger tokenId, BigInteger authMethodType, byte[] id, BigInteger scopeId, CancellationTokenSource cancellationToken = null)
         {
             var addPermittedAuthMethodScopeFunction = new AddPermittedAuthMethodScopeFunction();
                 addPermittedAuthMethodScopeFunction.TokenId = tokenId;
@@ -305,7 +305,7 @@ namespace LitContracts.PKPPermissions
              return ContractHandler.SendRequestAsync(batchAddRemoveAuthMethodsFunction);
         }
 
-        public Task<TransactionReceipt> BatchAddRemoveAuthMethodsRequestAndWaitForReceiptAsync(BatchAddRemoveAuthMethodsFunction batchAddRemoveAuthMethodsFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> BatchAddRemoveAuthMethodsRequestAndWaitForReceiptAsync(BatchAddRemoveAuthMethodsFunction batchAddRemoveAuthMethodsFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(batchAddRemoveAuthMethodsFunction, cancellationToken);
         }
@@ -324,7 +324,7 @@ namespace LitContracts.PKPPermissions
              return ContractHandler.SendRequestAsync(batchAddRemoveAuthMethodsFunction);
         }
 
-        public Task<TransactionReceipt> BatchAddRemoveAuthMethodsRequestAndWaitForReceiptAsync(BigInteger tokenId, List<BigInteger> permittedAuthMethodTypesToAdd, List<byte[]> permittedAuthMethodIdsToAdd, List<byte[]> permittedAuthMethodPubkeysToAdd, List<List<BigInteger>> permittedAuthMethodScopesToAdd, List<BigInteger> permittedAuthMethodTypesToRemove, List<byte[]> permittedAuthMethodIdsToRemove, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> BatchAddRemoveAuthMethodsRequestAndWaitForReceiptAsync(BigInteger tokenId, List<BigInteger> permittedAuthMethodTypesToAdd, List<byte[]> permittedAuthMethodIdsToAdd, List<byte[]> permittedAuthMethodPubkeysToAdd, List<List<BigInteger>> permittedAuthMethodScopesToAdd, List<BigInteger> permittedAuthMethodTypesToRemove, List<byte[]> permittedAuthMethodIdsToRemove, CancellationTokenSource cancellationToken = null)
         {
             var batchAddRemoveAuthMethodsFunction = new BatchAddRemoveAuthMethodsFunction();
                 batchAddRemoveAuthMethodsFunction.TokenId = tokenId;
@@ -338,13 +338,13 @@ namespace LitContracts.PKPPermissions
              return ContractHandler.SendRequestAndWaitForReceiptAsync(batchAddRemoveAuthMethodsFunction, cancellationToken);
         }
 
-        public Task<BigInteger> GetAuthMethodIdQueryAsync(GetAuthMethodIdFunction getAuthMethodIdFunction, BlockParameter? blockParameter = null)
+        public Task<BigInteger> GetAuthMethodIdQueryAsync(GetAuthMethodIdFunction getAuthMethodIdFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetAuthMethodIdFunction, BigInteger>(getAuthMethodIdFunction, blockParameter);
         }
 
         
-        public Task<BigInteger> GetAuthMethodIdQueryAsync(BigInteger authMethodType, byte[] id, BlockParameter? blockParameter = null)
+        public Task<BigInteger> GetAuthMethodIdQueryAsync(BigInteger authMethodType, byte[] id, BlockParameter blockParameter = null)
         {
             var getAuthMethodIdFunction = new GetAuthMethodIdFunction();
                 getAuthMethodIdFunction.AuthMethodType = authMethodType;
@@ -353,13 +353,13 @@ namespace LitContracts.PKPPermissions
             return ContractHandler.QueryAsync<GetAuthMethodIdFunction, BigInteger>(getAuthMethodIdFunction, blockParameter);
         }
 
-        public Task<string> GetEthAddressQueryAsync(GetEthAddressFunction getEthAddressFunction, BlockParameter? blockParameter = null)
+        public Task<string> GetEthAddressQueryAsync(GetEthAddressFunction getEthAddressFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetEthAddressFunction, string>(getEthAddressFunction, blockParameter);
         }
 
         
-        public Task<string> GetEthAddressQueryAsync(BigInteger tokenId, BlockParameter? blockParameter = null)
+        public Task<string> GetEthAddressQueryAsync(BigInteger tokenId, BlockParameter blockParameter = null)
         {
             var getEthAddressFunction = new GetEthAddressFunction();
                 getEthAddressFunction.TokenId = tokenId;
@@ -367,13 +367,13 @@ namespace LitContracts.PKPPermissions
             return ContractHandler.QueryAsync<GetEthAddressFunction, string>(getEthAddressFunction, blockParameter);
         }
 
-        public Task<List<byte[]>> GetPermittedActionsQueryAsync(GetPermittedActionsFunction getPermittedActionsFunction, BlockParameter? blockParameter = null)
+        public Task<List<byte[]>> GetPermittedActionsQueryAsync(GetPermittedActionsFunction getPermittedActionsFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetPermittedActionsFunction, List<byte[]>>(getPermittedActionsFunction, blockParameter);
         }
 
         
-        public Task<List<byte[]>> GetPermittedActionsQueryAsync(BigInteger tokenId, BlockParameter? blockParameter = null)
+        public Task<List<byte[]>> GetPermittedActionsQueryAsync(BigInteger tokenId, BlockParameter blockParameter = null)
         {
             var getPermittedActionsFunction = new GetPermittedActionsFunction();
                 getPermittedActionsFunction.TokenId = tokenId;
@@ -381,13 +381,13 @@ namespace LitContracts.PKPPermissions
             return ContractHandler.QueryAsync<GetPermittedActionsFunction, List<byte[]>>(getPermittedActionsFunction, blockParameter);
         }
 
-        public Task<List<string>> GetPermittedAddressesQueryAsync(GetPermittedAddressesFunction getPermittedAddressesFunction, BlockParameter? blockParameter = null)
+        public Task<List<string>> GetPermittedAddressesQueryAsync(GetPermittedAddressesFunction getPermittedAddressesFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetPermittedAddressesFunction, List<string>>(getPermittedAddressesFunction, blockParameter);
         }
 
         
-        public Task<List<string>> GetPermittedAddressesQueryAsync(BigInteger tokenId, BlockParameter? blockParameter = null)
+        public Task<List<string>> GetPermittedAddressesQueryAsync(BigInteger tokenId, BlockParameter blockParameter = null)
         {
             var getPermittedAddressesFunction = new GetPermittedAddressesFunction();
                 getPermittedAddressesFunction.TokenId = tokenId;
@@ -395,13 +395,13 @@ namespace LitContracts.PKPPermissions
             return ContractHandler.QueryAsync<GetPermittedAddressesFunction, List<string>>(getPermittedAddressesFunction, blockParameter);
         }
 
-        public Task<List<bool>> GetPermittedAuthMethodScopesQueryAsync(GetPermittedAuthMethodScopesFunction getPermittedAuthMethodScopesFunction, BlockParameter? blockParameter = null)
+        public Task<List<bool>> GetPermittedAuthMethodScopesQueryAsync(GetPermittedAuthMethodScopesFunction getPermittedAuthMethodScopesFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetPermittedAuthMethodScopesFunction, List<bool>>(getPermittedAuthMethodScopesFunction, blockParameter);
         }
 
         
-        public Task<List<bool>> GetPermittedAuthMethodScopesQueryAsync(BigInteger tokenId, BigInteger authMethodType, byte[] id, BigInteger maxScopeId, BlockParameter? blockParameter = null)
+        public Task<List<bool>> GetPermittedAuthMethodScopesQueryAsync(BigInteger tokenId, BigInteger authMethodType, byte[] id, BigInteger maxScopeId, BlockParameter blockParameter = null)
         {
             var getPermittedAuthMethodScopesFunction = new GetPermittedAuthMethodScopesFunction();
                 getPermittedAuthMethodScopesFunction.TokenId = tokenId;
@@ -412,12 +412,12 @@ namespace LitContracts.PKPPermissions
             return ContractHandler.QueryAsync<GetPermittedAuthMethodScopesFunction, List<bool>>(getPermittedAuthMethodScopesFunction, blockParameter);
         }
 
-        public Task<GetPermittedAuthMethodsOutputDTO> GetPermittedAuthMethodsQueryAsync(GetPermittedAuthMethodsFunction getPermittedAuthMethodsFunction, BlockParameter? blockParameter = null)
+        public Task<GetPermittedAuthMethodsOutputDTO> GetPermittedAuthMethodsQueryAsync(GetPermittedAuthMethodsFunction getPermittedAuthMethodsFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryDeserializingToObjectAsync<GetPermittedAuthMethodsFunction, GetPermittedAuthMethodsOutputDTO>(getPermittedAuthMethodsFunction, blockParameter);
         }
 
-        public Task<GetPermittedAuthMethodsOutputDTO> GetPermittedAuthMethodsQueryAsync(BigInteger tokenId, BlockParameter? blockParameter = null)
+        public Task<GetPermittedAuthMethodsOutputDTO> GetPermittedAuthMethodsQueryAsync(BigInteger tokenId, BlockParameter blockParameter = null)
         {
             var getPermittedAuthMethodsFunction = new GetPermittedAuthMethodsFunction();
                 getPermittedAuthMethodsFunction.TokenId = tokenId;
@@ -425,24 +425,24 @@ namespace LitContracts.PKPPermissions
             return ContractHandler.QueryDeserializingToObjectAsync<GetPermittedAuthMethodsFunction, GetPermittedAuthMethodsOutputDTO>(getPermittedAuthMethodsFunction, blockParameter);
         }
 
-        public Task<string> GetPkpNftAddressQueryAsync(GetPkpNftAddressFunction getPkpNftAddressFunction, BlockParameter? blockParameter = null)
+        public Task<string> GetPkpNftAddressQueryAsync(GetPkpNftAddressFunction getPkpNftAddressFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetPkpNftAddressFunction, string>(getPkpNftAddressFunction, blockParameter);
         }
 
         
-        public Task<string> GetPkpNftAddressQueryAsync(BlockParameter? blockParameter = null)
+        public Task<string> GetPkpNftAddressQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetPkpNftAddressFunction, string>(null, blockParameter);
         }
 
-        public Task<byte[]> GetPubkeyQueryAsync(GetPubkeyFunction getPubkeyFunction, BlockParameter? blockParameter = null)
+        public Task<byte[]> GetPubkeyQueryAsync(GetPubkeyFunction getPubkeyFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetPubkeyFunction, byte[]>(getPubkeyFunction, blockParameter);
         }
 
         
-        public Task<byte[]> GetPubkeyQueryAsync(BigInteger tokenId, BlockParameter? blockParameter = null)
+        public Task<byte[]> GetPubkeyQueryAsync(BigInteger tokenId, BlockParameter blockParameter = null)
         {
             var getPubkeyFunction = new GetPubkeyFunction();
                 getPubkeyFunction.TokenId = tokenId;
@@ -450,24 +450,24 @@ namespace LitContracts.PKPPermissions
             return ContractHandler.QueryAsync<GetPubkeyFunction, byte[]>(getPubkeyFunction, blockParameter);
         }
 
-        public Task<string> GetRouterAddressQueryAsync(GetRouterAddressFunction getRouterAddressFunction, BlockParameter? blockParameter = null)
+        public Task<string> GetRouterAddressQueryAsync(GetRouterAddressFunction getRouterAddressFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetRouterAddressFunction, string>(getRouterAddressFunction, blockParameter);
         }
 
         
-        public Task<string> GetRouterAddressQueryAsync(BlockParameter? blockParameter = null)
+        public Task<string> GetRouterAddressQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetRouterAddressFunction, string>(null, blockParameter);
         }
 
-        public Task<List<BigInteger>> GetTokenIdsForAuthMethodQueryAsync(GetTokenIdsForAuthMethodFunction getTokenIdsForAuthMethodFunction, BlockParameter? blockParameter = null)
+        public Task<List<BigInteger>> GetTokenIdsForAuthMethodQueryAsync(GetTokenIdsForAuthMethodFunction getTokenIdsForAuthMethodFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetTokenIdsForAuthMethodFunction, List<BigInteger>>(getTokenIdsForAuthMethodFunction, blockParameter);
         }
 
         
-        public Task<List<BigInteger>> GetTokenIdsForAuthMethodQueryAsync(BigInteger authMethodType, byte[] id, BlockParameter? blockParameter = null)
+        public Task<List<BigInteger>> GetTokenIdsForAuthMethodQueryAsync(BigInteger authMethodType, byte[] id, BlockParameter blockParameter = null)
         {
             var getTokenIdsForAuthMethodFunction = new GetTokenIdsForAuthMethodFunction();
                 getTokenIdsForAuthMethodFunction.AuthMethodType = authMethodType;
@@ -476,13 +476,13 @@ namespace LitContracts.PKPPermissions
             return ContractHandler.QueryAsync<GetTokenIdsForAuthMethodFunction, List<BigInteger>>(getTokenIdsForAuthMethodFunction, blockParameter);
         }
 
-        public Task<byte[]> GetUserPubkeyForAuthMethodQueryAsync(GetUserPubkeyForAuthMethodFunction getUserPubkeyForAuthMethodFunction, BlockParameter? blockParameter = null)
+        public Task<byte[]> GetUserPubkeyForAuthMethodQueryAsync(GetUserPubkeyForAuthMethodFunction getUserPubkeyForAuthMethodFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetUserPubkeyForAuthMethodFunction, byte[]>(getUserPubkeyForAuthMethodFunction, blockParameter);
         }
 
         
-        public Task<byte[]> GetUserPubkeyForAuthMethodQueryAsync(BigInteger authMethodType, byte[] id, BlockParameter? blockParameter = null)
+        public Task<byte[]> GetUserPubkeyForAuthMethodQueryAsync(BigInteger authMethodType, byte[] id, BlockParameter blockParameter = null)
         {
             var getUserPubkeyForAuthMethodFunction = new GetUserPubkeyForAuthMethodFunction();
                 getUserPubkeyForAuthMethodFunction.AuthMethodType = authMethodType;
@@ -491,13 +491,13 @@ namespace LitContracts.PKPPermissions
             return ContractHandler.QueryAsync<GetUserPubkeyForAuthMethodFunction, byte[]>(getUserPubkeyForAuthMethodFunction, blockParameter);
         }
 
-        public Task<bool> IsPermittedActionQueryAsync(IsPermittedActionFunction isPermittedActionFunction, BlockParameter? blockParameter = null)
+        public Task<bool> IsPermittedActionQueryAsync(IsPermittedActionFunction isPermittedActionFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<IsPermittedActionFunction, bool>(isPermittedActionFunction, blockParameter);
         }
 
         
-        public Task<bool> IsPermittedActionQueryAsync(BigInteger tokenId, byte[] ipfsCID, BlockParameter? blockParameter = null)
+        public Task<bool> IsPermittedActionQueryAsync(BigInteger tokenId, byte[] ipfsCID, BlockParameter blockParameter = null)
         {
             var isPermittedActionFunction = new IsPermittedActionFunction();
                 isPermittedActionFunction.TokenId = tokenId;
@@ -506,13 +506,13 @@ namespace LitContracts.PKPPermissions
             return ContractHandler.QueryAsync<IsPermittedActionFunction, bool>(isPermittedActionFunction, blockParameter);
         }
 
-        public Task<bool> IsPermittedAddressQueryAsync(IsPermittedAddressFunction isPermittedAddressFunction, BlockParameter? blockParameter = null)
+        public Task<bool> IsPermittedAddressQueryAsync(IsPermittedAddressFunction isPermittedAddressFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<IsPermittedAddressFunction, bool>(isPermittedAddressFunction, blockParameter);
         }
 
         
-        public Task<bool> IsPermittedAddressQueryAsync(BigInteger tokenId, string user, BlockParameter? blockParameter = null)
+        public Task<bool> IsPermittedAddressQueryAsync(BigInteger tokenId, string user, BlockParameter blockParameter = null)
         {
             var isPermittedAddressFunction = new IsPermittedAddressFunction();
                 isPermittedAddressFunction.TokenId = tokenId;
@@ -521,13 +521,13 @@ namespace LitContracts.PKPPermissions
             return ContractHandler.QueryAsync<IsPermittedAddressFunction, bool>(isPermittedAddressFunction, blockParameter);
         }
 
-        public Task<bool> IsPermittedAuthMethodQueryAsync(IsPermittedAuthMethodFunction isPermittedAuthMethodFunction, BlockParameter? blockParameter = null)
+        public Task<bool> IsPermittedAuthMethodQueryAsync(IsPermittedAuthMethodFunction isPermittedAuthMethodFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<IsPermittedAuthMethodFunction, bool>(isPermittedAuthMethodFunction, blockParameter);
         }
 
         
-        public Task<bool> IsPermittedAuthMethodQueryAsync(BigInteger tokenId, BigInteger authMethodType, byte[] id, BlockParameter? blockParameter = null)
+        public Task<bool> IsPermittedAuthMethodQueryAsync(BigInteger tokenId, BigInteger authMethodType, byte[] id, BlockParameter blockParameter = null)
         {
             var isPermittedAuthMethodFunction = new IsPermittedAuthMethodFunction();
                 isPermittedAuthMethodFunction.TokenId = tokenId;
@@ -537,13 +537,13 @@ namespace LitContracts.PKPPermissions
             return ContractHandler.QueryAsync<IsPermittedAuthMethodFunction, bool>(isPermittedAuthMethodFunction, blockParameter);
         }
 
-        public Task<bool> IsPermittedAuthMethodScopePresentQueryAsync(IsPermittedAuthMethodScopePresentFunction isPermittedAuthMethodScopePresentFunction, BlockParameter? blockParameter = null)
+        public Task<bool> IsPermittedAuthMethodScopePresentQueryAsync(IsPermittedAuthMethodScopePresentFunction isPermittedAuthMethodScopePresentFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<IsPermittedAuthMethodScopePresentFunction, bool>(isPermittedAuthMethodScopePresentFunction, blockParameter);
         }
 
         
-        public Task<bool> IsPermittedAuthMethodScopePresentQueryAsync(BigInteger tokenId, BigInteger authMethodType, byte[] id, BigInteger scopeId, BlockParameter? blockParameter = null)
+        public Task<bool> IsPermittedAuthMethodScopePresentQueryAsync(BigInteger tokenId, BigInteger authMethodType, byte[] id, BigInteger scopeId, BlockParameter blockParameter = null)
         {
             var isPermittedAuthMethodScopePresentFunction = new IsPermittedAuthMethodScopePresentFunction();
                 isPermittedAuthMethodScopePresentFunction.TokenId = tokenId;
@@ -559,7 +559,7 @@ namespace LitContracts.PKPPermissions
              return ContractHandler.SendRequestAsync(removePermittedActionFunction);
         }
 
-        public Task<TransactionReceipt> RemovePermittedActionRequestAndWaitForReceiptAsync(RemovePermittedActionFunction removePermittedActionFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> RemovePermittedActionRequestAndWaitForReceiptAsync(RemovePermittedActionFunction removePermittedActionFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(removePermittedActionFunction, cancellationToken);
         }
@@ -573,7 +573,7 @@ namespace LitContracts.PKPPermissions
              return ContractHandler.SendRequestAsync(removePermittedActionFunction);
         }
 
-        public Task<TransactionReceipt> RemovePermittedActionRequestAndWaitForReceiptAsync(BigInteger tokenId, byte[] ipfsCID, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> RemovePermittedActionRequestAndWaitForReceiptAsync(BigInteger tokenId, byte[] ipfsCID, CancellationTokenSource cancellationToken = null)
         {
             var removePermittedActionFunction = new RemovePermittedActionFunction();
                 removePermittedActionFunction.TokenId = tokenId;
@@ -587,7 +587,7 @@ namespace LitContracts.PKPPermissions
              return ContractHandler.SendRequestAsync(removePermittedAddressFunction);
         }
 
-        public Task<TransactionReceipt> RemovePermittedAddressRequestAndWaitForReceiptAsync(RemovePermittedAddressFunction removePermittedAddressFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> RemovePermittedAddressRequestAndWaitForReceiptAsync(RemovePermittedAddressFunction removePermittedAddressFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(removePermittedAddressFunction, cancellationToken);
         }
@@ -601,7 +601,7 @@ namespace LitContracts.PKPPermissions
              return ContractHandler.SendRequestAsync(removePermittedAddressFunction);
         }
 
-        public Task<TransactionReceipt> RemovePermittedAddressRequestAndWaitForReceiptAsync(BigInteger tokenId, string user, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> RemovePermittedAddressRequestAndWaitForReceiptAsync(BigInteger tokenId, string user, CancellationTokenSource cancellationToken = null)
         {
             var removePermittedAddressFunction = new RemovePermittedAddressFunction();
                 removePermittedAddressFunction.TokenId = tokenId;
@@ -615,7 +615,7 @@ namespace LitContracts.PKPPermissions
              return ContractHandler.SendRequestAsync(removePermittedAuthMethodFunction);
         }
 
-        public Task<TransactionReceipt> RemovePermittedAuthMethodRequestAndWaitForReceiptAsync(RemovePermittedAuthMethodFunction removePermittedAuthMethodFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> RemovePermittedAuthMethodRequestAndWaitForReceiptAsync(RemovePermittedAuthMethodFunction removePermittedAuthMethodFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(removePermittedAuthMethodFunction, cancellationToken);
         }
@@ -630,7 +630,7 @@ namespace LitContracts.PKPPermissions
              return ContractHandler.SendRequestAsync(removePermittedAuthMethodFunction);
         }
 
-        public Task<TransactionReceipt> RemovePermittedAuthMethodRequestAndWaitForReceiptAsync(BigInteger tokenId, BigInteger authMethodType, byte[] id, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> RemovePermittedAuthMethodRequestAndWaitForReceiptAsync(BigInteger tokenId, BigInteger authMethodType, byte[] id, CancellationTokenSource cancellationToken = null)
         {
             var removePermittedAuthMethodFunction = new RemovePermittedAuthMethodFunction();
                 removePermittedAuthMethodFunction.TokenId = tokenId;
@@ -645,7 +645,7 @@ namespace LitContracts.PKPPermissions
              return ContractHandler.SendRequestAsync(removePermittedAuthMethodScopeFunction);
         }
 
-        public Task<TransactionReceipt> RemovePermittedAuthMethodScopeRequestAndWaitForReceiptAsync(RemovePermittedAuthMethodScopeFunction removePermittedAuthMethodScopeFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> RemovePermittedAuthMethodScopeRequestAndWaitForReceiptAsync(RemovePermittedAuthMethodScopeFunction removePermittedAuthMethodScopeFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(removePermittedAuthMethodScopeFunction, cancellationToken);
         }
@@ -661,7 +661,7 @@ namespace LitContracts.PKPPermissions
              return ContractHandler.SendRequestAsync(removePermittedAuthMethodScopeFunction);
         }
 
-        public Task<TransactionReceipt> RemovePermittedAuthMethodScopeRequestAndWaitForReceiptAsync(BigInteger tokenId, BigInteger authMethodType, byte[] id, BigInteger scopeId, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> RemovePermittedAuthMethodScopeRequestAndWaitForReceiptAsync(BigInteger tokenId, BigInteger authMethodType, byte[] id, BigInteger scopeId, CancellationTokenSource cancellationToken = null)
         {
             var removePermittedAuthMethodScopeFunction = new RemovePermittedAuthMethodScopeFunction();
                 removePermittedAuthMethodScopeFunction.TokenId = tokenId;
@@ -677,7 +677,7 @@ namespace LitContracts.PKPPermissions
              return ContractHandler.SendRequestAsync(setContractResolverFunction);
         }
 
-        public Task<TransactionReceipt> SetContractResolverRequestAndWaitForReceiptAsync(SetContractResolverFunction setContractResolverFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> SetContractResolverRequestAndWaitForReceiptAsync(SetContractResolverFunction setContractResolverFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(setContractResolverFunction, cancellationToken);
         }
@@ -690,7 +690,7 @@ namespace LitContracts.PKPPermissions
              return ContractHandler.SendRequestAsync(setContractResolverFunction);
         }
 
-        public Task<TransactionReceipt> SetContractResolverRequestAndWaitForReceiptAsync(string newResolverAddress, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> SetContractResolverRequestAndWaitForReceiptAsync(string newResolverAddress, CancellationTokenSource cancellationToken = null)
         {
             var setContractResolverFunction = new SetContractResolverFunction();
                 setContractResolverFunction.NewResolverAddress = newResolverAddress;
@@ -703,7 +703,7 @@ namespace LitContracts.PKPPermissions
              return ContractHandler.SendRequestAsync(setRootHashFunction);
         }
 
-        public Task<TransactionReceipt> SetRootHashRequestAndWaitForReceiptAsync(SetRootHashFunction setRootHashFunction, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> SetRootHashRequestAndWaitForReceiptAsync(SetRootHashFunction setRootHashFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(setRootHashFunction, cancellationToken);
         }
@@ -718,7 +718,7 @@ namespace LitContracts.PKPPermissions
              return ContractHandler.SendRequestAsync(setRootHashFunction);
         }
 
-        public Task<TransactionReceipt> SetRootHashRequestAndWaitForReceiptAsync(BigInteger tokenId, BigInteger group, byte[] root, CancellationTokenSource? cancellationToken = null)
+        public Task<TransactionReceipt> SetRootHashRequestAndWaitForReceiptAsync(BigInteger tokenId, BigInteger group, byte[] root, CancellationTokenSource cancellationToken = null)
         {
             var setRootHashFunction = new SetRootHashFunction();
                 setRootHashFunction.TokenId = tokenId;
@@ -728,13 +728,13 @@ namespace LitContracts.PKPPermissions
              return ContractHandler.SendRequestAndWaitForReceiptAsync(setRootHashFunction, cancellationToken);
         }
 
-        public Task<bool> VerifyStateQueryAsync(VerifyStateFunction verifyStateFunction, BlockParameter? blockParameter = null)
+        public Task<bool> VerifyStateQueryAsync(VerifyStateFunction verifyStateFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<VerifyStateFunction, bool>(verifyStateFunction, blockParameter);
         }
 
         
-        public Task<bool> VerifyStateQueryAsync(BigInteger tokenId, BigInteger group, List<byte[]> proof, byte[] leaf, BlockParameter? blockParameter = null)
+        public Task<bool> VerifyStateQueryAsync(BigInteger tokenId, BigInteger group, List<byte[]> proof, byte[] leaf, BlockParameter blockParameter = null)
         {
             var verifyStateFunction = new VerifyStateFunction();
                 verifyStateFunction.TokenId = tokenId;
@@ -745,13 +745,13 @@ namespace LitContracts.PKPPermissions
             return ContractHandler.QueryAsync<VerifyStateFunction, bool>(verifyStateFunction, blockParameter);
         }
 
-        public Task<bool> VerifyStatesQueryAsync(VerifyStatesFunction verifyStatesFunction, BlockParameter? blockParameter = null)
+        public Task<bool> VerifyStatesQueryAsync(VerifyStatesFunction verifyStatesFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<VerifyStatesFunction, bool>(verifyStatesFunction, blockParameter);
         }
 
         
-        public Task<bool> VerifyStatesQueryAsync(BigInteger tokenId, BigInteger group, List<byte[]> proof, List<bool> proofFlags, List<byte[]> leaves, BlockParameter? blockParameter = null)
+        public Task<bool> VerifyStatesQueryAsync(BigInteger tokenId, BigInteger group, List<byte[]> proof, List<bool> proofFlags, List<byte[]> leaves, BlockParameter blockParameter = null)
         {
             var verifyStatesFunction = new VerifyStatesFunction();
                 verifyStatesFunction.TokenId = tokenId;
