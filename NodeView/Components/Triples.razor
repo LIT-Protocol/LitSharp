@@ -1,5 +1,7 @@
 @inherits NodeView.Pages.BaseDataCollection
 @using SharedService;
+@using SharedService.Metrics;
+@using SharedService.Metrics.Models;
 
 @if ( triples == null ) {
     <div class="spinner-border" role="status">
@@ -15,8 +17,8 @@ else {
             </span>
         </span> 
         <label >&nbsp; &nbsp; </label>
-        
     }
+    @System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 }
 
 @code {

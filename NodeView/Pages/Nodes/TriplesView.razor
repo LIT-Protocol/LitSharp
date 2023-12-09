@@ -1,6 +1,9 @@
 @page "/nodes/triplesview"
 @inherits BaseDataCollection
 @using SharedService;
+@using SharedService.Metrics;
+@using SharedService.Metrics.Models;
+
 
 <PageTitle>Beaver Triples</PageTitle>
 
@@ -50,7 +53,6 @@
                 continue;
             }
             triples = base.history.get_lastest_triples();      
-            @* output = System.Text.Json.JsonSerializer.Serialize(triples);      *@
             output = "";
             StateHasChanged();           
         }    
