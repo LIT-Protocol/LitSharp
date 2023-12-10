@@ -1,5 +1,16 @@
-
+using System.Net;
 namespace SharedService.Metrics.Models;
+
+public enum Action_Type_Id {
+    DKG,
+    BeaverTriple,
+    SignEcdsa
+}   
+
+public class Validator: LitContracts.Staking.ContractDefinition.Validator  {
+        
+    public IPAddress Node_Ip  { get { return IPAddress.Parse( Ip.ToString()); } }
+}
 
 public class Metric
 {
@@ -16,7 +27,7 @@ public class Metric
 public class NewAction
     {
         public string? type_id { get; set; }
-        public int txn_id { get; set; }
+        public ulong txn_id { get; set; }
         public bool is_start { get; set; }
     }
 
@@ -30,16 +41,25 @@ public class NodeMetricRoot
 {
     public int idx { get; set; }
     public List<Metric>? metrics { get; set; }
-    public List<NewAction>? new_actions { get; set; }
+    public List<NewAction>? action { get; set; }
     public List<Peer>? peers { get; set; }
     public List<TripleCount>? triple_count { get; set; }
     public Timestamp? timestamp { get; set; }
+
+    public DateTime datetime { get {
+            DateTime epochTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            if (timestamp == null) {
+                return epochTime;
+            }
+            return epochTime.AddTicks(this.timestamp.nanos_since_epoch / 100);
+        }
+    }
 }
 
 public class Timestamp
 {
-    public int secs_since_epoch { get; set; }
-    public int nanos_since_epoch { get; set; }
+    public long secs_since_epoch { get; set; }
+    public long nanos_since_epoch { get; set; }
 }
 
 public class NodeTripleCount {
@@ -64,9 +84,11 @@ public class NodeMetric {
     public List<Metric>? metrics { get; set; }
 }
 
-public class ActiveActions {
+public class ActiveActions {    
     public string? type_id { get; set; }
-    public List<int>? ids { get; set; }
+    public List<ulong> ids { get; set; } = new List<ulong>();
+    public int count { get { return ids.Count; } }
+    public int distinct_count { get { return ids.Distinct().ToList().Count(); } }
 }
 
 public class OutMessages {

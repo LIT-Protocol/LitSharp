@@ -3,6 +3,7 @@
 @using System.Net.Http.Json
 @using SharedService;
 @using SharedService.Metrics;
+@using SharedService.Metrics.Models;
 
 @code {
 
@@ -31,7 +32,8 @@
                     Port = x.Port,
                 }).ToArray();
 
-            history = new NetworkHistory(5, nodes.Length);
+            if ( history == null )
+                history = new NetworkHistory(5, nodes.Length);
         }
         catch (Exception e)
         {
@@ -62,7 +64,7 @@
                 foreach ( var node in nodes ) {
                     var handle = Task.Run(async () => {
                         try {
-                            var response = await client.GetAsync("http://localhost:" + node.Port.ToString() +  "/web/rt/metrics");
+                            var response = await client.GetAsync("http://127.0.0.1:" + node.Port.ToString() +  "/web/rt/metrics");
                             if (response.StatusCode == System.Net.HttpStatusCode.OK) {
                                 var result = await response.Content.ReadAsStringAsync();
                                 raw_metrics.Add(result);

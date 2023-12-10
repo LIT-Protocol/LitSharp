@@ -4,12 +4,9 @@
 @using SharedService.Metrics;
 @using SharedService.Metrics.Models;
 
-
 <PageTitle>Beaver Triples</PageTitle>
-
 <h2>Beaver Triples Supply</h2>
-<NodeView.Components.NetworkState />
-<NodeView.Components.Triples />
+<NodeView.Components.Header triples="@triples" actions="@actions"/>
 
 <div class="container">
     <div class="row">
@@ -29,17 +26,15 @@
         </div>
     </div>
 </div>
-@output
 
 @code {
-    private string output = "... gathering metrics ...";
+    private List<ActiveActions>? actions;
     private List<NodeTripleCount>? triples;
     PeriodicTimer periodicTimer = new (TimeSpan.FromMilliseconds(500));
     protected override Task OnInitializedAsync() {        
        RunTimer();
        return base.OnInitializedAsync();
     }
-
     public new void Dispose()
     {        
         periodicTimer.Dispose();
@@ -52,8 +47,8 @@
             if (base.history == null) {
                 continue;
             }
-            triples = base.history.get_lastest_triples();      
-            output = "";
+            triples = base.history.get_active_triples();    
+            actions = base.history.get_active_actions();  
             StateHasChanged();           
         }    
     }

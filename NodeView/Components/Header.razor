@@ -1,0 +1,30 @@
+@using SharedService;
+@using SharedService.Metrics;
+@using SharedService.Metrics.Models;
+
+<div class="card border-primary">
+  <div class="container card-header  ">
+    <div class="row ">
+      <div class="col">
+        <NodeView.Components.NetworkState />
+      </div>
+      <div class="col">      
+          <NodeView.Components.Actions actions="@actions" />
+      </div>
+    </div>
+    <div class="row  ">
+      <div class="coly">
+          <NodeView.Components.Triples triples="@triples" />
+      </div>
+    </div>
+  </div>
+</div>
+
+@code {
+    [Parameter]
+    public List<ActiveActions>? actions { get; set; }
+  
+    [Parameter]
+    public List<NodeTripleCount>? triples { get; set;}
+        
+}

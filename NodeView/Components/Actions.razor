@@ -1,0 +1,33 @@
+@using SharedService.Metrics.Models;
+
+<div class="row">
+    @if (actions == null)
+    {
+        <div class="col">
+            ... loading ...
+        </div>
+    }
+    else
+    {
+        <div class="col">
+            Signing: @actions[(int)Action_Type_Id.SignEcdsa].distinct_count 
+            <label class="text-secondary"> / @actions[(int)Action_Type_Id.SignEcdsa].count </label>
+        </div>
+        <div class="col">
+            DKG: @actions[(int)Action_Type_Id.DKG].distinct_count
+            <label class="text-secondary"> / @actions[(int)Action_Type_Id.DKG].count </label>
+        </div>
+        <div class="col">
+            Triples: @actions[(int)Action_Type_Id.BeaverTriple].distinct_count 
+            <label class="text-secondary"> / @actions[(int)Action_Type_Id.BeaverTriple].count </label>
+        </div>
+    }
+
+</div>
+
+@code {
+    [Parameter]
+    public List<ActiveActions>? actions { get; set; }
+  
+}
+   

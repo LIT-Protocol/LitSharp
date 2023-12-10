@@ -1,7 +1,8 @@
 ﻿@page "/config/validators"
 @using Radzen.Blazor.Rendering;
 @using SharedService;
-@using LitContracts.Staking.ContractDefinition;
+@* @using LitContracts.Staking.ContractDefinition; *@
+@using SharedService.Metrics.Models;
 @using System.Numerics;
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 <PageTitle>Contracts</PageTitle>
@@ -13,7 +14,7 @@
 <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="20" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
     Data="@current_validators" TItem="Validator" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
     <Columns>       
-        <RadzenDataGridColumn TItem="Validator" Property="Ip" Title="ip" Width="10" />
+        <RadzenDataGridColumn TItem="Validator" Property="Node_Ip" Title="ip" Width="10" />
         <RadzenDataGridColumn TItem="Validator" Property="Port" Title="port" Width="3" />
         <RadzenDataGridColumn TItem="Validator" Property="NodeAddress" Title="Node Wallet Address" Width="50" />
         <RadzenDataGridColumn TItem="Validator" Property="Reward" Title="Reward" Width="3"  />
@@ -28,7 +29,7 @@
 <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="20" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
     Data="@next_validators" TItem="Validator" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
     <Columns>       
-        <RadzenDataGridColumn TItem="Validator" Property="Ip" Title="ip" Width="10" />
+        <RadzenDataGridColumn TItem="Validator" Property="Node_Ip" Title="ip" Width="10" />
         <RadzenDataGridColumn TItem="Validator" Property="Port" Title="port" Width="3" />
         <RadzenDataGridColumn TItem="Validator" Property="NodeAddress" Title="Node Wallet Address" Width="50" />
         <RadzenDataGridColumn TItem="Validator" Property="Reward" Title="Reward" Width="3"  />
@@ -52,13 +53,30 @@
         var stakingService = await resolver.GetStakingService();
 
         var v = await stakingService.GetValidatorsStructsInCurrentEpochQueryAsync();
-        current_validators = v.ReturnValue1;
+        current_validators = v.ReturnValue1.Select(x => new Validator()
+        {
+            Ip = x.Ip,
+            Port = x.Port,
+            NodeAddress = x.NodeAddress,
+            Reward = x.Reward,
+            SenderPubKey = x.SenderPubKey,
+            ReceiverPubKey = x.ReceiverPubKey
+        }).ToList();
         var v2 = await stakingService.GetValidatorsStructsInNextEpochQueryAsync();
-        next_validators = v2.ReturnValue1;
+        next_validators = v2.ReturnValue1.Select(x => new Validator()
+        {
+            Ip = x.Ip,
+            Port = x.Port,
+            NodeAddress = x.NodeAddress,
+            Reward = x.Reward,
+            SenderPubKey = x.SenderPubKey,
+            ReceiverPubKey = x.ReceiverPubKey
+        }).ToList();
 
         var stakingBalance = await resolver.GetStakingBalancesService();
 
         total_staked = await stakingBalance.TotalStakedQueryAsync();
 
+        
     }
 }

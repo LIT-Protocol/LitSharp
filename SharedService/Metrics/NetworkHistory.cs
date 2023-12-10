@@ -1,8 +1,4 @@
-using System.Linq.Expressions;
-using LitContracts.Allowlist.ContractDefinition;
-using Nethereum.Merkle.Patricia;
-using Nethereum.Model;
-
+using System.Collections.Immutable;
 using SharedService.Metrics.Models;
 namespace SharedService.Metrics;
 
@@ -10,12 +6,9 @@ public class NetworkHistory
 {
     private int history_count = 0;
     private int node_count = 0;
-
     private List<String> raw_metrics = new List<String>();
     private List<List<NodeMetric>> historic_metrics = new List<List<NodeMetric>>();
-
     private List<ActiveActions> active_actions = new List<ActiveActions>();
-    
     private List<NodeTripleCount> node_triples = new List<NodeTripleCount>();
 
     public NetworkHistory(int historiy_length, int node_length)
@@ -27,6 +20,12 @@ public class NetworkHistory
         node_triples = new List<NodeTripleCount>();
         for (int i = 0; i < node_count; i++) {
             node_triples.Add(new NodeTripleCount { idx = i, triples = new List<TripleCount>() });
+        }
+
+        var vals = Enum.GetValues(typeof(Action_Type_Id));    
+
+        for (int i = 0; i < vals.Length; i++) {
+            active_actions.Add(new ActiveActions { type_id = Enum.GetName(typeof(Action_Type_Id), i), ids = new List<ulong>() });
         }
     } 
 
@@ -49,50 +48,37 @@ public class NetworkHistory
         foreach (var node_metric in incoming_node_metrics) {
             if (node_metric.metrics != null) 
             {
-                // node_metric.metrics.Sort((x, y) => x.idx.CompareTo(y.idx));
                 var new_node_metric = new NodeMetric { node_index = node_metric.idx, metrics = node_metric.metrics };
                 new_node_metrics.Add(new_node_metric);
             }
 
-            
-
             if (node_metric.triple_count != null && node_metric.triple_count.Count > 0)
-            {
-                // Console.WriteLine("Node: " + node_metric.idx.ToString() + " Triple Count: " + node_metric.triple_count[0].count.ToString());
-                // Console.WriteLine("Node: " + node_metric.idx.ToString() + " Triple Count: " + node_metric.triple_count.Count.ToString());
                 node_triples[node_metric.idx].triples =  node_metric.triple_count;
-                
-            }
                         
-            // if (node_metric.new_actions != null) {
-            //     foreach (var action in node_metric.new_actions) {
-            //         if (action.is_start) { // add
-            //             if (active_actions.Where(x => x.type_id == action.type_id).Count() == 0) {
-            //                 active_actions.Add(new ActiveActions { type_id = action.type_id, ids = new List<int>() });
-            //             }
-                        
-            //             foreach (ActiveActions active_action in active_actions) {
-            //                 if (active_action.type_id == action.type_id) {
-            //                     if (active_action.ids == null) {
-            //                         active_action.ids = new List<int>();
-            //                     }
-            //                     active_action.ids.Add(action.txn_id);                                
-            //                 }
-            //             }                        
-            //         }
-            //         else{ // remove
-            //             foreach (ActiveActions active_action in active_actions) {
-            //                 if (active_action.type_id == action.type_id) {
-            //                     if (active_action.ids != null) {
-            //                         active_action.ids.Remove(action.txn_id);
-            //                     }
-            //                     break;
-            //                 }
-            //             }                        
-            //         }
+            if (node_metric.action != null) {
+                foreach (var new_action in node_metric.action) {
+                    // Console.WriteLine("Action: " + new_action.type_id + " " + new_action.txn_id.ToString() + " " + new_action.is_start.ToString());
+                    if (new_action.is_start) { // add
+                        foreach (ActiveActions active_action in active_actions) {
+                            if (active_action.type_id == new_action.type_id) {
+                                active_action.ids.Add(new_action.txn_id);                                
+                            }
+                            
+                        }                        
+                    }
+                    else{ // remove
+                        foreach (ActiveActions active_action in active_actions) {
+                            if (active_action.type_id == new_action.type_id) {
+                                if (active_action.ids != null) {
+                                    active_action.ids.Remove(new_action.txn_id);
+                                }
+                                break;
+                            }
+                        }                        
+                    }
 
-            //     }
-            // }
+                }
+            }
 
         } 
 
@@ -115,7 +101,7 @@ public class NetworkHistory
         return historic_metrics[historic_metrics.Count - 1];
     }
 
-    public List<NodeTripleCount> get_lastest_triples() {
+    public List<NodeTripleCount> get_active_triples() {
         return node_triples;
     }
     public List<OutMessages> get_out_messages () {

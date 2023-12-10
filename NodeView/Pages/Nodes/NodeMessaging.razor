@@ -1,52 +1,38 @@
 @namespace NodeView.Pages
 @page "/nodes/nodemessaging"
 @inherits BaseDataCollection
-@using SharedService;
-@using SharedService.Metrics;
 @using SharedService.Metrics.Models;
 
-
 <PageTitle>Node Messaging</PageTitle>
+<h2>Realtime Inter-Node Messaging</h2>
+<NodeView.Components.Header triples="@triples" actions="@actions"/>
 
-<h2>Realtime InterNode Messaging</h2>
-<NodeView.Components.NetworkState />
 <div class="container">
     <div class="row">
         <div class="col-sm-12">
-@if (@node_averages != null) {
-    <RadzenChart style="height: 400px">                 
-        <RadzenStackedColumnSeries Data="@node_averages" CategoryProperty="node_name" Title="Incoming" LineType="LineType.Dashed" ValueProperty="inmsg">
-            <RadzenSeriesDataLabels Visible="true" />
-        </RadzenStackedColumnSeries>
-        <RadzenStackedColumnSeries Data="@node_averages" CategoryProperty="node_name" Title="Outgoing" ValueProperty="outmsg">
-            <RadzenSeriesDataLabels Visible="true" />
-        </RadzenStackedColumnSeries>
-    
-        <RadzenValueAxis Min="0" Max="300" Step="100">
-            <RadzenGridLines Visible="true" />
-            <RadzenAxisTitle Text="Messages/Second" />
-        </RadzenValueAxis>
-        <RadzenColumnOptions Radius="5" />
-    </RadzenChart>
-    @* @System.Text.Json.JsonSerializer.Serialize(  node_averages); *@
-<br>
-
-    @* @foreach (ActiveActions actions in history.get_active_actions()) {
-        @if (actions.ids.Count > 0) {
-            <a>Nodes running @actions.type_id</a> <b>: @actions.ids.Count</b> 
-            <b> ( @actions.ids.GroupBy(i => i).Count() unique ) </b>
-         <br/>
+        @if (@node_averages != null) {
+            <RadzenChart style="height: 400px">                 
+                <RadzenStackedColumnSeries Data="@node_averages" CategoryProperty="node_name" Title="Incoming" LineType="LineType.Dashed" ValueProperty="inmsg">
+                    <RadzenSeriesDataLabels Visible="true" />
+                </RadzenStackedColumnSeries>
+                <RadzenStackedColumnSeries Data="@node_averages" CategoryProperty="node_name" Title="Outgoing" ValueProperty="outmsg">
+                    <RadzenSeriesDataLabels Visible="true" />
+                </RadzenStackedColumnSeries>
+                <RadzenValueAxis Min="0" Max="300" Step="100">
+                    <RadzenGridLines Visible="true" />
+                    <RadzenAxisTitle Text="Messages/Second" />
+                </RadzenValueAxis>
+                <RadzenColumnOptions Radius="5" />
+            </RadzenChart>
         }
-    } *@
-
-}
         </div>
     </div>
 </div>
 
 @code {
-    private string output = "... gathering metrics ...";
     private List<Metric>? node_averages;
+    private List<ActiveActions>? actions { get; set; }
+    private List<NodeTripleCount>? triples { get; set;}
     PeriodicTimer periodicTimer = new (TimeSpan.FromMilliseconds(500));
     protected override Task OnInitializedAsync() {        
        RunTimer();
@@ -58,7 +44,6 @@
         periodicTimer.Dispose();
         base.Dispose();
     }
-
     async void RunTimer()
     {       
         while (await periodicTimer.WaitForNextTickAsync()) { 
@@ -67,10 +52,10 @@
             }
             base.history.network_average();
             node_averages = base.history.node_average();           
+            actions = base.history.get_active_actions();
+            triples = base.history.get_active_triples();
             StateHasChanged();           
         }    
     }
-
-
 }
       

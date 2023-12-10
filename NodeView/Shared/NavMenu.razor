@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <a class="navbar-brand" href="">NodeView</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
+            <span class="navbar-toggler-icon">a</span>
         </button>
     </div>
 </div>
@@ -22,11 +22,16 @@
         </div>
 
         <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/config/defaults">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Network Defaults
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
             <NavLink class="nav-link" href="/config/validators">
                 <span class="oi oi-list-rich" aria-hidden="true"></span> Validators
             </NavLink>
         </div>
-
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="/config/rootkeys">
@@ -35,17 +40,10 @@
         </div>
 
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/config/defaults">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Network Defaults
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
             <NavLink class="nav-link" href="/pkps/list">
                 <span class="oi oi-list-rich" aria-hidden="true"></span> PKPs
             </NavLink>
         </div>
-
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="/nodes/runningmetrics">

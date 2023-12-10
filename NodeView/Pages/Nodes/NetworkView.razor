@@ -19,7 +19,7 @@
 
 <PageTitle>Network Viewer</PageTitle>
 <h1>Network Viewer</h1>
-<NodeView.Components.NetworkState />
+<NodeView.Components.Header triples="@triples" actions="@actions"/>
 
 @if (base.history == null)
 {
@@ -27,31 +27,23 @@
 }
 else
 {
-    <div style="width: 80%;
-        height: 800px;
-        border: 1px solid black;">
+    <div style="height: @diagram_height_string;" class="card border-primary">
         <CascadingValue Value="diagram" IsFixed="true">            
             <DiagramCanvas></DiagramCanvas> 
         </CascadingValue>
-        Out Messages  @System.Text.Json.JsonSerializer.Serialize(out_messages);
     </div>
-
-    @if (base.history != null) {
-        @foreach (ActiveActions actions in base.history.get_active_actions()) {
-            @if (actions.ids != null && actions.ids.Count > 0) {
-                <a>Nodes running @actions.type_id</a> <b>: @actions.ids.Count</b> 
-                <b> ( @actions.ids.GroupBy(i => i).Count() unique ) </b>
-            <br/>
-            }
-        }
-    }
 }
 
 @code {
+    private int diagram_height = 800;
+    private string diagram_height_string = "100px";
+    private List<ActiveActions>? actions;
+    private List<NodeTripleCount>? triples;
     private BlazorDiagram? diagram { get; set; } 
     private List<OutMessages>? out_messages { get; set; }
     PeriodicTimer periodicTimer = new (TimeSpan.FromMilliseconds(500));
     protected override Task OnInitializedAsync() {               
+       diagram_height_string = diagram_height.ToString() + "px";
        Init_Diagram();
        RunTimer();
        return base.OnInitializedAsync();
@@ -94,7 +86,7 @@ else
 
         Console.WriteLine("Node count: " + base.nodes.Length.ToString() );
 
-        var center_point = new Blazor.Diagrams.Core.Geometry.Point(450, 450);
+        var center_point = new Blazor.Diagrams.Core.Geometry.Point(450, diagram_height / 2 - 20);
         var node_count = base.nodes.Length;
         var positions = GetCirclePoints(node_count, 380, center_point);
 
@@ -186,6 +178,10 @@ else
                 }
                 link.Refresh();
             }
+
+            actions = base.history.get_active_actions();
+            triples = base.history.get_active_triples();
+
             StateHasChanged();           
         }     
     }
