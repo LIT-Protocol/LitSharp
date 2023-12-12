@@ -1,4 +1,4 @@
-@using SharedService.Metrics.Models;
+@using Services.Metrics.Models;
 
 <div class="row">
     @if (actions == null)
@@ -9,17 +9,23 @@
     }
     else
     {
-        <div class="col">
-            Signing: @actions[(int)Action_Type_Id.SignEcdsa].distinct_count 
-            <label class="text-secondary"> / @actions[(int)Action_Type_Id.SignEcdsa].count </label>
+        var action = actions[(int)Action_Type_Id.SignEcdsa];
+        <div class="col">            
+            Signing: @action.distinct_count 
+            <label class="text-secondary"> / @action.count </label>
+            <label class="text-warning"> / @action.error_count </label>
         </div>
+        action = actions[(int)Action_Type_Id.DKG];
         <div class="col">
-            DKG: @actions[(int)Action_Type_Id.DKG].distinct_count
-            <label class="text-secondary"> / @actions[(int)Action_Type_Id.DKG].count </label>
+            DKG:  @action.distinct_count 
+            <label class="text-secondary"> / @action.count </label>
+            <label class="text-warning"> / @action.error_count </label>
         </div>
+        action = actions[(int)Action_Type_Id.BeaverTriple];
         <div class="col">
-            Triples: @actions[(int)Action_Type_Id.BeaverTriple].distinct_count 
-            <label class="text-secondary"> / @actions[(int)Action_Type_Id.BeaverTriple].count </label>
+            Triples:  @action.distinct_count 
+            <label class="text-secondary"> / @action.count </label>
+            <label class="text-warning"> / @action.error_count </label>
         </div>
     }
 

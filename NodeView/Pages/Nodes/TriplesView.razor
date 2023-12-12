@@ -1,8 +1,6 @@
 @page "/nodes/triplesview"
-@inherits BaseDataCollection
-@using SharedService;
-@using SharedService.Metrics;
-@using SharedService.Metrics.Models;
+@inject Services.Metrics.Poller poller
+@using Services.Metrics.Models;
 
 <PageTitle>Beaver Triples</PageTitle>
 <h2>Beaver Triples Supply</h2>
@@ -35,20 +33,19 @@
        RunTimer();
        return base.OnInitializedAsync();
     }
-    public new void Dispose()
+    public void Dispose()
     {        
         periodicTimer.Dispose();
-        base.Dispose();
     }
 
     async void RunTimer()
     {       
         while (await periodicTimer.WaitForNextTickAsync()) { 
-            if (base.history == null) {
+            if (poller.history == null) {
                 continue;
             }
-            triples = base.history.get_active_triples();    
-            actions = base.history.get_active_actions();  
+            triples = poller.history.get_active_triples();    
+            actions = poller.history.get_active_actions();  
             StateHasChanged();           
         }    
     }

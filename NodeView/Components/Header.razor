@@ -1,10 +1,8 @@
-@using SharedService;
-@using SharedService.Metrics;
-@using SharedService.Metrics.Models;
+@using Services.Metrics.Models;
 
 <div class="card border-primary">
-  <div class="container card-header  ">
-    <div class="row ">
+  <div class="card-header  ">
+    <div class="row no-gutters">
       <div class="col">
         <NodeView.Components.NetworkState />
       </div>
@@ -12,8 +10,8 @@
           <NodeView.Components.Actions actions="@actions" />
       </div>
     </div>
-    <div class="row  ">
-      <div class="coly">
+    <div class="row">
+      <div class="col">
           <NodeView.Components.Triples triples="@triples" />
       </div>
     </div>

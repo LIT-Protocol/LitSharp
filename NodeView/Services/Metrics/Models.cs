@@ -1,5 +1,7 @@
 using System.Net;
-namespace SharedService.Metrics.Models;
+using System.Reflection.Metadata.Ecma335;
+using Org.BouncyCastle.Bcpg.OpenPgp;
+namespace Services.Metrics.Models;
 
 public enum Action_Type_Id {
     DKG,
@@ -29,6 +31,8 @@ public class NewAction
         public string? type_id { get; set; }
         public ulong txn_id { get; set; }
         public bool is_start { get; set; }
+        public bool is_success { get; set; }
+        
     }
 
 public class Peer
@@ -86,9 +90,19 @@ public class NodeMetric {
 
 public class ActiveActions {    
     public string? type_id { get; set; }
-    public List<ulong> ids { get; set; } = new List<ulong>();
+    public List<ulong> ids { get; set; } = new List<ulong>();    
+    public List<ulong> error_ids { get; set; } = new List<ulong>();
+    public DateTime last_error_time { get; set; } = DateTime.MinValue;
     public int count { get { return ids.Count; } }
     public int distinct_count { get { return ids.Distinct().ToList().Count(); } }
+    public int error_count { get { return error_ids.Count; } }
+}
+
+public class ActiveActionId {
+    
+    public int node_idx { get; set; }
+    public ulong txn_id { get; set; }
+    public DateTime start_time { get; set; }
 }
 
 public class OutMessages {

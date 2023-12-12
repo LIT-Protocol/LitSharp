@@ -11,7 +11,7 @@ using LitContracts.ContractResolver;
 using Nethereum.Util;
 using Org.BouncyCastle.Crypto.Digests;
 using Nethereum.Web3;
-using  Nethereum.Web3.Accounts;
+using Nethereum.Web3.Accounts;
 using Blazored.LocalStorage;
 using Org.BouncyCastle.Crypto.Tls;
 namespace SharedService;

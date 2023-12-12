@@ -1,23 +1,32 @@
-@inject HttpClient Http
-@inject Blazored.LocalStorage.ILocalStorageService localStorage
-@using System.Net.Http.Json
-@using SharedService;
-@using SharedService.Metrics;
-@using SharedService.Metrics.Models;
+using System.Net;
+using Blazored.LocalStorage;
+using  Services.Metrics.Models;
+using SharedService;
+namespace Services.Metrics;
 
-@code {
-
+public class Poller {
+    private ILocalStorageService localStorage { get; }
     public const int DefaultTimeSpan = 500;
     public LitContracts.Staking.ContractDefinition.Validator[]? nodes;
     PeriodicTimer periodicTimer = new (TimeSpan.FromMilliseconds(DefaultTimeSpan));
     public NetworkHistory? history;
 
-    protected override async Task OnInitializedAsync(){  
-        
+    public Poller(ILocalStorageService localStorageService) {
+        localStorage = localStorageService;
+    }
+
+    public async Task StartAsync() {
         await LoadNodes();
         RunTimer();
-    }  
+    }
 
+    public async Task RestartAsync() {
+        periodicTimer.Dispose();
+        periodicTimer = new PeriodicTimer(TimeSpan.FromMilliseconds(DefaultTimeSpan));
+        await LoadNodes();
+        RunTimer();
+    }
+    
     async Task<bool> LoadNodes() {
         try
         {        
@@ -73,7 +82,7 @@
                                     new_metrics.Add(metric);
                             }
                         } catch (Exception e) {
-                            Console.WriteLine(e.Message);
+                            Console.WriteLine("Error gathering data: " + e.Message);
                         }
                     });
 
@@ -84,7 +93,7 @@
                 await Task.WhenAll(handles);
                 history.add(new_metrics, raw_metrics);
 
-                @* Console.WriteLine(history.get_lastest_metrics().Count); *@
+                // Console.WriteLine(history.get_lastest_metrics().Count); 
 
             }
         }    
@@ -96,4 +105,3 @@
         periodicTimer?.Dispose();
     }
 }
-      

@@ -1,7 +1,6 @@
 @page "/nodes/runningmetrics"
-@inherits BaseDataCollection
-@using SharedService;
-@using SharedService.Metrics;
+@inject Services.Metrics.Poller poller
+@using Services.Metrics;
 
 <PageTitle>Raw Metrics</PageTitle>
 <h1>RealTime Raw Metrics</h1>
@@ -16,18 +15,17 @@
        return base.OnInitializedAsync();
     }
 
-    public new void Dispose()
+    public void Dispose()
     {        
         periodicTimer.Dispose();
-        base.Dispose();
     }
  
     async void RunTimer()
     {
         while (await periodicTimer.WaitForNextTickAsync()) { 
             var combined_output = new System.Text.StringBuilder();
-            if (base.history != null) {
-            var metrics = base.history.get_raw_metrics();
+            if (poller.history != null) {
+            var metrics = poller.history.get_raw_metrics();
                 foreach (var metric in metrics) {
                     combined_output.AppendLine(metric);
                 }                                                                

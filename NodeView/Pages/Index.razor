@@ -1,6 +1,6 @@
 ﻿@page "/"
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
-
+@inject Services.Metrics.Poller poller
 <PageTitle>Index</PageTitle>
 
 <h2>Developer Node Explorer</h2>    
@@ -45,6 +45,16 @@ The default settings are to use the local Anvil configuration, wtih a determinis
     <label for="privateKey">Private Key:</label>
     <input type="text" id="privateKey" class="form-control" name="privateKey" value="@defaultPrivateKey" />
 </div>
+
+<p>
+    <br>
+    <b>
+    Poller Service
+</b></p>
+<div class="form-group">
+    <button type="button" class="btn btn-primary" @onclick="() => poller.StartAsync()">Start Polling</button>
+</div>
+
 
 @code {
     string? chainUrl;

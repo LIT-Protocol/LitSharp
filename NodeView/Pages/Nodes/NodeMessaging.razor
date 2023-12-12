@@ -1,7 +1,7 @@
 @namespace NodeView.Pages
 @page "/nodes/nodemessaging"
-@inherits BaseDataCollection
-@using SharedService.Metrics.Models;
+@inject Services.Metrics.Poller poller
+@using Services.Metrics.Models;
 
 <PageTitle>Node Messaging</PageTitle>
 <h2>Realtime Inter-Node Messaging</h2>
@@ -9,16 +9,16 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-sm-12">
+        <div class="col">
         @if (@node_averages != null) {
-            <RadzenChart style="height: 400px">                 
+            <RadzenChart style="height: 700px">                 
                 <RadzenStackedColumnSeries Data="@node_averages" CategoryProperty="node_name" Title="Incoming" LineType="LineType.Dashed" ValueProperty="inmsg">
                     <RadzenSeriesDataLabels Visible="true" />
                 </RadzenStackedColumnSeries>
                 <RadzenStackedColumnSeries Data="@node_averages" CategoryProperty="node_name" Title="Outgoing" ValueProperty="outmsg">
                     <RadzenSeriesDataLabels Visible="true" />
                 </RadzenStackedColumnSeries>
-                <RadzenValueAxis Min="0" Max="300" Step="100">
+                <RadzenValueAxis Min="0" Max="800" Step="100">
                     <RadzenGridLines Visible="true" />
                     <RadzenAxisTitle Text="Messages/Second" />
                 </RadzenValueAxis>
@@ -36,24 +36,23 @@
     PeriodicTimer periodicTimer = new (TimeSpan.FromMilliseconds(500));
     protected override Task OnInitializedAsync() {        
        RunTimer();
+       
        return base.OnInitializedAsync();
     }
 
-    public new void Dispose()
+    public void Dispose()
     {        
         periodicTimer.Dispose();
-        base.Dispose();
     }
     async void RunTimer()
-    {       
+    {  
         while (await periodicTimer.WaitForNextTickAsync()) { 
-            if (base.history == null) {
+            if (poller.history == null) {
                 continue;
             }
-            base.history.network_average();
-            node_averages = base.history.node_average();           
-            actions = base.history.get_active_actions();
-            triples = base.history.get_active_triples();
+            node_averages = poller.history.node_average();           
+            actions = poller.history.get_active_actions();
+            triples = poller.history.get_active_triples();
             StateHasChanged();           
         }    
     }

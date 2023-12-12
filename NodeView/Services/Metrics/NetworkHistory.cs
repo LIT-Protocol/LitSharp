@@ -1,6 +1,7 @@
 using System.Collections.Immutable;
-using SharedService.Metrics.Models;
-namespace SharedService.Metrics;
+using Org.BouncyCastle.Crypto.Modes;
+using Services.Metrics.Models;
+namespace Services.Metrics;
 
 public class NetworkHistory
 {
@@ -57,26 +58,23 @@ public class NetworkHistory
                         
             if (node_metric.action != null) {
                 foreach (var new_action in node_metric.action) {
-                    // Console.WriteLine("Action: " + new_action.type_id + " " + new_action.txn_id.ToString() + " " + new_action.is_start.ToString());
-                    if (new_action.is_start) { // add
-                        foreach (ActiveActions active_action in active_actions) {
-                            if (active_action.type_id == new_action.type_id) {
+                     Console.WriteLine("Action: " + new_action.type_id + " " + new_action.txn_id.ToString() + " " + new_action.is_start.ToString());
+                    foreach (ActiveActions active_action in active_actions) {
+                        if (active_action.type_id == new_action.type_id) {
+                            if (!new_action.is_success) {
+                                if (!active_action.error_ids.Contains(new_action.txn_id)) {
+                                    active_action.error_ids.Add(new_action.txn_id);
+                                }                                
+                            }
+
+                            if (new_action.is_start) { // add
                                 active_action.ids.Add(new_action.txn_id);                                
                             }
-                            
-                        }                        
-                    }
-                    else{ // remove
-                        foreach (ActiveActions active_action in active_actions) {
-                            if (active_action.type_id == new_action.type_id) {
-                                if (active_action.ids != null) {
-                                    active_action.ids.Remove(new_action.txn_id);
-                                }
-                                break;
+                            else{ // remove
+                                active_action.ids.Remove(new_action.txn_id);
                             }
                         }                        
                     }
-
                 }
             }
 
@@ -164,6 +162,9 @@ public class NetworkHistory
             node_metrics.Add(new Metric { inmsg = 0, outmsg = 0 });
             foreach (var h in historic_metrics) {                
                 foreach (var hm in h.Where(x => x.node_index == i).Select(x => x.metrics).ToArray()) {
+                    if (hm == null) {
+                        continue;
+                    }
                     foreach (var m in hm) {
                         node_metrics[i].node_name = "Node: " + (i + 1).ToString();
                         node_metrics[i].idx = i;                        

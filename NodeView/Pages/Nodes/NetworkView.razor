@@ -1,6 +1,6 @@
 @namespace NodeView.Pages 
 @page "/nodes/networkview"
-@inherits BaseDataCollection;
+@inject Poller poller
 @inject HttpClient Http
 @using Blazor.Diagrams.Components;
 @using Blazor.Diagrams;
@@ -12,16 +12,15 @@
 @using Blazor.Diagrams.Core.Models.Base;
 @using Blazor.Diagrams.Components.Widgets;
 @using System.Net.Http.Json
-@using SharedService;
-@using SharedService.Metrics;
-@using SharedService.Metrics.Models;
+@using Services.Metrics;
+@using Services.Metrics.Models;
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 
 <PageTitle>Network Viewer</PageTitle>
 <h1>Network Viewer</h1>
 <NodeView.Components.Header triples="@triples" actions="@actions"/>
 
-@if (base.history == null)
+@if ( poller.history == null)
 {
     <p><em>Loading Network Information...</em></p>
 }
@@ -48,10 +47,9 @@ else
        RunTimer();
        return base.OnInitializedAsync();
     }
-    public new void Dispose()
+    public void Dispose()
     {        
         periodicTimer.Dispose();
-        base.Dispose();
     }
 
     protected bool Init_Diagram() {                
@@ -76,7 +74,7 @@ else
     protected bool Set_Diagram_Nodes()
     {                
         Console.WriteLine("Init_Diagram"    );
-        if (base.nodes == null) {
+        if (poller.nodes == null) {
             return false;
         }
 
@@ -84,17 +82,17 @@ else
             return false;
         }
 
-        Console.WriteLine("Node count: " + base.nodes.Length.ToString() );
+        Console.WriteLine("Node count: " + poller.nodes.Length.ToString() );
 
         var center_point = new Blazor.Diagrams.Core.Geometry.Point(450, diagram_height / 2 - 20);
-        var node_count = base.nodes.Length;
+        var node_count = poller.nodes.Length;
         var positions = GetCirclePoints(node_count, 380, center_point);
 
         for (int i = 0; i < node_count; i++)
         {
             var node = diagram.Nodes.Add(new NodeModel(id: i.ToString(), position: positions[i])
             {
-                Title = "Node " + base.nodes[i].Port.ToString(),
+                Title = "Node " + poller.nodes[i].Port.ToString(),
             });
         }
 
@@ -158,7 +156,7 @@ else
  async void RunTimer()
     {
         while (await periodicTimer.WaitForNextTickAsync()) { 
-            if (base.nodes == null ||  base.history == null || diagram == null)
+            if (poller.nodes == null ||  poller.history == null || diagram == null)
                 continue;
 
             if (diagram.Nodes.Count == 0) {
@@ -166,7 +164,7 @@ else
                 continue;
             }
 
-            out_messages = base.history.get_out_messages();
+            out_messages = poller.history.get_out_messages();
             foreach (LinkModel link in diagram.Links) {
                 if (out_messages.Count(x => x.name == link.Id) == 0) {
                     link.Color = "#CCCCCC";
@@ -179,8 +177,8 @@ else
                 link.Refresh();
             }
 
-            actions = base.history.get_active_actions();
-            triples = base.history.get_active_triples();
+            actions = poller.history.get_active_actions();
+            triples = poller.history.get_active_triples();
 
             StateHasChanged();           
         }     
