@@ -53,7 +53,7 @@ jobs:
         uses: actions/upload-pages-artifact@v2
         with:
           # Upload entire output directory.
-          path: './dist/Web'
+          path: '${{GITHUB_WORKSPACE}}/dist/Web'
           #path: './NodeView/bin/Debug/net7.0/wwwroot'
       - name: Deploy to GitHub Pages
         id: deployment
