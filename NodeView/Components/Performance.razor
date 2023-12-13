@@ -1,6 +1,7 @@
 @using Services.Metrics.Models;
+@inject Services.Metrics.Poller poller
 
-@if ( triples == null ) {
+@if ( timing_metrics == null ) {
     <div class="spinner-border" role="status">
         <span class="visually-hidden">Loading...</span>
     </div>
@@ -9,23 +10,17 @@ else {
     var total_count = 0;
     var min_count = 10000;
     <div class="row">    
-        <div class="col">
-            <label>Triples</label>
+        <div class="col-2">
+            <label>Last 50 Performance</label>
         </div>
 
-    @for (int i = 0; i < triples.Count; i++) {         
-        total_count += triples[i].total_count;
-        if (triples[i].total_count < min_count) {
-            min_count = triples[i].total_count;
+        @for (int i = 0; i < timing_metrics.Count; i++) {         
+            <div class="col">
+                <label>@timing_metrics[i].type_id: @timing_metrics[i].min ms / @timing_metrics[i].avg ms / @timing_metrics[i].max ms  | 
+                     @timing_metrics[i].count_success of @timing_metrics[i].count </label>
+            </div>
         }
-        <div class="col">
-            @triples[i].name:
-            <label class="text@( triples[i].total_count < 5  ? "-danger" : triples[i].total_count < 10 ?  "-warning" : triples[i].total_count < 15 ?  "-info" :  "-success") ">
-                 @triples[i].total_count 
-            </label>
-        </div>        
-    }
-        <div class="col">
+        <div class="col-1">
             Total:
             <label class="text@( min_count < 5  ? "-danger" : min_count < 10 ?  "-warning" : min_count < 15 ?  "-info" :  "-success") ">
                 @total_count
@@ -35,7 +30,33 @@ else {
 }
 
 @code {
-    [Parameter]
-    public List<NodeTripleCount>? triples { get; set; }
-}
+
+    
       
+    private List<TimingSummary>? timing_metrics;
+    PeriodicTimer periodicTimer = new (TimeSpan.FromMilliseconds(1000));
+    protected override Task OnInitializedAsync() {        
+       RunTimer();
+   
+       return base.OnInitializedAsync();
+    }
+
+    public void Dispose()
+    {        
+        periodicTimer.Dispose();
+    }
+    async void RunTimer()
+    {  
+        while (await periodicTimer.WaitForNextTickAsync()) { 
+            if (poller.history == null) {
+                continue;
+            }
+
+            @* timing_metrics = poller.history.get_timing_metrics(); *@
+            timing_metrics = poller.history.get_timing_summary();
+            
+
+            StateHasChanged();           
+        }    
+    }
+}

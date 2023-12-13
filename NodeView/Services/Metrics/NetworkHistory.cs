@@ -7,11 +7,12 @@ public class NetworkHistory
 {
     private int history_count = 0;
     private int node_count = 0;
+    private int timing_metric_count = 50;
     private List<String> raw_metrics = new List<String>();
     private List<List<NodeMetric>> historic_metrics = new List<List<NodeMetric>>();
     private List<ActiveActions> active_actions = new List<ActiveActions>();
     private List<NodeTripleCount> node_triples = new List<NodeTripleCount>();
-
+    private List<TimingMetric> timing_metrics = new List<TimingMetric>();
     public NetworkHistory(int historiy_length, int node_length)
     {
         history_count = historiy_length;        
@@ -33,7 +34,32 @@ public class NetworkHistory
     public List<ActiveActions> get_active_actions() {
         return active_actions;
     }
+
+    public List<TimingMetric> get_timing_metrics() {
+        return timing_metrics;
+    }
  
+    public List<TimingSummary> get_timing_summary() {
+        var min_max_avg = new List<TimingSummary>();
+        var vals = Enum.GetValues(typeof(Action_Type_Id));    
+        for (int i = 0; i < vals.Length; i++) {
+            var type_id = Enum.GetName(typeof(Action_Type_Id), i);
+            var timing_metrics_filtered = timing_metrics.Where(x => x.type_id == type_id).ToList();
+            if (timing_metrics_filtered.Count == 0) {
+                continue;
+            }
+            
+            var min = timing_metrics_filtered.Where(x => x.success).Min(x => x.milliseconds);
+            var max = timing_metrics_filtered.Where(x => x.success).Max(x => x.milliseconds);
+            var avg = (int)timing_metrics_filtered.Where(x => x.success).Average(x => x.milliseconds);
+            if (min < 0) { min = 0; };
+            var count_error = timing_metrics_filtered.Where(x => !x.success).Count();
+            var count_success = timing_metrics_filtered.Where(x => x.success).Count();
+            min_max_avg.Add(new TimingSummary { type_id = type_id, min = min, max = max, avg = avg, count = count_error + count_success, count_success = count_success });
+        }
+        return min_max_avg;
+    }
+
     public void add(List<NodeMetricRoot> incoming_node_metrics, List<string> raw_metrics) {
 
 
@@ -57,8 +83,34 @@ public class NetworkHistory
                 node_triples[node_metric.idx].triples =  node_metric.triple_count;
                         
             if (node_metric.action != null) {
+                var dt_stamp = node_metric.datetime;
+
+                // Console.WriteLine("Node: " + node_metric.idx.ToString() + " " + dt_stamp.ToString() + " " + node_metric.timestamp.ToString());
                 foreach (var new_action in node_metric.action) {
-                     Console.WriteLine("Action: " + new_action.type_id + " " + new_action.txn_id.ToString() + " " + new_action.is_start.ToString());
+                    
+                    if (new_action.is_start) {
+                        if (timing_metrics.Where(x => x.txn_id == new_action.txn_id).Count()  == 0) {
+                            timing_metrics.Add(new TimingMetric { type_id = new_action.type_id, txn_id = new_action.txn_id, start_time = dt_stamp });
+                        }
+                        if (timing_metrics.Count > timing_metric_count) {
+                            timing_metrics.RemoveAt(0);
+                        }
+                    }
+                    else
+                    {
+                        if (timing_metrics.Where(x => x.txn_id == new_action.txn_id).Count() > 0) {
+                            var timing_metric = timing_metrics.Where(x => x.txn_id == new_action.txn_id).First();
+                            if (timing_metric == null) {
+                                continue;
+                            }
+                            if (timing_metric.finished_time == null) {
+                                timing_metric.finished_time  = dt_stamp;
+                                timing_metric.success = new_action.is_success;                        
+                            }
+                        }
+                    }
+
+                    //  Console.WriteLine("Action: " + new_action.type_id + " " + new_action.txn_id.ToString() + " " + new_action.is_start.ToString());
                     foreach (ActiveActions active_action in active_actions) {
                         if (active_action.type_id == new_action.type_id) {
                             if (!new_action.is_success) {

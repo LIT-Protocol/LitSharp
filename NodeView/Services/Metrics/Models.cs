@@ -48,14 +48,14 @@ public class NodeMetricRoot
     public List<NewAction>? action { get; set; }
     public List<Peer>? peers { get; set; }
     public List<TripleCount>? triple_count { get; set; }
-    public Timestamp? timestamp { get; set; }
+    public Timestamp? time { get; set; }
 
     public DateTime datetime { get {
             DateTime epochTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-            if (timestamp == null) {
+            if (time == null) {
                 return epochTime;
             }
-            return epochTime.AddTicks(this.timestamp.nanos_since_epoch / 100);
+            return epochTime.AddSeconds(time.secs_since_epoch).AddMicroseconds(time.nanos_since_epoch / 1000);
         }
     }
 }
@@ -112,3 +112,22 @@ public class OutMessages {
     public int count {get; set;}
 }
 
+public class TimingMetric {
+    // public Action_Type_Id action_Type_Id { get; set; }
+    public string? type_id { get; set; }
+    public ulong txn_id { get; set; }
+    public DateTime start_time { get; set; }
+    public DateTime? finished_time { get; set; }
+    public int milliseconds { get { if (finished_time == null) return 0;  return (int)(finished_time.Value - start_time).TotalMilliseconds; } }
+    public bool success { get; set; }
+}
+
+public class TimingSummary {
+    public string? type_id { get; set; }
+    public int min { get; set; }
+    public int max { get; set; }
+    public int avg { get; set; }
+    public int count { get; set; }
+    public int count_success { get; set; }
+    public int count_error { get; set; }
+}
