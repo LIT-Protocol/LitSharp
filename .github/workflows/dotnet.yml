@@ -32,10 +32,10 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 7.0.x
-      - name: Restore dependencies
-        run: dotnet restore
-      - name: Build
-        run: dotnet build --no-restore
+      # - name: Restore dependencies
+      #   run: dotnet restore
+      # - name: Build
+      #   run: dotnet build --no-restore
       - name: Publish
         run: dotnet publish NodeView/NodeView.csproj -c:Release -p:GHPages=true 
       # - name: Test
