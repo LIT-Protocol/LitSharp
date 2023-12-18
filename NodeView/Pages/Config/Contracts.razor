@@ -22,6 +22,13 @@ Network Contract Overview
     protected override async Task OnInitializedAsync()
     {                
         var resolver = new Resolver(localStorage);
-        contractAddresses = await resolver.GetAllContractAddresses();
+        
+        try {
+            contractAddresses = await resolver.GetAllContractAddresses();
+        }
+        catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+        }
+        
     }
 }

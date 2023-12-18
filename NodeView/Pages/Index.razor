@@ -11,9 +11,12 @@
 <li>
     This tool is runs entirely in the browser and requires only a the resolver contract address (or staker contract address) and access to the base chain in order to self configure.    
 </li>
-    <li> a private key is required for transactions that require funds - in the default scenario, this is the first key from the Anvil/HardHat node list</li>
+    <li>A private key is required for transactions that require funds - in the default scenario, this is the first key from the Anvil/HardHat node list.   Feel free to use something random - a value is required to initialize the underlying Nethereum C# library, even if it isn't used.</li>
 <li>
-    To view node information, the nodes must support metrics collection.   The other exploration functions will continue to work, however.
+    To view realtime interactive node information, the nodes must support metrics collection - this requires that the node code has the "rtmetric" compilation flag enabled; releasing in test mode automatically enables this flag.       
+</li>
+<li>
+    Without realtim interaction, the other exploration functions will continue to work - though this becomes more of a chain explorer with some handy functionality.
 </li>
 <li>
     This tool was written in C# using Blazor technology and the Nethereum library - a web3 or ethers equivalent for C#.

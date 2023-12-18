@@ -2,6 +2,7 @@
 @using Radzen.Blazor.Rendering;
 @using SharedService;
 @using LitContracts.Staking.ContractDefinition;
+@using LitContracts.PubkeyRouter;
 @using System.Numerics;
 @using Nethereum.Hex.HexConvertors.Extensions;
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
@@ -31,8 +32,20 @@
     private List<SimpleRootKey> ? root_keys = null;
     protected override async Task OnInitializedAsync()
     {                
+
         var resolver = new Resolver(localStorage);
-        var pubkeyRouterService = await resolver.GetPubkeyRouterService();
+        PubkeyRouterService? pubkeyRouterService = null;
+        
+        try {
+            pubkeyRouterService =await resolver.GetPubkeyRouterService();
+        } catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+        } 
+
+        if ( pubkeyRouterService == null  ) {
+            return;
+        }
+
         var staking_contract = await resolver.GetContractAddress(ContractType.Staking);
         var root_keys_result =  await pubkeyRouterService.GetRootKeysQueryAsync(staking_contract);
 

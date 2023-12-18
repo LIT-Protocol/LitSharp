@@ -30,8 +30,21 @@
 
     protected override async Task OnInitializedAsync(){          
  
-        var resolver = new Resolver(localStorage);
-        stakingService = await resolver.GetStakingService();
+        StakingService? stakingService = null;
+        
+        try {
+            var resolver = new Resolver(localStorage);
+            stakingService = await resolver.GetStakingService();
+        }
+        catch (Exception e) {
+            Console.WriteLine(e.Message);
+        }
+
+        if (stakingService is null) {
+            network_state = "could not connect!";
+            StateHasChanged();
+            return;
+        }
         var state = await stakingService.StateQueryAsync();
 
         RunTimer();

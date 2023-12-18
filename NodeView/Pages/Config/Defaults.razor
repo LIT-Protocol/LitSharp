@@ -28,8 +28,17 @@ Network Configuration
     protected override async Task OnInitializedAsync()
     {                
         var resolver = new Resolver(localStorage);
-        var stakingService = await resolver.GetStakingService();
-        var config_call = await stakingService.ConfigQueryAsync();
+        ConfigOutputDTO? config_call = null;
+        try {
+            var stakingService = await resolver.GetStakingService();
+            config_call = await stakingService.ConfigQueryAsync();            
+        }
+        catch (Exception e) {
+            Console.WriteLine(e.Message);
+        }
+
+        if (config_call == null)
+            return;
         var c = config_call.ReturnValue1;
 
         config = new List<ConfigItem>();

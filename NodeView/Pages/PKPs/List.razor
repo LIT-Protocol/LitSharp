@@ -1,6 +1,7 @@
 ﻿@page "/pkps/list"
 @using Radzen.Blazor.Rendering;
 @using SharedService;
+@using LitContracts.PKPNFT;
 @using LitContracts.Staking.ContractDefinition;
 @using LitContracts.PubkeyRouter.ContractDefinition;
 @using System.Numerics;
@@ -35,7 +36,19 @@
     {                
         var resolver = new Resolver(localStorage);  
 
-        var pkpnftService = await resolver.GetPkpnftService();
+
+        PkpnftService? pkpnftService = null;
+        
+        try {
+            pkpnftService = await resolver.GetPkpnftService();
+        } catch (Exception e) {
+            Console.WriteLine(e);
+        } 
+
+        if (pkpnftService == null) {
+            return;
+        }
+
         var pkpnftAddress = await resolver.GetContractAddress(ContractType.PKPNFT);
         var pubkeyRouterService = await resolver.GetPubkeyRouterService();
         var pubkeyRouterAddress = await resolver.GetContractAddress(ContractType.PubkeyRouter);

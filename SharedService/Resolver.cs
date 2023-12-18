@@ -173,13 +173,17 @@ public class Resolver{
         var resolverService = await GetContractResolverService();
         var contractAddresses = new List<ContractAddress>();
 
-        foreach (ContractType contractType in Enum.GetValues(typeof(ContractType)) )
-        {            
+        try {
+        
+        foreach (ContractType contractType in Enum.GetValues(typeof(ContractType)) ) {            
             var typ = GetContractTypKeccak(contractType);
             var env = (byte)Env.Dev;
             var contract = await resolverService.GetContractQueryAsync(typ, env);
-            Console.WriteLine($"Contract Type: {contractType} Address: {contract}");
             contractAddresses.Add(new ContractAddress { name = contractType.ToString(), address = contract });
+            }
+        }
+        catch (Exception ex) {
+            Console.WriteLine("Trying to get contract addresses: " + ex.Message);
         }
         return contractAddresses;
     }

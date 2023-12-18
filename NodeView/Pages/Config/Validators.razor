@@ -23,7 +23,18 @@
     protected override async Task OnInitializedAsync()
     {                
         var resolver = new Resolver(localStorage);
-        var stakingService = await resolver.GetStakingService();
+        LitContracts.Staking.StakingService? stakingService = null;
+        try {
+            stakingService = await resolver.GetStakingService();
+        }
+        catch(Exception e) {
+            Console.WriteLine(e);
+        }
+
+        if (stakingService == null) {
+            return;
+        }
+    
 
         var v = await stakingService.GetValidatorsStructsInCurrentEpochQueryAsync();
         current_validators = v.ReturnValue1.Select(x => new Validator()
