@@ -55,9 +55,11 @@
     async void RunTimer()
     {  
         var start_time = System.DateTime.Now;
+        
         while (await periodicTimer.WaitForNextTickAsync()) { 
             secs = (int)(System.DateTime.Now - start_time).TotalSeconds;
-            if (secs % 12 == 0) { sec_counter++; }
+            
+            if (secs % 10 == 0  && System.DateTime.Now.Millisecond < 500) { sec_counter++; }
 
             if (poller.history == null) {
                 StateHasChanged();           
