@@ -1,10 +1,18 @@
 @using Services.Metrics.Models;
+@inject Services.Metrics.Poller poller
 
 <div class="row">
     @if (actions == null)
     {
         <div class="col">
-            ... loading ...
+            @switch (sec_counter % 5) {
+                case < 1: <label>... polling for actions ... @secs secs...</label> break;
+                case < 2: <label>... still nothing ... are metrics turned on? ... @secs secs...</label> break;
+                case < 3: <label>... might want to check the nodes? ... @secs secs...</label> break;
+                case < 4: <label>... seriously... time is ticking ... @secs secs...</label> break;
+                case < 5: <label>... no data, no graphics! ... @secs secs...</label> break;
+                default: <label>... no actions ... @secs secs...</label> break;
+            }            
         </div>
     }
     else
@@ -32,8 +40,32 @@
 </div>
 
 @code {
-    [Parameter]
+    private int secs { get; set; } = 0;
+    private int sec_counter { get; set; } = 0;
     public List<ActiveActions>? actions { get; set; }
-  
+    PeriodicTimer periodicTimer = new (TimeSpan.FromMilliseconds(500));
+    protected override Task OnInitializedAsync() {        
+       RunTimer();
+       return base.OnInitializedAsync();
+    }
+    public void Dispose()
+    {        
+        periodicTimer.Dispose();
+    }
+    async void RunTimer()
+    {  
+        var start_time = System.DateTime.Now;
+        while (await periodicTimer.WaitForNextTickAsync()) { 
+            secs = (int)(System.DateTime.Now - start_time).TotalSeconds;
+            if (secs % 12 == 0) { sec_counter++; }
+
+            if (poller.history == null) {
+                StateHasChanged();           
+                continue;
+            }
+            actions = poller.history.get_active_actions(); 
+            StateHasChanged();           
+        }    
+    }
 }
    

@@ -5,7 +5,7 @@
 
 <PageTitle>Node Messaging</PageTitle>
 <h2>Realtime Inter-Node Messaging</h2>
-<NodeView.Components.Header triples="@triples" actions="@actions"/>
+<NodeView.Components.Header />
 
 <div class="container">
     <div class="row">
@@ -32,8 +32,6 @@
 
 @code {
     private List<Metric>? node_averages;
-    private List<ActiveActions>? actions { get; set; }
-    private List<NodeTripleCount>? triples { get; set;}
     PeriodicTimer periodicTimer = new (TimeSpan.FromMilliseconds(500));
     protected override Task OnInitializedAsync() {        
        RunTimer();
@@ -52,8 +50,6 @@
                 continue;
             }
             node_averages = poller.history.node_average();           
-            actions = poller.history.get_active_actions();
-            triples = poller.history.get_active_triples();
             StateHasChanged();           
         }    
     }

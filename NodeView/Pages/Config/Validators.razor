@@ -4,45 +4,19 @@
 @using Services.Metrics.Models;
 @using System.Numerics;
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
-<PageTitle>Contracts</PageTitle>
 
+<PageTitle>Validators</PageTitle>
 <h2>Validators</h2>    
-
-<p>Current Nodes:</p>
-
-<RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="20" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
-    Data="@current_validators" TItem="Validator" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
-    <Columns>       
-        <RadzenDataGridColumn TItem="Validator" Property="Node_Ip" Title="ip" Width="10" />
-        <RadzenDataGridColumn TItem="Validator" Property="Port" Title="port" Width="3" />
-        <RadzenDataGridColumn TItem="Validator" Property="NodeAddress" Title="Node Wallet Address" Width="50" />
-        <RadzenDataGridColumn TItem="Validator" Property="Reward" Title="Reward" Width="3"  />
-        @* <RadzenDataGridColumn TItem="Validator" Property="SenderPubKey" Title="SenderPubKey"  />
-        <RadzenDataGridColumn TItem="Validator" Property="ReceiverPubKey" Title="ReceiverPubKey"  /> *@
-    </Columns>
-</RadzenDataGrid>  
-
-<br/><br/>
-<p>Next Nodes:</p>
-
-<RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="20" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
-    Data="@next_validators" TItem="Validator" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
-    <Columns>       
-        <RadzenDataGridColumn TItem="Validator" Property="Node_Ip" Title="ip" Width="10" />
-        <RadzenDataGridColumn TItem="Validator" Property="Port" Title="port" Width="3" />
-        <RadzenDataGridColumn TItem="Validator" Property="NodeAddress" Title="Node Wallet Address" Width="50" />
-        <RadzenDataGridColumn TItem="Validator" Property="Reward" Title="Reward" Width="3"  />
-        @* <RadzenDataGridColumn TItem="Validator" Property="SenderPubKey" Title="SenderPubKey"  />
-        <RadzenDataGridColumn TItem="Validator" Property="ReceiverPubKey" Title="ReceiverPubKey"  /> *@
-    </Columns>
-</RadzenDataGrid>  
+<NodeView.Components.MinimalHeader />
+<br />
+<NodeView.Components.Config.Validator name="Current Nodes" validators="@current_validators" />
+<br />
+<NodeView.Components.Config.Validator name="Next Nodes" validators="@next_validators" />
 
 <br/><br/>
 <p>Total Staked: @total_staked</p>
 
 @code {
-
-    
     private List<Validator> ? current_validators = null;
     private List<Validator> ? next_validators = null;
     private BigInteger total_staked = 0;

@@ -17,8 +17,8 @@
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 
 <PageTitle>Network Viewer</PageTitle>
-<h1>Network Viewer</h1>
-<NodeView.Components.Header triples="@triples" actions="@actions"/>
+<h2>Network Viewer</h2>
+<NodeView.Components.Header />
 
 @if ( poller.history == null)
 {
@@ -36,8 +36,6 @@ else
 @code {
     private int diagram_height = 800;
     private string diagram_height_string = "100px";
-    private List<ActiveActions>? actions;
-    private List<NodeTripleCount>? triples;
     private BlazorDiagram? diagram { get; set; } 
     private List<OutMessages>? out_messages { get; set; }
     PeriodicTimer periodicTimer = new (TimeSpan.FromMilliseconds(500));
@@ -176,9 +174,6 @@ else
                 }
                 link.Refresh();
             }
-
-            actions = poller.history.get_active_actions();
-            triples = poller.history.get_active_triples();
 
             StateHasChanged();           
         }     
