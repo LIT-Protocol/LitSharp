@@ -20,7 +20,16 @@ public class Poller {
         RunTimer();
     }
 
+    public async Task StopAsync() {
+        
+        Console.WriteLine("Stopping Poller");
+        periodicTimer.Dispose();
+        periodicTimer = new PeriodicTimer(TimeSpan.FromMilliseconds(DefaultTimeSpan));
+        await LoadNodes();
+    }
+
     public async Task RestartAsync() {
+        
         periodicTimer.Dispose();
         periodicTimer = new PeriodicTimer(TimeSpan.FromMilliseconds(DefaultTimeSpan));
         await LoadNodes();

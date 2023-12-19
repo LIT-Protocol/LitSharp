@@ -11,7 +11,13 @@ public enum Action_Type_Id {
 
 public class Validator: LitContracts.Staking.ContractDefinition.Validator  {
         
-    public IPAddress Node_Ip  { get { return IPAddress.Parse( Ip.ToString()); } }
+    public IPAddress Node_Ip  { get { return   IPAddress.Parse( Ip.ToString()); } }
+
+    public string responding { get { return Attestation == null ? "No" : "Yes"; } }
+    public string  NodeSocketAddress { get { return (Port == 443 ? "https" : "http") + "://" + Node_Ip.ToString(); } }
+    public string? NodeVersion { get; set; }
+    public string? StakerAddress { get; set; }
+    public string? Attestation { get; set; }
 }
 
 public class Metric

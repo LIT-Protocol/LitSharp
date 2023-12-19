@@ -72,22 +72,25 @@
   <div class="card-header  ">
     <div class="row no-gutters">
       <div class="col">
-    Poller Service
+         Polling Service
         </div>
     </div>
   </div>
   <div class="card-body">
     <div class="row">
       <div class="col">
-
-                The poller service runs in the background of this wasm app and attempts to gather information from the nodes in close to real time - currently polling every 500 ms.  To view realtime interactive node information, the nodes must support metrics collection - this requires that the node code has the "rtmetric" compilation flag enabled; releasing in test mode automatically enables this flag.        This is a work in progress and may be updated as the project progresses.
-    </div>
-          <div class="col-2 text-center">
-
-            <div class="form-group">
-                <button type="button" class="btn btn-primary" @onclick="() => poller.StartAsync()">Start Polling</button>
-            </div>
-
+        The polling service runs in the background of this wasm app and attempts to gather information from the nodes in close to real time - currently polling every 500 ms.  To view realtime interactive node information, the nodes must support metrics collection - this requires that the node code has the "rtmetric" compilation flag enabled; releasing in test mode automatically enables this flag.        This is a work in progress and may be updated as the project progresses.
+      </div>
+      <div class="col-1 text-center">
+        <div class="form-group">
+            <button type="button" class="btn btn-primary" @onclick="() => poller.StartAsync()">Start</button>                        
+        </div>
+      </div>
+      <div class="col-1">
+        <div class="form-group">
+            <button type="button" class="btn btn-primary" @onclick="() => poller.StopAsync()">Stop</button>
+        </div>
+      
       </div>
     </div>
   </div>
@@ -95,8 +98,8 @@
 
 <br/>
 <div class="card border-primary">
-  <div class="card-header  ">
-    <div class="row no-gutters">
+  <div class="card-header">
+    <div class="row no-gutters"> 
       <div class="col">
     Notes
         </div>

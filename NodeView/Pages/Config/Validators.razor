@@ -16,6 +16,18 @@
 <p>Total Staked: @total_staked</p>
 
 @code {
+    public class ConnectContent {
+        public List<int> id { get; set; }
+        public string addr { get; set; }
+        public string public_key { get; set; }
+        public string node_address { get; set; }
+        public List<int> sender_public_key { get; set; }
+        public List<int> receiver_public_key { get; set; }
+        public string staker_address { get; set; }
+        public string status { get; set; }
+        public object attestation { get; set; }
+
+    }
     private List<Validator> ? current_validators = null;
     private List<Validator> ? next_validators = null;
     private BigInteger total_staked = 0;
@@ -34,7 +46,6 @@
             return;
         }
     
-
         var v = await stakingService.GetValidatorsStructsInCurrentEpochQueryAsync();
         current_validators = v.ReturnValue1.Select(x => new Validator()
         {
@@ -59,7 +70,45 @@
         var stakingBalance = await resolver.GetStakingBalancesService();
 
         total_staked = await stakingBalance.TotalStakedQueryAsync();
-
+   
+        HttpClient client = new HttpClient();
+        client.Timeout = TimeSpan.FromMilliseconds(1000);
         
+        @* List<Task> handles = new List<Task>(); *@
+        foreach(Validator validator in current_validators) {
+            @* var handle = Task.Run(async () => { *@
+                try {
+                    var response = await client.GetAsync(  "https://" + validator.Node_Ip +  "/connect/meow");
+                    if (response.StatusCode == System.Net.HttpStatusCode.OK) {
+
+
+                        @* var version = response.Content.Headers.Select(header => header.Key = "X-Lit-Node-Version:").ToList();
+                        
+                        validator.NodeVersion = version?.FirstOrDefault(); *@
+                       var result = await response.Content.ReadAsStringAsync();
+                        var a = response.Content.Headers.GetEnumerator();
+                        while(a.MoveNext()) {
+                            Console.WriteLine("Header: " + a.Current.Key + " " + a.Current.Value);
+                            var b= a.Current.Value.GetEnumerator();
+                            while(b.MoveNext()) {
+                                Console.WriteLine("Value: " + b.Current);
+                            }
+                        }
+
+
+                        var connectContent = Newtonsoft.Json.JsonConvert.DeserializeObject<ConnectContent>(result);
+                        validator.StakerAddress = connectContent.staker_address;
+                        validator.Attestation = connectContent.attestation == null ? "n/a" : "yes";
+                        @* validator.NodeVersion = version?.FirstOrDefault();                 *@
+                    }
+                } catch (Exception e) {
+                    Console.WriteLine("Error gathering data: " + e.Message);
+                }
+            @* }); *@
+
+            @* handles.Add(handle); *@
+        }
+        @* await Task.WhenAll(handles); *@
+        StateHasChanged();
     }
 }

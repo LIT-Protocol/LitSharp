@@ -18,10 +18,13 @@
         <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="20" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
             Data="@validators" TItem="Services.Metrics.Models.Validator" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
             <Columns>       
-                <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="Node_Ip" Title="ip" Width="10" />
-                <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="Port" Title="port" Width="3" />
-                <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="NodeAddress" Title="Node Wallet Address" Width="50" />
-                <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="Reward" Title="Reward" Width="3"  />
+                <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="responding" Title="Up" Width="5%" />
+                <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="NodeSocketAddress" Title="Address" Width="20%" />
+                <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="NodeAddress" Title="Node Address" Width="25%" />
+                <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="StakerAddress" Title="Staker Address" Width="25%" />
+                <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="Reward" Title="Reward" Width="10%"  />
+                <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="NodeVersion" Title="Version" Width="5%"  />
+                <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="Attestation" Title="Attestation" Width="5%"  />
             </Columns>
         </RadzenDataGrid>  
       </div>
