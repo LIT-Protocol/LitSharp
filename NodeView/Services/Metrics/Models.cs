@@ -19,9 +19,9 @@ public class Validator: LitContracts.Staking.ContractDefinition.Validator  {
     public bool kicked { get; set; } = false;
     
     public string kicked_status { get { return kicked ? "Yes" : ""; } }
-    public string? NodeVersion { get; set; }
-    public string? StakerAddress { get; set; }
-    public string? Attestation { get; set; }
+    public string NodeVersion { get; set; } = "";
+    public string StakerAddress { get; set; } = "";
+    public string Attestation { get; set; } = "";
 }
 
 public class Metric

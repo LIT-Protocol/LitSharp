@@ -23,8 +23,12 @@
 <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="20" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
     Data="@contractAddresses" TItem="ContractAddress" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
     <Columns>       
-        <RadzenDataGridColumn TItem="ContractAddress" Property="name" Title="Name" Width="160px" />
-        <RadzenDataGridColumn TItem="ContractAddress" Property="address" Title="Address" Width="300px" />
+        <RadzenDataGridColumn TItem="ContractAddress" Property="name" Title="Name" Width="25%" />
+        <RadzenDataGridColumn TItem="ContractAddress" Property="address" Title="Address" >
+            <Template Context="data">
+                <a href="@("https://lit-protocol.calderaexplorer.xyz/address/"  +data.address)" style="text-decoration:none" target="_blank" >@data.address</a>                        
+            </Template>
+        </RadzenDataGridColumn>                
     </Columns>
 </RadzenDataGrid>  
 

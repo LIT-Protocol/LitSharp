@@ -5,6 +5,7 @@
 @using System.Numerics;
 @using LitContracts.Staking;
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
+
 <PageTitle>LNE - Validators</PageTitle>
 <h2>Validators</h2>    
 <NodeView.Components.MinimalHeader />
@@ -121,4 +122,21 @@
 
     }
 
+    public async Task RejoinValidator(Validator validator) {
+        var resolver = new Resolver(localStorage);
+        LitContracts.Staking.StakingService? stakingService = null;
+        try {
+            stakingService = await resolver.GetStakingService();
+        }
+        catch(Exception e) {
+            Console.WriteLine(e);
+        }
+
+        if (stakingService == null) {
+            return;
+        }
+
+        var tx = await stakingService.AdminRejoinValidatorRequestAsync(validator.StakerAddress);
+        Console.WriteLine(tx);
+    }
 }
