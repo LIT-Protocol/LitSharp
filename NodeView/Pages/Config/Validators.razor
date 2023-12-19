@@ -85,7 +85,8 @@
 
         var kicked_validators = await stakingService.GetKickedValidatorsQueryAsync();
         foreach (Validator validator in validators) {
-            validator.kicked = kicked_validators.Contains(validator.NodeAddress);
+            if ( validator.StakerAddress != null )
+                validator.kicked = kicked_validators.Contains(validator.StakerAddress);            
         }
         return validators;
     }
