@@ -4,19 +4,114 @@
 <PageTitle>Index</PageTitle>
 
 <h2>Developer Node Explorer</h2>    
-<p>
-    <br>
-<b>Notes:</b>
-</p>
+
+<br/>
+<div class="card border-primary">
+  <div class="card-header  ">
+    <div class="row no-gutters">
+      <div class="col">
+            Lit Network Selection  
+        </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col">
+
+        <div >
+       
+            @for (int i =0 ;i < networks.Length; i++)
+            {
+                var copy = i; 
+                <input type="radio" class="btn-check" name="options-base" id="option-@i" autocomplete="off" selected="@networks[copy].selected"
+                    @onclick="() => { networkName = networks[copy].name; chainUrl = networks[copy].url; resolverAddress = networks[copy].resolverAddress;  SetAllValues(copy);  }">
+                <label class="btn btn-outline-primary" for="option-@i">@networks[i].name</label>
+            }   
+
+                <input type="radio" class="btn-check" name="options-base" id="option-1000" autocomplete="off">
+                <label class="btn disabled btn-outline-secondary" for="option-1000">Cayenne*</label>
+                <input type="radio" class="btn-check" name="options-base" id="option-1001" autocomplete="off">
+                <label class="btn disabled btn-outline-secondary" for="option-1001">Serrano*</label>
+
+        </div>
+        <br/>
+
+        <div class="form-group">
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Network Name</span>
+                <input type="text" class="form-control" name="networkName" value="@networkName" placeholder="Network" aria-label="Username" disabled aria-describedby="basic-addon1">
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Chain URL</span>
+                <input type="text" id="chainUrl" class="form-control" name="chainId" value="@chainUrl" @onchange="ChainUrlChanged" />
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Resolver Contract Address</span>
+                <input type="text" id="resolverAddress" class="form-control" name="resolverAddress" value="@resolverAddress" @onchange="ResolverAddressChanged" />
+            </div>
+            
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Private Key</span>
+                <input type="text" id="privateKey" class="form-control" name="privateKey" value="@defaultPrivateKey" @onchange="PrivateKeyChanged" />
+            </div>
+        </div>
+        <div>
+            <label class="text-secondary">* These networks have ABIs that are too old to currently be supported by this tool.</label>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<br />
+
+<div class="card border-primary">
+  <div class="card-header  ">
+    <div class="row no-gutters">
+      <div class="col">
+    Poller Service
+        </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col">
+
+                The poller service runs in the background of this wasm app and attempts to gather information from the nodes in close to real time - currently polling every 500 ms.  To view realtime interactive node information, the nodes must support metrics collection - this requires that the node code has the "rtmetric" compilation flag enabled; releasing in test mode automatically enables this flag.        This is a work in progress and may be updated as the project progresses.
+    </div>
+          <div class="col-2 text-center">
+
+            <div class="form-group">
+                <button type="button" class="btn btn-primary" @onclick="() => poller.StartAsync()">Start Polling</button>
+            </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<br/>
+<div class="card border-primary">
+  <div class="card-header  ">
+    <div class="row no-gutters">
+      <div class="col">
+    Notes
+        </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col">
+
 <li>
     This tool is runs entirely in the browser and requires only a the resolver contract address (or staker contract address) and access to the base chain in order to self configure.    
 </li>
     <li>A private key is required for transactions that require funds - in the default scenario, this is the first key from the Anvil/HardHat node list.   Feel free to use something random - a value is required to initialize the underlying Nethereum C# library, even if it isn't used.</li>
 <li>
-    To view realtime interactive node information, the nodes must support metrics collection - this requires that the node code has the "rtmetric" compilation flag enabled; releasing in test mode automatically enables this flag.       
-</li>
-<li>
-    Without realtim interaction, the other exploration functions will continue to work - though this becomes more of a chain explorer with some handy functionality.
+    Without real-time interaction (collected by the poller service), the other exploration functions will continue to work - though this becomes more of a chain explorer with some handy functionality.
 </li>
 <li>
     This tool was written in C# using Blazor technology and the Nethereum library - a web3 or ethers equivalent for C#.
@@ -27,57 +122,64 @@
 
 <p></p>
 <p>
-The default settings are to use the local Anvil configuration, wtih a deterministic address for the resolver contract.  
+    <label class="text-danger">*** This tool currently uses a single set of ABIs for all networks - hopefully the latest version!  Browsing networks that use earlier versions of the contracts will lead to unpredictable results.</label>
 </p>
 
-<p>
-    <br>
-    <b>
-    Configuration
-</b></p>
-
-<div class="form-group">
-    <label for="chainId">Chain url:</label>
-    <input type="text" id="chainUrl" class="form-control" name="chainId" value="@chainUrl" @onchange="ChainUrlChanged" />
+      </div>
+    </div>
+  </div>
 </div>
-<div class="form-group">
-    <label for="resolverAddress">Resolver Contract Address:</label>
-    <input type="text" id="resolverAddress" class="form-control" name="resolverAddress" value="@resolverAddress" @onchange="ResolverAddressChanged" />
-</div>
-<div class="form-group">
-    <label for="privateKey">Private Key:</label>
-    <input type="text" id="privateKey" class="form-control" name="privateKey" value="@defaultPrivateKey" />
-</div>
-
-<p>
-    <br>
-    <b>
-    Poller Service
-</b></p>
-<div class="form-group">
-    <button type="button" class="btn btn-primary" @onclick="() => poller.StartAsync()">Start Polling</button>
-</div>
-
 
 @code {
+    struct LitNetwork {
+        public string name;
+        public string url;
+        public int chainId;
+        public string resolverAddress;
+        public bool selected;
+    }
+    string? networkName;
     string? chainUrl;
     string? resolverAddress;
     string? defaultPrivateKey;
 
+    LitNetwork[] networks = new LitNetwork[] {
+        new LitNetwork() { name = "Localhost", url = "https://127.0.0.1:8545", chainId=0 , resolverAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3" , selected=false },
+        new LitNetwork() { name = "DevInternal", url = "https://lit-protocol.calderachain.xyz/http", chainId=175177, resolverAddress = "0xFFb9afC9e8B731CB5d4194ec728657875510a8C8", selected=false },
+        new LitNetwork() { name = "Cayenne", url = "https://lit-protocol.calderachain.xyz/http", chainId=175177 , resolverAddress = "0xB0cb99e69c01Bd481aeCc6DD0155d4147e96C746" , selected=false},
+        new LitNetwork() { name = "Manzano", url = "https://lit-protocol.calderachain.xyz/http", chainId=175177 , resolverAddress = "0x9F0Ede26261451C5E784DC799D71ECf766EB7562" , selected=false},
+        new LitNetwork() { name = "Habanero", url ="https://lit-protocol.calderachain.xyz/http", chainId=175177 , resolverAddress = "0xe5a7C5d908EE8996332F488cE5f636d4EBff8522" , selected=false},
+    };
     protected override async Task OnInitializedAsync()
     {
+        networkName = await localStorage.GetItemAsync<string>("networkName");
+        if ( string.IsNullOrEmpty( networkName ) ) networkName = "Localhost";
         chainUrl = await localStorage.GetItemAsync<string>("url");
         if ( string.IsNullOrEmpty( chainUrl ) ) chainUrl = "https://127.0.0.1:8545";
         resolverAddress = await localStorage.GetItemAsync<string>("contractResolverAddress");
         if ( string.IsNullOrEmpty( resolverAddress ) ) resolverAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
         defaultPrivateKey = await localStorage.GetItemAsync<string>("privateKey");
         if ( string.IsNullOrEmpty( defaultPrivateKey ) ) defaultPrivateKey = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
-            
+
+        for (int i =0 ;i < networks.Length; i++)
+        {
+            if ( networkName == networks[i].name ) 
+                networks[i].selected = true;
+            else           
+                networks[i].selected = false;
+        }
     }
 
+    async void SetAllValues(int index) {
+        await localStorage.SetItemAsync("networkName", networkName);
+        await localStorage.SetItemAsync("url", chainUrl);
+        await localStorage.SetItemAsync("contractResolverAddress", resolverAddress);
+        await localStorage.SetItemAsync("privateKey", defaultPrivateKey);
+    }
     async void ResolverAddressChanged(ChangeEventArgs e)
     {
 
+        
         if ( e.Value == null ) return;
         if ( string.IsNullOrEmpty( e.Value.ToString() ) ) return;
 

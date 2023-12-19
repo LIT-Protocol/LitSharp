@@ -5,7 +5,7 @@
 
 <div class="row">
     <div class="col-6">
-        Network State:    
+        <b>@networkName</b> State:    
         @network_state  
     </div>
     <div class="col-3">
@@ -19,6 +19,7 @@
 </div>
 
 @code {
+    private string? @networkName { get; set;}
     private StakingService? stakingService;
     private string network_state = "... checking network ...";
     private System.Numerics.BigInteger epoch_number = 0;
@@ -28,36 +29,20 @@
  
     PeriodicTimer periodicTimer = new (TimeSpan.FromMilliseconds(500));
 
-    protected override async Task OnInitializedAsync(){          
- 
-        StakingService? stakingService = null;
-        
-        try {
-            var resolver = new Resolver(localStorage);
-            stakingService = await resolver.GetStakingService();
-        }
-        catch (Exception e) {
-            Console.WriteLine(e.Message);
-        }
-
-        if (stakingService is null) {
-            network_state = "could not connect!";
-            StateHasChanged();
-            return;
-        }
-        var state = await stakingService.StateQueryAsync();
-
+    protected override async Task OnInitializedAsync(){              
+        networkName = await localStorage.GetItemAsync<string>("networkName");
         RunTimer();
     }     
  
     async void RunTimer()
     {
-
+        StakingService? stakingService = null;
         var resolver = new Resolver(localStorage);
 
         while (await periodicTimer.WaitForNextTickAsync()) { 
             if ( stakingService is null ) {
-                return;
+                stakingService = await resolver.GetStakingService();
+                continue;
             }
             var state = await  stakingService.StateQueryAsync();
             var web3 = await resolver.GetConnection();

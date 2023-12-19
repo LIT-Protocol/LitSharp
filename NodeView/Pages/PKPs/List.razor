@@ -9,8 +9,22 @@
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 
 <PageTitle>PKPs</PageTitle>
-
 <h2>Minted PKPs</h2>    
+<NodeView.Components.MinimalHeader />
+<br/>
+<div class="card border-primary">
+  <div class="card-header  ">
+    <div class="row no-gutters">
+      <div class="col">
+          First 10 PKPs.
+        </div>
+    </div>
+  </div>
+  <div class="card-body p-0">
+    <div class="row">
+      <div class="col"> 
+
+
 
 <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="20" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
     Data="@pkps" TItem="SimplePKP" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
@@ -21,6 +35,10 @@
     </Columns>
 </RadzenDataGrid>  
 
+      </div>
+    </div>
+  </div>
+</div>
 
 @code {
     struct SimplePKP
@@ -64,7 +82,7 @@
             {
                 break;
             }
-            var tokenId = await contract2.TokenByIndexQueryAsync(0);
+            var tokenId = await contract2.TokenByIndexQueryAsync(i);
             var a = await pubkeyRouterService.PubkeysQueryAsync(tokenId);
             var b = a.ReturnValue1;                
             pkps.Add(new SimplePKP{ Pubkey = b.Pubkey.ToHex(), DerivedId = b.DerivedKeyId.ToHex(), KeyType = "ECDSA" });

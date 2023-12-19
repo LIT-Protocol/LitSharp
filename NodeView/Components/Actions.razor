@@ -4,7 +4,7 @@
 <div class="row">
     @if (actions == null)
     {
-        <div class="col">
+        <div class="col">Metrics:
             @switch (sec_counter % 5) {
                 case < 1: <label>... polling for actions ... @secs secs...</label> break;
                 case < 2: <label>... still nothing ... are metrics turned on? ... @secs secs...</label> break;

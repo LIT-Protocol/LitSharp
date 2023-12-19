@@ -5,9 +5,20 @@
 <PageTitle>Contracts</PageTitle>
 
 <h2>Contracts</h2>    
-<p>
-Network Contract Overview
-</p>
+<NodeView.Components.MinimalHeader />
+<br/>
+<div class="card border-primary">
+  <div class="card-header  ">
+    <div class="row no-gutters">
+      <div class="col">
+        Network Contract Overview
+        </div>
+    </div>
+  </div>
+  <div class="card-body p-0">
+    <div class="row">
+      <div class="col"> 
+
 
 <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="20" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
     Data="@contractAddresses" TItem="ContractAddress" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
@@ -16,6 +27,11 @@ Network Contract Overview
         <RadzenDataGridColumn TItem="ContractAddress" Property="address" Title="Address" Width="300px" />
     </Columns>
 </RadzenDataGrid>  
+
+      </div>
+    </div>
+  </div>
+</div>
 
 @code {
     private List<ContractAddress>? contractAddresses = null;

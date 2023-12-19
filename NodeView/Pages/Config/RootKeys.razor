@@ -9,8 +9,20 @@
 <PageTitle>Root Keys</PageTitle>
 
 <h2>Root Keys</h2>    
+<NodeView.Components.MinimalHeader />
+<br/>
+<div class="card border-primary">
+  <div class="card-header  ">
+    <div class="row no-gutters">
+      <div class="col">
+            Keys for the currently selected network.
+        </div>
+    </div>
+  </div>
+  <div class="card-body p-0">
+    <div class="row">
+      <div class="col"> 
 
-<p>Keys for the currently selected network.</p>
 
 <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="20" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
     Data="@root_keys" TItem="SimpleRootKey" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
@@ -19,6 +31,12 @@
         <RadzenDataGridColumn TItem="SimpleRootKey" Property="Pubkey" Title="Public Key" />        
     </Columns>
 </RadzenDataGrid>  
+
+
+      </div>
+    </div>
+  </div>
+</div>
 
 
 @code {
