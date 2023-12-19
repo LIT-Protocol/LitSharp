@@ -16,7 +16,7 @@
 <br/><br/>
 <p>Total Staked: @total_staked</p>
 <p> * Any nodes on local addresses won't be reachable unless the network is local, or the ports are tunnelled.</p>
-
+<p>@kicked_validators</p>
 @code {
     public class ConnectResponse {
         public List<int> id { get; set; }
@@ -32,6 +32,7 @@
     }
     private List<Validator> ? current_validators = null;
     private List<Validator> ? next_validators = null;
+    private string kicked_validators = "Kicked validators:";
     private BigInteger total_staked = 0;
     protected override async Task OnInitializedAsync()
     {                
@@ -58,7 +59,9 @@
         
         var stakingBalance = await resolver.GetStakingBalancesService();
         total_staked = await stakingBalance.TotalStakedQueryAsync();
-   
+        
+        var k = await stakingService.GetKickedValidatorsQueryAsync();
+        kicked_validators = "Kicked validators: " + string.Join(", ", k.ToArray());
     }   
 
 
@@ -97,22 +100,10 @@
                 try {
                     var response = await client.GetAsync(  "https://" + validator.Node_Ip +  "/connect/meow");
                     if (response.StatusCode == System.Net.HttpStatusCode.OK) {
-
-
-                        @* var version = response.Content.Headers.Select(header => header.Key = "X-Lit-Node-Version:").ToList();
-                        
+                        @* var version = response.Content.Headers.Select(header => header.Key = "X-Lit-Node-Version:").ToList();                        
                         validator.NodeVersion = version?.FirstOrDefault(); *@
                        var result = await response.Content.ReadAsStringAsync();
-                        var a = response.Content.Headers.GetEnumerator();
-                        while(a.MoveNext()) {
-                            Console.WriteLine("Header: " + a.Current.Key + " " + a.Current.Value);
-                            var b= a.Current.Value.GetEnumerator();
-                            while(b.MoveNext()) {
-                                Console.WriteLine("Value: " + b.Current);
-                            }
-                        }
-
-
+                       
                         var connectContent = Newtonsoft.Json.JsonConvert.DeserializeObject<ConnectResponse>(result);
                         @* validator.StakerAddress = connectContent.staker_address; *@
                         validator.Attestation = connectContent.attestation == null ? "n/a" : "yes";
