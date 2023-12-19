@@ -15,14 +15,15 @@
   <div class="card-body p-0">
     <div class="row">
       <div class="col"> 
-        <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="20" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
+        <RadzenDataGrid AllowFiltering="false" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="false" PageSize="30" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
             Data="@validators" TItem="Services.Metrics.Models.Validator" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
             <Columns>       
                 <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="responding" Title="Up" Width="5%" />
-                <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="NodeSocketAddress" Title="Address" Width="20%" />
+                <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="kicked_status" Title="Kicked" Width="5%" />
+                <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="NodeSocketAddress" Title="Address" Width="15%" />
                 <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="NodeAddress" Title="Node Address" Width="25%" />
                 <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="StakerAddress" Title="Staker Address" Width="25%" />
-                <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="Reward" Title="Reward" Width="10%"  />
+                <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="Reward" Title="Reward" Width="5%"  />
                 <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="NodeVersion" Title="Version" Width="5%"  />
                 <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="Attestation" Title="Attestation" Width="5%"  />
             </Columns>

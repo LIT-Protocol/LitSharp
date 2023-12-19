@@ -13,8 +13,12 @@ public class Validator: LitContracts.Staking.ContractDefinition.Validator  {
         
     public IPAddress Node_Ip  { get { return   IPAddress.Parse( Ip.ToString()); } }
 
-    public string responding { get { return Attestation == null ? "No" : "Yes"; } }
+    public string responding { get { return Attestation == null ? NodeSocketAddress.Contains("127.0.0.1") ? "*No" : "No" : "Yes"; } }
     public string  NodeSocketAddress { get { return (Port == 443 ? "https" : "http") + "://" + Node_Ip.ToString(); } }
+    
+    public bool kicked { get; set; } = false;
+    
+    public string kicked_status { get { return kicked ? "Yes" : ""; } }
     public string? NodeVersion { get; set; }
     public string? StakerAddress { get; set; }
     public string? Attestation { get; set; }

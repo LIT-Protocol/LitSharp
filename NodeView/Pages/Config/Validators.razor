@@ -3,6 +3,7 @@
 @using SharedService;
 @using Services.Metrics.Models;
 @using System.Numerics;
+@using LitContracts.Staking;
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 <PageTitle>LNE - Validators</PageTitle>
 <h2>Validators</h2>    
@@ -14,9 +15,10 @@
 
 <br/><br/>
 <p>Total Staked: @total_staked</p>
+<p> * Any nodes on local addresses won't be reachable unless the network is local, or the ports are tunnelled.</p>
 
 @code {
-    public class ConnectContent {
+    public class ConnectResponse {
         public List<int> id { get; set; }
         public string addr { get; set; }
         public string public_key { get; set; }
@@ -47,35 +49,50 @@
         }
     
         var v = await stakingService.GetValidatorsStructsInCurrentEpochQueryAsync();
-        current_validators = v.ReturnValue1.Select(x => new Validator()
-        {
-            Ip = x.Ip,
-            Port = x.Port,
-            NodeAddress = x.NodeAddress,
-            Reward = x.Reward,
-            SenderPubKey = x.SenderPubKey,
-            ReceiverPubKey = x.ReceiverPubKey
-        }).ToList();
+        current_validators = await getValidatorList( v.ReturnValue1, stakingService);
         var v2 = await stakingService.GetValidatorsStructsInNextEpochQueryAsync();
-        next_validators = v2.ReturnValue1.Select(x => new Validator()
-        {
-            Ip = x.Ip,
-            Port = x.Port,
-            NodeAddress = x.NodeAddress,
-            Reward = x.Reward,
-            SenderPubKey = x.SenderPubKey,
-            ReceiverPubKey = x.ReceiverPubKey
-        }).ToList();
+        next_validators = await getValidatorList( v2.ReturnValue1, stakingService);    
 
+        await connectToValidators(current_validators);
+        await connectToValidators(next_validators);
+        
         var stakingBalance = await resolver.GetStakingBalancesService();
-
         total_staked = await stakingBalance.TotalStakedQueryAsync();
    
+    }   
+
+
+    public async Task<List<Validator>> getValidatorList(List<LitContracts.Staking.ContractDefinition.Validator> v, StakingService stakingService) {
+        var validators = v.Select(x => new Validator()
+        {
+            Ip = x.Ip,
+            Port = x.Port,
+            NodeAddress = x.NodeAddress,
+            Reward = x.Reward,
+            SenderPubKey = x.SenderPubKey,
+            ReceiverPubKey = x.ReceiverPubKey
+        }).ToList();
+
+        var node_addresses = validators.Select(x => x.NodeAddress).ToList();
+        var stakers = await stakingService.GetNodeStakerAddressMappingsQueryAsync(node_addresses);
+        
+        foreach (Validator validator in validators) {
+            validator.StakerAddress = stakers.ReturnValue1.FirstOrDefault(x => x.NodeAddress == validator.NodeAddress)?.StakerAddress ?? "n/a";
+        }
+
+        var kicked_validators = await stakingService.GetKickedValidatorsQueryAsync();
+        foreach (Validator validator in validators) {
+            validator.kicked = kicked_validators.Contains(validator.NodeAddress);
+        }
+        return validators;
+    }
+
+    public async  Task connectToValidators(List<Services.Metrics.Models.Validator> validators) {
         HttpClient client = new HttpClient();
         client.Timeout = TimeSpan.FromMilliseconds(1000);
         
         @* List<Task> handles = new List<Task>(); *@
-        foreach(Validator validator in current_validators) {
+        foreach(Validator validator in validators) {
             @* var handle = Task.Run(async () => { *@
                 try {
                     var response = await client.GetAsync(  "https://" + validator.Node_Ip +  "/connect/meow");
@@ -96,8 +113,8 @@
                         }
 
 
-                        var connectContent = Newtonsoft.Json.JsonConvert.DeserializeObject<ConnectContent>(result);
-                        validator.StakerAddress = connectContent.staker_address;
+                        var connectContent = Newtonsoft.Json.JsonConvert.DeserializeObject<ConnectResponse>(result);
+                        @* validator.StakerAddress = connectContent.staker_address; *@
                         validator.Attestation = connectContent.attestation == null ? "n/a" : "yes";
                         @* validator.NodeVersion = version?.FirstOrDefault();                 *@
                     }
@@ -109,6 +126,7 @@
             @* handles.Add(handle); *@
         }
         @* await Task.WhenAll(handles); *@
-        StateHasChanged();
+
     }
+
 }
