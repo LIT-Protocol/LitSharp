@@ -164,7 +164,8 @@ public class Resolver{
     {
         var typ = GetContractTypKeccak(contractType);        
         var resolverService = await GetContractResolverService();
-        var address_bytes = await resolverService.GetContractQueryAsync(typ, env: (byte)Env.Dev);
+        var env = await localStorage.GetItemAsync<byte>("env");
+        var address_bytes = await resolverService.GetContractQueryAsync(typ, env);
         return address_bytes;
     }
  
@@ -177,7 +178,7 @@ public class Resolver{
         
         foreach (ContractType contractType in Enum.GetValues(typeof(ContractType)) ) {            
             var typ = GetContractTypKeccak(contractType);
-            var env = (byte)Env.Dev;
+            var env = await localStorage.GetItemAsync<byte>("env");
             var contract = await resolverService.GetContractQueryAsync(typ, env);
             contractAddresses.Add(new ContractAddress { name = contractType.ToString(), address = contract });
             }

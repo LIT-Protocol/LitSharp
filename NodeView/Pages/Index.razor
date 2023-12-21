@@ -24,7 +24,7 @@
             {
                 var copy = i; 
                 <input type="radio" class="btn-check" name="options-base" id="option-@i" autocomplete="off" selected="@networks[copy].selected"
-                    @onclick="() => { networkName = networks[copy].name; chainUrl = networks[copy].url; resolverAddress = networks[copy].resolverAddress;  SetAllValues(copy);  }">
+                    @onclick="() => {  env = networks[copy].env; networkName = networks[copy].name; chainUrl = networks[copy].url; resolverAddress = networks[copy].resolverAddress;  SetAllValues(copy);  }">
                 <label class="btn btn-outline-primary" for="option-@i">@networks[i].name</label>
             }   
 
@@ -40,6 +40,11 @@
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1">Network Name</span>
                 <input type="text" class="form-control" name="networkName" value="@networkName" placeholder="Network" aria-label="Username" disabled aria-describedby="basic-addon1">
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Environment (Dev = 0, Staging = 1, Production = 2)</span>
+                <input type="text" id="env" class="form-control" name="env" value="@env" @onchange="envChanged" />
             </div>
 
             <div class="input-group mb-3">
@@ -136,6 +141,7 @@
 @code {
     struct LitNetwork {
         public string name;
+        public byte env; // 0 = dev, 1 = staging, 2 = prod
         public string url;
         public int chainId;
         public string resolverAddress;
@@ -145,16 +151,18 @@
     string? chainUrl;
     string? resolverAddress;
     string? defaultPrivateKey;
-
+    byte env = 0;
     LitNetwork[] networks = new LitNetwork[] {
-        new LitNetwork() { name = "Localhost", url = "https://127.0.0.1:8545", chainId=0 , resolverAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3" , selected=false },
-        new LitNetwork() { name = "DevInternal", url = "https://lit-protocol.calderachain.xyz/http", chainId=175177, resolverAddress = "0xFFb9afC9e8B731CB5d4194ec728657875510a8C8", selected=false },
-        new LitNetwork() { name = "Cayenne", url = "https://lit-protocol.calderachain.xyz/http", chainId=175177 , resolverAddress = "0xB0cb99e69c01Bd481aeCc6DD0155d4147e96C746" , selected=false},
-        new LitNetwork() { name = "Manzano", url = "https://lit-protocol.calderachain.xyz/http", chainId=175177 , resolverAddress = "0x9F0Ede26261451C5E784DC799D71ECf766EB7562" , selected=false},
-        new LitNetwork() { name = "Habanero", url ="https://lit-protocol.calderachain.xyz/http", chainId=175177 , resolverAddress = "0xe5a7C5d908EE8996332F488cE5f636d4EBff8522" , selected=false},
+        new LitNetwork() { name = "Localhost", env=0, url = "https://127.0.0.1:8545", chainId=0 , resolverAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3" , selected=false },
+        new LitNetwork() { name = "DevInternal", env=0, url = "https://lit-protocol.calderachain.xyz/http", chainId=175177, resolverAddress = "0xFFb9afC9e8B731CB5d4194ec728657875510a8C8", selected=false },
+        new LitNetwork() { name = "Cayenne", env=0, url = "https://lit-protocol.calderachain.xyz/http", chainId=175177 , resolverAddress = "0xB0cb99e69c01Bd481aeCc6DD0155d4147e96C746" , selected=false},
+        new LitNetwork() { name = "Manzano", env=0, url = "https://lit-protocol.calderachain.xyz/http", chainId=175177 , resolverAddress = "0x9F0Ede26261451C5E784DC799D71ECf766EB7562" , selected=false},
+        new LitNetwork() { name = "Habanero", env=2, url ="https://lit-protocol.calderachain.xyz/http", chainId=175177 , resolverAddress = "0xe5a7C5d908EE8996332F488cE5f636d4EBff8522" , selected=false},
     };
     protected override async Task OnInitializedAsync()
     {
+        if ( await localStorage.ContainKeyAsync("env") ) 
+          env = await localStorage.GetItemAsync<byte>("env");                
         networkName = await localStorage.GetItemAsync<string>("networkName");
         if ( string.IsNullOrEmpty( networkName ) ) networkName = "Localhost";
         chainUrl = await localStorage.GetItemAsync<string>("url");
@@ -207,5 +215,19 @@
 
         defaultPrivateKey = e.Value.ToString();
         await localStorage.SetItemAsync("privateKey", defaultPrivateKey);
+    }
+
+       async void envChanged(ChangeEventArgs e)
+    {
+
+        if ( e.Value == null ) return;
+        if ( string.IsNullOrEmpty( e.Value.ToString() ) ) return;
+
+        try {
+            env = byte.Parse( e.Value.ToString() );
+            await localStorage.SetItemAsync("env", env);
+        } catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+        } 
     }
 }
