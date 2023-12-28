@@ -13,7 +13,6 @@ using Org.BouncyCastle.Crypto.Digests;
 using Nethereum.Web3;
 using Nethereum.Web3.Accounts;
 using Blazored.LocalStorage;
-using Org.BouncyCastle.Crypto.Tls;
 namespace SharedService;
 
  public struct ContractAddress {
@@ -59,6 +58,8 @@ public class Resolver{
 
     public Resolver(ILocalStorageService localStorageService) {
         localStorage = localStorageService;
+
+       
     }
     public async Task<Web3> GetConnection() {
     
@@ -80,6 +81,7 @@ public class Resolver{
         await localStorage.SetItemAsync<string>("url", url);
         await localStorage.SetItemAsync<string>("privateKey", privateKey);
         await localStorage.SetItemAsync<string>("contractResolverAddress", contractResolverAddress);
+
     }
 
     public static byte[] keccak256(string tx_bytes) {        
