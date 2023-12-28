@@ -5,11 +5,9 @@
 @using LitContracts.Staking;
 @using Nethereum.Contracts.Extensions;
 @using Services.Metrics.Models;
-@using System.Text.Json;
 @using Nethereum.Util;
-@using Org.BouncyCastle.Crypto.Digests;
 @using Nethereum.Web3;
-@using Nethereum.ABI.Model;
+@using Nethereum.ABI.Model; 
 @using Nethereum.Contracts;
 @using Nethereum.Web3.Accounts;
 @inject Blazored.LocalStorage.ILocalStorageService localStorage;
@@ -29,13 +27,29 @@
             <div class="col">
               Chain History for Network
               </div>
+            <div class="col text-align-right">
+              <form class="form-inline">
+                <div class="input-group mb-1 mr-sm-1">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">From</div>
+                  </div>
+                  <input  type="number"  class="form-control" name="fromBlock" value="@fromBlock" placeholder="0" Width=5>
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">To</div>
+                  </div>
+                  <input  type="number"  class="form-control" name="toBlock" value="@toBlock" placeholder="9999999">
+                  <button type="button" class="btn btn-primary btn-sm">Search</button>
+                </div>
+                </form>
+              </div>
           </div>
         </div>
         <div class="card-body p-0">
           <div class="row">
             <div class="col"> 
               <RadzenDataGrid AllowFiltering="false" AllowColumnResize="true"   AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="false" PageSize="30" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
-                  Data="@entries" TItem="BlockEntry" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or" SelectionMode="DataGridSelectionMode.Single">
+                  Data="@entries" TItem="BlockEntry" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or" 
+                  SelectionMode="DataGridSelectionMode.Single" @bind-Value=@selectedEntries RowClick=@OnRowClick>
                   <Columns>       
                       <RadzenDataGridColumn TItem="BlockEntry" Title="Block / Time" Width="15%" >
                           <Template Context="data">
@@ -100,17 +114,37 @@
         </div>
       </div>
       <div class="card-body p-0">
-          <RadzenDataGrid AllowFiltering="false" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="false" PageSize="30" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
-              Data="@validators" TItem="Services.Metrics.Models.Validator" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
-              <Columns>       
-                  <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Title="Nodes" Width="100%" >
-                      <Template Context="data">
-                          <a href="@(data.NodeSocketAddress + "/connect")" style="text-decoration:none" target="_blank">@data.NodeSocketAddress</a>                        <br/>
-                          <a href="@("https://lit-protocol.calderaexplorer.xyz/address/"  +data.NodeAddress)" style="text-decoration:none" target="_blank" >@data.NodeAddress</a>                        
-                      </Template>
-                  </RadzenDataGridColumn>    
-              </Columns>
-          </RadzenDataGrid>  
+        <div class="row">
+          <div class="col">
+            <RadzenDataGrid AllowFiltering="false" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="false" PageSize="30" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
+                Data="@current_validators" TItem="Services.Metrics.Models.Validator" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
+                <Columns>       
+                    <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Title="Current Nodes" Width="100%" >
+                        <Template Context="data">
+                            <a href="@(data.NodeSocketAddress + "/connect")" style="text-decoration:none" target="_blank">@data.NodeSocketAddress</a>                        <br/>
+                            <a href="@("https://lit-protocol.calderaexplorer.xyz/address/"  +data.NodeAddress)" style="text-decoration:none" target="_blank" >@data.NodeAddress</a>                        
+                        </Template>
+                    </RadzenDataGridColumn>    
+                </Columns>
+            </RadzenDataGrid>
+          </div>
+        </div>  
+        <div class="row">
+          <div class="col">
+            <RadzenDataGrid AllowFiltering="false" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="false" PageSize="30" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
+                Data="@next_validators" TItem="Services.Metrics.Models.Validator" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
+                <Columns>       
+                    <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Title="Next Nodes" Width="100%" >
+                        <Template Context="data">
+                            <a href="@(data.NodeSocketAddress + "/connect")" style="text-decoration:none" target="_blank">@data.NodeSocketAddress</a>                        <br/>
+                            <a href="@("https://lit-protocol.calderaexplorer.xyz/address/"  +data.NodeAddress)" style="text-decoration:none" target="_blank" >@data.NodeAddress</a>                        
+                        </Template>
+                    </RadzenDataGridColumn>    
+                </Columns>
+            </RadzenDataGrid>
+          </div>
+        </div>  
+
       </div>
     </div>  
 
@@ -124,16 +158,19 @@
 
 
 
-
-
-
 @code {
-    private List<Services.Metrics.Models.Validator> validators { get; set; }
+    private string fromBlock { get; set; } = "0";
+    private string toBlock { get; set; } = "9999999";
     private string network_state { get; set; }
     private string epoch_number { get; set; }
     private string block_number { get; set; }
+    private List<Validator> ? current_validators = null;
+    private List<Validator> ? next_validators = null;
+    private string kicked_validators = "Kicked validators:";
 
     private List<BlockEntry> entries { get; set; }
+
+    private IList<BlockEntry> selectedEntries;
 
     public class BlockEntry
     {
@@ -214,8 +251,86 @@
         await LoadHistory();
     }
 
+    protected async Task OnRowClick(DataGridRowMouseEventArgs<BlockEntry> args)
+    {
+        ///Console.WriteLine(args.Data.blockNumber);
+        await UpdateNetworkSnapshot( int.Parse(args.Data.blockNumber) );
+    }
 
-    private async Task LoadHistory()
+    protected async Task UpdateNetworkSnapshot(int blockNumber) {
+
+        block_number = blockNumber.ToString(); 
+
+        var historic_block = new Nethereum.RPC.Eth.DTOs.BlockParameter( ulong.Parse( block_number));
+
+        var state = await  stakingService.StateQueryAsync(historic_block);
+            
+        switch (state) {
+            case 0:
+                network_state = "Active";
+                break;
+            case 1:
+                network_state = "Next Validator Set Locked";
+                break;
+            case 2:
+                network_state = "Ready For Next Epoch";
+                break;
+            case 3:
+                network_state = "Unlocked";
+                break;
+            case 4:
+                network_state = "Paused";
+                break;
+            case 5:
+                network_state = "Restore";
+                break;
+            default:
+                network_state = "Unknown";
+                break;
+        }
+
+
+            var epochOutput = await stakingService.EpochQueryAsync(historic_block);
+            epoch_number = epochOutput.ReturnValue1.Number.ToString();
+            @* epoch_length = epochOutput.ReturnValue1.EpochLength;
+            epoch_end_time = epochOutput.ReturnValue1.EndTime; *@
+
+
+        var v = await stakingService.GetValidatorsStructsInCurrentEpochQueryAsync(historic_block);
+        current_validators = await getValidatorList( v.ReturnValue1, stakingService);
+        var v2 = await stakingService.GetValidatorsStructsInNextEpochQueryAsync(historic_block);
+        next_validators = await getValidatorList( v2.ReturnValue1, stakingService);    
+        var k = await stakingService.GetKickedValidatorsQueryAsync(historic_block);
+        var kicked_validators = "Kicked validators: " + string.Join(", ", k.ToArray());
+    }
+
+  public async Task<List<Validator>> getValidatorList(List<LitContracts.Staking.ContractDefinition.Validator> v, StakingService stakingService) {
+        var validators = v.Select(x => new Validator()
+        {
+            Ip = x.Ip,
+            Port = x.Port,
+            NodeAddress = x.NodeAddress,
+            Reward = x.Reward,
+            SenderPubKey = x.SenderPubKey,
+            ReceiverPubKey = x.ReceiverPubKey
+        }).ToList();
+
+        var node_addresses = validators.Select(x => x.NodeAddress).ToList();
+        var stakers = await stakingService.GetNodeStakerAddressMappingsQueryAsync(node_addresses);
+        
+        foreach (Validator validator in validators) {
+            validator.StakerAddress = stakers.ReturnValue1.FirstOrDefault(x => x.NodeAddress == validator.NodeAddress)?.StakerAddress ?? "n/a";
+        }
+
+        var kicked_validators = await stakingService.GetKickedValidatorsQueryAsync();
+        foreach (Validator validator in validators) {
+            if ( validator.StakerAddress != null )
+                validator.kicked = kicked_validators.Contains(validator.StakerAddress);            
+        }
+        return validators;
+    }
+
+    private async Task LoadHistory(int fromBlock = 0, int toBlock = 9999999)
     {      
         //var address = "0x4B90EB9BfCc55DcdBdd1A9FE77627397da7d43e1";
         var address = stakingService.ContractHandler.ContractAddress;
@@ -224,7 +339,7 @@
         var response = await client.GetAsync("https://lit-protocol.calderaexplorer.xyz/api?module=account&action=txlist&sort=asc&address=" + address);
         // parse the response
         var responseString = await response.Content.ReadAsStringAsync();
-        var queryResponse = JsonSerializer.Deserialize<CalderaChainResponse>(responseString);
+        var queryResponse = System.Text.Json.JsonSerializer.Deserialize<CalderaChainResponse>(responseString);
         entries = queryResponse.result;
     }
 } 
