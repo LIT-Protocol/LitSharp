@@ -193,6 +193,11 @@
 
           System.Text.StringBuilder sb = new System.Text.StringBuilder();
           try {
+
+              if (function_input == "0x60806040") {
+                return ("Contract Deployment", "");
+              }
+
               Nethereum.ABI.Model.FunctionABI function = contractBuilder.GetFunctionAbiBySignature(function_input);
               List<Nethereum.ABI.FunctionEncoding.ParameterOutput> data =  function.DecodeInputDataToDefault(input);        
               foreach (var item in data)
