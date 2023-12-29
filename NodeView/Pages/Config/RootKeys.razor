@@ -38,9 +38,11 @@
   </div>
 </div>
 
+@response_value
 
 @code {
     
+    private string response_value = "";
     struct SimpleRootKey
     {
         public string Pubkey { get; set; }
@@ -79,8 +81,7 @@
             root_keys.Add(new SimpleRootKey { Pubkey = "0x" + root_key.Pubkey.ToHex(), KeyType =  key_type });
         }
  
-        
-
-
+ 
+     
     }
 }

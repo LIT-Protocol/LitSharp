@@ -1,26 +1,27 @@
-@page "/explorer/history"
+@page "/explorer/stakinghistory"
 @using Radzen.Blazor.Rendering;
 @using SharedService;
 @using System.Numerics;
 @using LitContracts.Staking;
 @using Nethereum.Contracts.Extensions;
 @using Services.Metrics.Models;
+@using Services.ChainData.Models;
+@using Services.ChainData;
 @using Nethereum.Util;
 @using Nethereum.Web3;
 @using Nethereum.ABI.Model; 
 @using Nethereum.Contracts;
 @using Nethereum.Web3.Accounts;
+@using Nethereum.RPC.Eth.DTOs;
+@using Nethereum.Hex.HexTypes;
 @inject Blazored.LocalStorage.ILocalStorageService localStorage;
 
 <PageTitle>LNE - Staking History</PageTitle>
 <h2>Chain Based Network History</h2>    
 
 <br />
-
 <div class="row">
-
 <div class="col-9">
-
       <div class="card border-primary">
         <div class="card-header  ">
           <div class="row no-gutters">
@@ -33,12 +34,12 @@
                   <div class="input-group-prepend">
                     <div class="input-group-text">From</div>
                   </div>
-                  <input  type="number"  class="form-control" name="fromBlock" value="@fromBlock" placeholder="0" Width=5>
+                  <input  type="number"  class="form-control" name="fromBlock" placeholder="0"  value="@fromBlock" @onchange="fromBlockChanged"  />
                   <div class="input-group-prepend">
                     <div class="input-group-text">To</div>
                   </div>
-                  <input  type="number"  class="form-control" name="toBlock" value="@toBlock" placeholder="9999999">
-                  <button type="button" class="btn btn-primary btn-sm">Search</button>
+                  <input  type="number"  class="form-control" name="toBlock" value="@toBlock"  placeholder="9999999" disabled />
+                  <button type="button" class="btn btn-primary btn-sm" @onclick="FilterHistory">Search</button>
                 </div>
                 </form>
               </div>
@@ -48,17 +49,17 @@
           <div class="row">
             <div class="col"> 
               <RadzenDataGrid AllowFiltering="false" AllowColumnResize="true"   AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="false" PageSize="30" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
-                  Data="@entries" TItem="BlockEntry" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or" 
+                  Data="@entries" TItem="SimpleTx" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or" 
                   SelectionMode="DataGridSelectionMode.Single" @bind-Value=@selectedEntries RowClick=@OnRowClick>
                   <Columns>       
-                      <RadzenDataGridColumn TItem="BlockEntry" Title="Block / Time" Width="15%" >
+                      <RadzenDataGridColumn TItem="SimpleTx" Title="Block / Time" Width="15%" >
                           <Template Context="data">
                               @data.blockNumber <br/>
                               @data.chainTimeStamp
                           </Template>
                       
                       </RadzenDataGridColumn>
-                      <RadzenDataGridColumn TItem="BlockEntry" Property="input" Title="Description" Width="60%" >
+                      <RadzenDataGridColumn TItem="SimpleTx" Property="input" Title="Description" Width="60%" >
                           <Template Context="data">
                               @{
                                   var (name, description) = get_description(data.input, data.isError);
@@ -72,7 +73,7 @@
                               @(new MarkupString(description.Replace("\n", "<br/>"))) 
                           </Template>
                       </RadzenDataGridColumn>  
-                      <RadzenDataGridColumn TItem="BlockEntry" Property="from"  Title="From" Width="25%" />                
+                      <RadzenDataGridColumn TItem="SimpleTx" Property="from"  Title="From" Width="25%" />                
                   </Columns>
               </RadzenDataGrid>  
             </div>
@@ -96,15 +97,15 @@
           <div class="col">
             
             <div class="row">
-              <div class="col-6">
+              <div class="col-12">
                   State:    
                   @network_state  
               </div>
-              <div class="col-3">
+              <div class="col-6">
                   Epoch:
                   @epoch_number  
               </div>
-              <div class="col-3">
+              <div class="col-6">
                   Block:
                   @block_number  
               </div>
@@ -121,7 +122,15 @@
                 <Columns>       
                     <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Title="Current Nodes" Width="100%" >
                         <Template Context="data">
-                            <a href="@(data.NodeSocketAddress + "/connect")" style="text-decoration:none" target="_blank">@data.NodeSocketAddress</a>                        <br/>
+                            @{
+                                  if (data.kicked ) {
+                                    <div class="text-danger">Node #@data.NodeName - Kicked: @data.NodeSocketAddress</div>
+                                  }
+                                  else {
+                                    <div class="text-success">Node #@data.NodeName - Active: @data.NodeSocketAddress</div>
+                                  }
+
+                            }
                             <a href="@("https://lit-protocol.calderaexplorer.xyz/address/"  +data.NodeAddress)" style="text-decoration:none" target="_blank" >@data.NodeAddress</a>                        
                         </Template>
                     </RadzenDataGridColumn>    
@@ -136,7 +145,7 @@
                 <Columns>       
                     <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Title="Next Nodes" Width="100%" >
                         <Template Context="data">
-                            <a href="@(data.NodeSocketAddress + "/connect")" style="text-decoration:none" target="_blank">@data.NodeSocketAddress</a>                        <br/>
+                            Node #@data.NodeName : @data.NodeSocketAddress<br/>
                             <a href="@("https://lit-protocol.calderaexplorer.xyz/address/"  +data.NodeAddress)" style="text-decoration:none" target="_blank" >@data.NodeAddress</a>                        
                         </Template>
                     </RadzenDataGridColumn>    
@@ -168,45 +177,10 @@
     private List<Validator> ? next_validators = null;
     private string kicked_validators = "Kicked validators:";
 
-    private List<BlockEntry> entries { get; set; }
+    private List<SimpleTx> entries { get; set; }
 
-    private IList<BlockEntry> selectedEntries;
+    private IList<SimpleTx> selectedEntries;
 
-    public class BlockEntry
-    {
-        public string blockHash { get; set; }
-        public string blockNumber { get; set; }
-        public string confirmations { get; set; }
-        public string contractAddress { get; set; }
-        public string cumulativeGasUsed { get; set; }
-        public string from { get; set; }
-        public string gas { get; set; }
-        public string gasPrice { get; set; }
-        public string gasUsed { get; set; }
-        public string hash { get; set; }
-        public string input { get; set; }
-        public string isError { get; set; }
-        public string nonce { get; set; }
-        public string timeStamp { get; set; }
-        public string to { get; set; }
-        public string transactionIndex { get; set; }
-        public string txreceipt_status { get; set; }
-        public string value { get; set; }
-
-        public DateTime chainTimeStamp { get { DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-                                dateTime = dateTime.AddSeconds( Double.Parse(timeStamp) ).ToLocalTime();
-                                return dateTime; }
-                                }
-        
-    }
-
-    public class CalderaChainResponse
-
-    {
-        public string message { get; set; }
-        public List<BlockEntry> result { get; set; }
-        public string status { get; set; }
-    }
 
     private StakingService? stakingService = null;
 
@@ -219,18 +193,13 @@
 
           System.Text.StringBuilder sb = new System.Text.StringBuilder();
           try {
-
-                Nethereum.ABI.Model.FunctionABI function = contractBuilder.GetFunctionAbiBySignature(function_input);
-                List<Nethereum.ABI.FunctionEncoding.ParameterOutput> data =  function.DecodeInputDataToDefault(input);        
-        
+              Nethereum.ABI.Model.FunctionABI function = contractBuilder.GetFunctionAbiBySignature(function_input);
+              List<Nethereum.ABI.FunctionEncoding.ParameterOutput> data =  function.DecodeInputDataToDefault(input);        
               foreach (var item in data)
               {
                   @* Console.WriteLine(item.Parameter.Name + " " + item.Result); *@
                   sb.Append(item.Parameter.Name + ":" + item.Result + System.Environment.NewLine);
               } 
-            
-
-
               return (function.Name, sb.ToString());
             
           }
@@ -251,17 +220,21 @@
         await LoadHistory();
     }
 
-    protected async Task OnRowClick(DataGridRowMouseEventArgs<BlockEntry> args)
+    protected async Task OnRowClick(DataGridRowMouseEventArgs<SimpleTx> args)
     {
-        ///Console.WriteLine(args.Data.blockNumber);
-        await UpdateNetworkSnapshot( int.Parse(args.Data.blockNumber) );
+        await UpdateNetworkSnapshot( args.Data.blockNumber);
     }
 
-    protected async Task UpdateNetworkSnapshot(int blockNumber) {
+    protected async Task UpdateNetworkSnapshot(string args_block) {
 
-        block_number = blockNumber.ToString(); 
+        BlockParameter historic_block;
+        if ( args_block.Contains("0x")  ) 
+          historic_block =  new BlockParameter( new HexBigInteger(args_block) );
+        else 
+          historic_block =  new BlockParameter( ulong.Parse( args_block));
 
-        var historic_block = new Nethereum.RPC.Eth.DTOs.BlockParameter( ulong.Parse( block_number));
+
+        block_number = historic_block.BlockNumber.ToString();
 
         var state = await  stakingService.StateQueryAsync(historic_block);
             
@@ -297,14 +270,14 @@
 
 
         var v = await stakingService.GetValidatorsStructsInCurrentEpochQueryAsync(historic_block);
-        current_validators = await getValidatorList( v.ReturnValue1, stakingService);
+        current_validators = await getValidatorList( v.ReturnValue1, stakingService , historic_block);
         var v2 = await stakingService.GetValidatorsStructsInNextEpochQueryAsync(historic_block);
-        next_validators = await getValidatorList( v2.ReturnValue1, stakingService);    
-        var k = await stakingService.GetKickedValidatorsQueryAsync(historic_block);
-        var kicked_validators = "Kicked validators: " + string.Join(", ", k.ToArray());
+        next_validators = await getValidatorList( v2.ReturnValue1, stakingService, historic_block);    
+        @* var k = await stakingService.GetKickedValidatorsQueryAsync(historic_block);
+        var kicked_validators = "Kicked validators: " + string.Join(", ", k.ToArray()); *@
     }
 
-  public async Task<List<Validator>> getValidatorList(List<LitContracts.Staking.ContractDefinition.Validator> v, StakingService stakingService) {
+  public async Task<List<Validator>> getValidatorList(List<LitContracts.Staking.ContractDefinition.Validator> v, StakingService stakingService, Nethereum.RPC.Eth.DTOs.BlockParameter historic_block ) {
         var validators = v.Select(x => new Validator()
         {
             Ip = x.Ip,
@@ -316,30 +289,62 @@
         }).ToList();
 
         var node_addresses = validators.Select(x => x.NodeAddress).ToList();
-        var stakers = await stakingService.GetNodeStakerAddressMappingsQueryAsync(node_addresses);
+        var stakers = await stakingService.GetNodeStakerAddressMappingsQueryAsync(node_addresses, historic_block );
         
         foreach (Validator validator in validators) {
             validator.StakerAddress = stakers.ReturnValue1.FirstOrDefault(x => x.NodeAddress == validator.NodeAddress)?.StakerAddress ?? "n/a";
         }
 
-        var kicked_validators = await stakingService.GetKickedValidatorsQueryAsync();
+        var kicked_validators = await stakingService.GetKickedValidatorsQueryAsync(historic_block );
         foreach (Validator validator in validators) {
             if ( validator.StakerAddress != null )
                 validator.kicked = kicked_validators.Contains(validator.StakerAddress);            
         }
+
+        validators.Sort((x, y) => x.StakerAddress.CompareTo(y.StakerAddress));
+        int i = 1;
+        foreach (Validator validator in validators) {
+            validator.NodeName = i.ToString();
+            i++;
+        }
+
         return validators;
+    }
+
+    async void fromBlockChanged(ChangeEventArgs e)
+    {
+        if ( e.Value == null ) return;
+        if ( string.IsNullOrEmpty( e.Value.ToString() ) ) return;
+
+        try {
+            fromBlock = e.Value.ToString();            
+        } catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+        } 
+    }
+
+    private async Task FilterHistory()
+    {
+
+        await LoadHistory(int.Parse(fromBlock), int.Parse(toBlock));
     }
 
     private async Task LoadHistory(int fromBlock = 0, int toBlock = 9999999)
     {      
-        //var address = "0x4B90EB9BfCc55DcdBdd1A9FE77627397da7d43e1";
+        
+   
         var address = stakingService.ContractHandler.ContractAddress;
-        var client = new HttpClient();
-        // query the url
-        var response = await client.GetAsync("https://lit-protocol.calderaexplorer.xyz/api?module=account&action=txlist&sort=asc&address=" + address);
-        // parse the response
-        var responseString = await response.Content.ReadAsStringAsync();
-        var queryResponse = System.Text.Json.JsonSerializer.Deserialize<CalderaChainResponse>(responseString);
-        entries = queryResponse.result;
+        
+        RpcCalls rpcCalls = new RpcCalls();
+
+        var rpc_api_url = await localStorage.GetItemAsync<string>("rpc_api_url");
+        var rpc_api_type = await localStorage.GetItemAsync<int>("rpc_api_type");
+        entries = await rpcCalls.GetTxListAsync(rpc_api_type, rpc_api_url, address, fromBlock, toBlock);
+
+        Console.WriteLine("Loaded " + entries.Count + " entries");
+
+        if (entries.Count > 0)          
+          await UpdateNetworkSnapshot(entries[0].blockNumber.ToString());
+        
     }
 } 

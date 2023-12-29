@@ -24,7 +24,9 @@
             {
                 var copy = i; 
                 <input type="radio" class="btn-check" name="options-base" id="option-@i" autocomplete="off" selected="@networks[copy].selected"
-                    @onclick="() => {  env = networks[copy].env; networkName = networks[copy].name; chainUrl = networks[copy].url; resolverAddress = networks[copy].resolverAddress;  SetAllValues(copy);  }">
+                    @onclick="() => {  env = networks[copy].env; networkName = networks[copy].name; chainUrl = networks[copy].url; 
+                                      resolverAddress = networks[copy].resolverAddress;  rpc_api_url = networks[copy].rpc_api_url;
+                                      rpc_api_type = networks[copy].rpc_api_type;   SetAllValues(copy);  }">
                 <label class="btn btn-outline-primary" for="option-@i">@networks[i].name</label>
             }   
 
@@ -60,6 +62,14 @@
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1">Private Key</span>
                 <input type="text" id="privateKey" class="form-control" name="privateKey" value="@defaultPrivateKey" @onchange="PrivateKeyChanged" />
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">RPC API Type (1 = BlockScout, 2 = OtterScan)</span>
+                <input type="text" id="privateKey" class="form-control" name="privateKey" value="@rpc_api_type" @onchange="RpcApiTypeChanged" />
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">RPC API Url</span>
+                <input type="text" id="privateKey" class="form-control" name="privateKey" value="@rpc_api_url" @onchange="RpcApiUrlChanged" />
             </div>
         </div>
         <div>
@@ -146,31 +156,45 @@
         public int chainId;
         public string resolverAddress;
         public bool selected;
+
+        public string rpc_api_url;
+        public int rpc_api_type;
     }
     string? networkName;
     string? chainUrl;
     string? resolverAddress;
     string? defaultPrivateKey;
     byte env = 0;
+    string? rpc_api_url;
+    int rpc_api_type = 1;
+
     LitNetwork[] networks = new LitNetwork[] {
-        new LitNetwork() { name = "Localhost", env=0, url = "https://127.0.0.1:8545", chainId=0 , resolverAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3" , selected=false },
-        new LitNetwork() { name = "DevInternal", env=0, url = "https://lit-protocol.calderachain.xyz/http", chainId=175177, resolverAddress = "0xFFb9afC9e8B731CB5d4194ec728657875510a8C8", selected=false },
-        new LitNetwork() { name = "Cayenne", env=0, url = "https://lit-protocol.calderachain.xyz/http", chainId=175177 , resolverAddress = "0xB0cb99e69c01Bd481aeCc6DD0155d4147e96C746" , selected=false},
-        new LitNetwork() { name = "Manzano", env=0, url = "https://lit-protocol.calderachain.xyz/http", chainId=175177 , resolverAddress = "0x9F0Ede26261451C5E784DC799D71ECf766EB7562" , selected=false},
-        new LitNetwork() { name = "Habanero", env=2, url ="https://lit-protocol.calderachain.xyz/http", chainId=175177 , resolverAddress = "0xe5a7C5d908EE8996332F488cE5f636d4EBff8522" , selected=false},
+        new LitNetwork() { name = "Localhost", env=0, url = "http://127.0.0.1:8545", chainId=0 , resolverAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3" , selected=false , rpc_api_url ="http://127.0.0.1:8545", rpc_api_type = 2 },
+        new LitNetwork() { name = "DevInternal", env=0, url = "https://lit-protocol.calderachain.xyz/http", chainId=175177, resolverAddress = "0xFFb9afC9e8B731CB5d4194ec728657875510a8C8", selected=false, rpc_api_url = "https://lit-protocol.calderaexplorer.xyz/api", rpc_api_type = 1 },
+        new LitNetwork() { name = "Cayenne", env=0, url = "https://lit-protocol.calderachain.xyz/http", chainId=175177 , resolverAddress = "0xB0cb99e69c01Bd481aeCc6DD0155d4147e96C746" , selected=false, rpc_api_url = "https://lit-protocol.calderaexplorer.xyz/api", rpc_api_type = 1 },
+        new LitNetwork() { name = "Manzano", env=0, url = "https://lit-protocol.calderachain.xyz/http", chainId=175177 , resolverAddress = "0x9F0Ede26261451C5E784DC799D71ECf766EB7562" , selected=false, rpc_api_url = "https://lit-protocol.calderaexplorer.xyz/api", rpc_api_type = 1 },
+        new LitNetwork() { name = "Habanero", env=2, url ="https://lit-protocol.calderachain.xyz/http", chainId=175177 , resolverAddress = "0xe5a7C5d908EE8996332F488cE5f636d4EBff8522" , selected=false, rpc_api_url = "https://lit-protocol.calderaexplorer.xyz/api", rpc_api_type = 1 },
     };
     protected override async Task OnInitializedAsync()
     {
         if ( await localStorage.ContainKeyAsync("env") ) 
           env = await localStorage.GetItemAsync<byte>("env");                
+        
         networkName = await localStorage.GetItemAsync<string>("networkName");
         if ( string.IsNullOrEmpty( networkName ) ) networkName = "Localhost";
         chainUrl = await localStorage.GetItemAsync<string>("url");
-        if ( string.IsNullOrEmpty( chainUrl ) ) chainUrl = "https://127.0.0.1:8545";
+        if ( string.IsNullOrEmpty( chainUrl ) ) chainUrl = "http://127.0.0.1:8545";
         resolverAddress = await localStorage.GetItemAsync<string>("contractResolverAddress");
         if ( string.IsNullOrEmpty( resolverAddress ) ) resolverAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
         defaultPrivateKey = await localStorage.GetItemAsync<string>("privateKey");
         if ( string.IsNullOrEmpty( defaultPrivateKey ) ) defaultPrivateKey = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
+
+        rpc_api_url = await localStorage.GetItemAsync<string>("rpc_api_url");
+        if ( string.IsNullOrEmpty( rpc_api_url ) ) rpc_api_url = "http://127.0.0.1:8545";
+
+        if ( await localStorage.ContainKeyAsync("rpc_api_type") ) 
+          rpc_api_type = await localStorage.GetItemAsync<int>("rpc_api_type");      
+
 
         for (int i =0 ;i < networks.Length; i++)
         {
@@ -184,8 +208,11 @@
     async void SetAllValues(int index) {
         await localStorage.SetItemAsync("networkName", networkName);
         await localStorage.SetItemAsync("url", chainUrl);
+        await localStorage.SetItemAsync("env", env);
         await localStorage.SetItemAsync("contractResolverAddress", resolverAddress);
         await localStorage.SetItemAsync("privateKey", defaultPrivateKey);
+        await localStorage.SetItemAsync("rpc_api_type", rpc_api_type);
+        await localStorage.SetItemAsync("rpc_api_url", rpc_api_url);
     }
     async void ResolverAddressChanged(ChangeEventArgs e)
     {
@@ -217,7 +244,7 @@
         await localStorage.SetItemAsync("privateKey", defaultPrivateKey);
     }
 
-       async void envChanged(ChangeEventArgs e)
+    async void envChanged(ChangeEventArgs e)
     {
 
         if ( e.Value == null ) return;
@@ -230,4 +257,32 @@
             Console.WriteLine(ex.Message);
         } 
     }
+
+    async void RpcApiTypeChanged(ChangeEventArgs e)
+    {
+
+        if ( e.Value == null ) return;
+        if ( string.IsNullOrEmpty( e.Value.ToString() ) ) return;
+
+        try {
+            rpc_api_type = int.Parse( e.Value.ToString() );
+            await localStorage.SetItemAsync("rpc_api_type", env);
+        } catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+        } 
+    }
+    async void RpcApiUrlChanged(ChangeEventArgs e)
+    {
+
+        if ( e.Value == null ) return;
+        if ( string.IsNullOrEmpty( e.Value.ToString() ) ) return;
+
+        try {
+            rpc_api_url = e.Value.ToString();
+            await localStorage.SetItemAsync("rpc_api_url", rpc_api_url);
+        } catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+        } 
+    }
+
 }

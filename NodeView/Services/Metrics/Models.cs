@@ -22,6 +22,7 @@ public class Validator: LitContracts.Staking.ContractDefinition.Validator  {
     public string NodeVersion { get; set; } = "";
     public string StakerAddress { get; set; } = "";
     public string Attestation { get; set; } = "";
+    public string ? NodeName { get; set; } = "";
 }
 
 public class Metric
