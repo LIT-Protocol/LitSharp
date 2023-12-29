@@ -273,11 +273,16 @@
             @* epoch_length = epochOutput.ReturnValue1.EpochLength;
             epoch_end_time = epochOutput.ReturnValue1.EndTime; *@
 
-
-        var v = await stakingService.GetValidatorsStructsInCurrentEpochQueryAsync(historic_block);
-        current_validators = await getValidatorList( v.ReturnValue1, stakingService , historic_block);
-        var v2 = await stakingService.GetValidatorsStructsInNextEpochQueryAsync(historic_block);
-        next_validators = await getValidatorList( v2.ReturnValue1, stakingService, historic_block);    
+        try  {
+          var v = await stakingService.GetValidatorsStructsInCurrentEpochQueryAsync(historic_block);
+          current_validators = await getValidatorList( v.ReturnValue1, stakingService , historic_block);
+          var v2 = await stakingService.GetValidatorsStructsInNextEpochQueryAsync(historic_block);
+          next_validators = await getValidatorList( v2.ReturnValue1, stakingService, historic_block);    
+        } 
+        catch (Exception ex) {
+          Console.WriteLine(ex.Message);
+        }
+         
         @* var k = await stakingService.GetKickedValidatorsQueryAsync(historic_block);
         var kicked_validators = "Kicked validators: " + string.Join(", ", k.ToArray()); *@
     }
@@ -348,8 +353,11 @@
 
         Console.WriteLine("Loaded " + entries.Count + " entries");
 
-        if (entries.Count > 0)          
-          await UpdateNetworkSnapshot(entries[0].blockNumber.ToString());
+        if (entries.Count > 0)  {
+          var block_number = entries[0].blockNumber.ToString();      
+          Console.WriteLine("Loading snapshot for block " + block_number);
+          await UpdateNetworkSnapshot(block_number);
+        }
         
     }
 } 
