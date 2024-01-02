@@ -19,6 +19,7 @@
         <RadzenDataGrid AllowFiltering="false" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="false" PageSize="30" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
             Data="@validators" TItem="Services.Metrics.Models.Validator" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
             <Columns>       
+                <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="NodeName"  Title="#" Width="5%" />
                 <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="responding"  Title="Up" Width="5%" />
                  <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="kicked_status" Title="Kicked" Width="5%">
                 </RadzenDataGridColumn>                

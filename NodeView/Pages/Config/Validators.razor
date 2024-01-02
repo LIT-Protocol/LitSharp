@@ -89,6 +89,15 @@
             if ( validator.StakerAddress != null )
                 validator.kicked = kicked_validators.Contains(validator.StakerAddress);            
         }
+
+        validators.Sort((x, y) => x.StakerAddress.CompareTo(y.StakerAddress));
+        int i = 0;
+        foreach (Validator validator in validators) {
+            validator.NodeName = i.ToString();
+            i++;
+        }
+
+
         return validators;
     }
 
