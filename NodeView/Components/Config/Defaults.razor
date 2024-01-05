@@ -1,0 +1,61 @@
+@using Radzen.Blazor.Rendering;
+@using SharedService;
+@using LitContracts.Staking.ContractDefinition;
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+
+<div class="card border-primary">
+  <div class="card-header  ">
+    <div class="row no-gutters">
+      <div class="col">
+        Network Configuration
+        </div>
+    </div>
+  </div>
+  <div class="card-body p-0">
+    <div class="row">
+      <div class="col"> 
+
+<RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="20" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
+    Data="@config" TItem="ConfigItem" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
+    <Columns>       
+        <RadzenDataGridColumn TItem="ConfigItem" Property="name" Title="Name" Width="30%" />
+        <RadzenDataGridColumn TItem="ConfigItem" Property="value" Title="Value" Width="70%" />
+    </Columns>
+</RadzenDataGrid>  
+
+
+      </div>
+    </div>
+  </div>
+</div>
+
+@code {
+    [Parameter]    
+    public LitContracts.Staking.ContractDefinition.Config? config_return_value { get; set;}
+
+    struct ConfigItem
+    {
+        public string name { get; set; }
+        public string value { get; set; }
+    }
+    private List<ConfigItem>? config = null;
+
+    protected override void OnParametersSet()
+    {      
+        var c = config_return_value;
+        if (c == null)
+          {
+            return;
+          }
+
+        config = new List<ConfigItem>();
+        config.Add(new ConfigItem { name = "ComplaintIntervalSecs", value = c.ComplaintIntervalSecs.ToString() });
+        config.Add(new ConfigItem { name = "ComplaintTolerance", value = c.ComplaintTolerance .ToString() });
+        config.Add(new ConfigItem { name = "KeyTypes", value = String.Join(",", c.KeyTypes.ToArray() ) } );
+        config.Add(new ConfigItem { name = "MinimumValidatorCount", value = c.MinimumValidatorCount.ToString() });
+        config.Add(new ConfigItem { name = "TokenRewardPerTokenPerEpoch", value = c.TokenRewardPerTokenPerEpoch.ToString() });
+        config.Add(new ConfigItem { name = "maxConcurrentRequests", value = c.MaxConcurrentRequests.ToString() });
+        config.Add(new ConfigItem { name = "maxTripleCount", value = c.MaxTripleCount.ToString() });
+        config.Add(new ConfigItem { name = "minTripleCount", value = c.MinTripleCount.ToString() });
+    }
+}

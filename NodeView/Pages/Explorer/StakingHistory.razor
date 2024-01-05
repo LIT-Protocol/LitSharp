@@ -152,11 +152,17 @@
                 </Columns>
             </RadzenDataGrid>
           </div>
-        </div>  
+        </div> 
 
       </div>
     </div>  
 
+    <p></p>
+        <div class="row">
+          <div class="col">            
+            <NodeView.Components.Config.Defaults config_return_value="@config_return_value" />
+          </div>
+        </div> 
 
 
   </div>
@@ -170,21 +176,18 @@
 @code {
     private string fromBlock { get; set; } = "0";
     private string toBlock { get; set; } = "9999999";
-    private string network_state { get; set; }
-    private string epoch_number { get; set; }
-    private string block_number { get; set; }
+    private string network_state { get; set; } = "";
+    private string epoch_number { get; set; } = "";
+    private string block_number { get; set; } = "";
     private List<Validator> ? current_validators = null;
     private List<Validator> ? next_validators = null;
     private string kicked_validators = "Kicked validators:";
-
-    private List<SimpleTx> entries { get; set; }
-
-    private IList<SimpleTx> selectedEntries;
-
-
+    private List<SimpleTx>? entries { get; set; }
+    private IList<SimpleTx>? selectedEntries;
     private StakingService? stakingService = null;
+    private Nethereum.Contracts.ContractBuilder? contractBuilder = null;
+    public LitContracts.Staking.ContractDefinition.Config? config_return_value { get; set;}
 
-   private Nethereum.Contracts.ContractBuilder? contractBuilder = null;
 
     private (string, string) get_description(String input , string? isError) {
         
@@ -238,10 +241,8 @@
         else 
           historic_block =  new BlockParameter( ulong.Parse( args_block));
 
-
         block_number = historic_block.BlockNumber.ToString();
-
-        var state = await  stakingService.StateQueryAsync(historic_block);
+        var state = await stakingService.StateQueryAsync(historic_block);
             
         switch (state) {
             case 0:
@@ -268,10 +269,24 @@
         }
 
 
-            var epochOutput = await stakingService.EpochQueryAsync(historic_block);
-            epoch_number = epochOutput.ReturnValue1.Number.ToString();
-            @* epoch_length = epochOutput.ReturnValue1.EpochLength;
-            epoch_end_time = epochOutput.ReturnValue1.EndTime; *@
+        var epochOutput = await stakingService.EpochQueryAsync(historic_block);
+        epoch_number = epochOutput.ReturnValue1.Number.ToString();
+        @* epoch_length = epochOutput.ReturnValue1.EpochLength;
+        epoch_end_time = epochOutput.ReturnValue1.EndTime; *@
+
+
+        try {
+            var config_call = await stakingService.ConfigQueryAsync(historic_block);            
+            if (config_call == null)
+                return;
+            config_return_value  = config_call.ReturnValue1;
+        }
+        catch (Exception e) {
+            Console.WriteLine(e.Message);
+        }
+
+
+
 
         try  {
           var v = await stakingService.GetValidatorsStructsInCurrentEpochQueryAsync(historic_block);
