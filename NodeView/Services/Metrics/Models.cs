@@ -17,6 +17,8 @@ public class Validator: LitContracts.Staking.ContractDefinition.Validator  {
     public string  NodeSocketAddress { get { return (Port == 443 ? "https" : "http") + "://" + Node_Ip.ToString() + (Port > 443 ? ":" + Port : "") ; } }
     
     public bool kicked { get; set; } = false;
+
+    public int kicked_votes { get; set; } = 0;
     
     public string kicked_status { get { return kicked ? "Yes" : ""; } }
     public string NodeVersion { get; set; } = "";

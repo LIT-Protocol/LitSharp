@@ -48,7 +48,13 @@
         <div class="card-body p-0">
           <div class="row">
             <div class="col"> 
-              <RadzenDataGrid AllowFiltering="false" AllowColumnResize="true"   AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="false" PageSize="30" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
+
+                 @* PageSize="30" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true" *@
+@* Style="height:800px" *@
+              <RadzenDataGrid AllowFiltering="false" AllowColumnResize="true"   AllowAlternatingRows="false" FilterMode="FilterMode.Advanced"
+                 AllowSorting="false" 
+                  AllowVirtualization="true"  
+                  PageSize="30" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true" 
                   Data="@entries" TItem="SimpleTx" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or" 
                   SelectionMode="DataGridSelectionMode.Single" @bind-Value=@selectedEntries RowClick=@OnRowClick>
                   <Columns>       
@@ -122,16 +128,26 @@
                 <Columns>       
                     <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Title="Current Nodes" Width="100%" >
                         <Template Context="data">
+                          <div class="row">
+                            <div class="col">
                             @{
                                   if (data.kicked ) {
-                                    <div class="text-danger">Node #@data.NodeName - Kicked: @data.NodeSocketAddress</div>
+                                    <div class="text-danger">Node #@data.NodeName - Kicked: @data.NodeSocketAddress </div>
                                   }
                                   else {
-                                    <div class="text-success">Node #@data.NodeName - Active: @data.NodeSocketAddress</div>
+                                    <div class="text-success">Node #@data.NodeName - Active: @data.NodeSocketAddress </div>
                                   }
-
                             }
-                            <a href="@("https://lit-protocol.calderaexplorer.xyz/address/"  +data.NodeAddress)" style="text-decoration:none" target="_blank" >@data.NodeAddress</a>                        
+                            </div>
+                            @{ if (data.kicked_votes > 0) {
+                                <div class="col-2">
+                                  <div class="badge bg-danger">@data.kicked_votes</div>
+                                </div>
+                              }
+                            }
+                          </div>
+
+                            <a href="@("https://lit-protocol.calderaexplorer.xyz/address/"  +data.StakerAddress)" style="text-decoration:none" target="_blank" >@data.StakerAddress</a>                        
                         </Template>
                     </RadzenDataGridColumn>    
                 </Columns>
@@ -145,7 +161,7 @@
                 <Columns>       
                     <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Title="Next Nodes" Width="100%" >
                         <Template Context="data">
-                            Node #@data.NodeName : @data.NodeSocketAddress<br/>
+                            Node #@data.NodeName : @data.NodeSocketAddress <br/>
                             <a href="@("https://lit-protocol.calderaexplorer.xyz/address/"  +data.NodeAddress)" style="text-decoration:none" target="_blank" >@data.NodeAddress</a>                        
                         </Template>
                     </RadzenDataGridColumn>    
@@ -170,7 +186,6 @@
 
   
 </div>
-
 
 
 @code {
@@ -321,10 +336,19 @@
         }
 
         var kicked_validators = await stakingService.GetKickedValidatorsQueryAsync(historic_block );
+        var epoch = BigInteger.Parse(epoch_number);
         foreach (Validator validator in validators) {
-            if ( validator.StakerAddress != null )
+            if ( validator.StakerAddress != null ) {
                 validator.kicked = kicked_validators.Contains(validator.StakerAddress);            
+                var kicked_votes = await stakingService.GetVotingStatusToKickValidatorQueryAsync(epoch, validator.StakerAddress, validator.StakerAddress, historic_block );
+                validator.kicked_votes = int.Parse( kicked_votes.ReturnValue1.ToString());
+            }
         }
+
+
+        
+         
+
 
         validators.Sort((x, y) => x.StakerAddress.CompareTo(y.StakerAddress));
         int i = 1;
