@@ -1,4 +1,4 @@
-### LitSharp
+# LitSharp
 
 This tool is runs entirely in the browser and requires only a the resolver contract address (or staker contract address) and access to the base chain in order to self configure.
 To view node information, the nodes must support metrics collection. The other exploration functions will continue to work, however.
@@ -15,3 +15,14 @@ Resolver Contract Address:
 0x5FbDB2315678afecb367f032d93F642f64180aa3
 Private Key:  (The first key found in the Anvil/HardHat projects).
 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+
+## Getting Started
+
+To run the app, you must first:
+
+- Install the .NET SDK (eg. `brew install --cask dotnet-sdk`)
+
+Then, `cd NodeView` and run the app either via:
+
+- `dotnet run`, or
+- `dotnet watch`

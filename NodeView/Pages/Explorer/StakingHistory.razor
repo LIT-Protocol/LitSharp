@@ -180,6 +180,13 @@
           </div>
         </div> 
 
+    <p></p>
+
+        <div class="row">
+          <div class="col">            
+            <NodeView.Components.EpochDetails epoch_return_value="@epoch_return_value" />
+          </div>
+        </div>
 
   </div>
 
@@ -202,6 +209,7 @@
     private StakingService? stakingService = null;
     private Nethereum.Contracts.ContractBuilder? contractBuilder = null;
     public LitContracts.Staking.ContractDefinition.Config? config_return_value { get; set;}
+    public LitContracts.Staking.ContractDefinition.Epoch? epoch_return_value { get; set; }
 
 
     private (string, string) get_description(String input , string? isError) {
@@ -289,7 +297,7 @@
         @* epoch_length = epochOutput.ReturnValue1.EpochLength;
         epoch_end_time = epochOutput.ReturnValue1.EndTime; *@
 
-
+        @* Getting config *@
         try {
             var config_call = await stakingService.ConfigQueryAsync(historic_block);            
             if (config_call == null)
@@ -300,8 +308,16 @@
             Console.WriteLine(e.Message);
         }
 
-
-
+        @* Getting epoch details *@
+        try {
+          var get_epoch_call = await stakingService.EpochQueryAsync(historic_block);
+          if (get_epoch_call == null)
+              return;
+          epoch_return_value = get_epoch_call.ReturnValue1;
+        }
+        catch (Exception e) {
+            Console.WriteLine(e.Message);
+        }
 
         try  {
           var v = await stakingService.GetValidatorsStructsInCurrentEpochQueryAsync(historic_block);

@@ -1,0 +1,35 @@
+@page "/epoch-details"
+@using Radzen.Blazor.Rendering;
+@using SharedService;
+@using LitContracts.Staking.ContractDefinition;
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+<PageTitle>Epoch Details</PageTitle>
+
+<h2>Epoch Details</h2>  
+<NodeView.Components.MinimalHeader />  
+<br/>
+
+<NodeView.Components.EpochDetails epoch_return_value="@epoch_return_value" />
+
+@code {
+
+    public LitContracts.Staking.ContractDefinition.Epoch? epoch_return_value { get; set;}
+
+
+    protected override async Task OnInitializedAsync()
+    {                
+        var resolver = new Resolver(localStorage);
+        EpochOutputDTO? get_epoch_call = null;
+        try {
+            var stakingService = await resolver.GetStakingService();
+            get_epoch_call = await stakingService.EpochQueryAsync();            
+        }
+        catch (Exception e) {
+            Console.WriteLine(e.Message);
+        }
+
+        if (get_epoch_call == null)
+            return;
+        epoch_return_value  = get_epoch_call.ReturnValue1;
+    }
+}
