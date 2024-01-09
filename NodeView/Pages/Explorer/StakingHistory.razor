@@ -162,7 +162,7 @@
                     <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Title="Next Nodes" Width="100%" >
                         <Template Context="data">
                             Node #@data.NodeName : @data.NodeSocketAddress <br/>
-                            <a href="@("https://lit-protocol.calderaexplorer.xyz/address/"  +data.NodeAddress)" style="text-decoration:none" target="_blank" >@data.NodeAddress</a>                        
+                            <a href="@("https://lit-protocol.calderaexplorer.xyz/address/"  +data.StakerAddress)" style="text-decoration:none" target="_blank" >@data.StakerAddress</a>                        
                         </Template>
                     </RadzenDataGridColumn>    
                 </Columns>
