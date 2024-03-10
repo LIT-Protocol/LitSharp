@@ -8,4 +8,4 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = LitContracts
-build_property.ProjectDir = /Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/LitContracts/
+build_property.ProjectDir = /Users/brendonpaul/Documents/GitHub/LitProtocol/LitSharp/LitContracts/

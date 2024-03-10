@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/LitContracts/LitContracts.csproj": {}
+    "/Users/brendonpaul/Documents/GitHub/LitProtocol/LitSharp/LitContracts/LitContracts.csproj": {}
   },
   "projects": {
-    "/Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/LitContracts/LitContracts.csproj": {
+    "/Users/brendonpaul/Documents/GitHub/LitProtocol/LitSharp/LitContracts/LitContracts.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/LitContracts/LitContracts.csproj",
+        "projectUniqueName": "/Users/brendonpaul/Documents/GitHub/LitProtocol/LitSharp/LitContracts/LitContracts.csproj",
         "projectName": "LitContracts",
-        "projectPath": "/Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/LitContracts/LitContracts.csproj",
+        "projectPath": "/Users/brendonpaul/Documents/GitHub/LitProtocol/LitSharp/LitContracts/LitContracts.csproj",
         "packagesPath": "/Users/brendonpaul/.nuget/packages/",
-        "outputPath": "/Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/LitContracts/obj/",
+        "outputPath": "/Users/brendonpaul/Documents/GitHub/LitProtocol/LitSharp/LitContracts/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/brendonpaul/.nuget/NuGet/NuGet.Config"

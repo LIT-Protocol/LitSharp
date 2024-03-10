@@ -29,10 +29,10 @@
         public string staker_address { get; set; }
         public string status { get; set; }
         public object attestation { get; set; }
-
+        public string version { get; set; }
     }
     private List<Validator> ? current_validators = null;
-    private List<Validator> ? next_validators = null;
+    private List<Validator> ? next_validators = null;`
     private string kicked_validators = "Kicked validators:";
     private BigInteger total_staked = 0;
     protected override async Task OnInitializedAsync()
@@ -104,20 +104,23 @@
     public async  Task connectToValidators(List<Services.Metrics.Models.Validator> validators) {
         HttpClient client = new HttpClient();
         client.Timeout = TimeSpan.FromMilliseconds(1000);
-        
+        Console.WriteLine ("Connecting to validators");
         @* List<Task> handles = new List<Task>(); *@
         foreach(Validator validator in validators) {
             @* var handle = Task.Run(async () => { *@
                 try {
-                    var response = await client.GetAsync(  "https://" + validator.Node_Ip +  "/connect/meow");
+                    var response = await client.GetAsync(  validator.NodeSocketAddress + "/connect/meow");
                     if (response.StatusCode == System.Net.HttpStatusCode.OK) {
                         @* var version = response.Content.Headers.Select(header => header.Key = "X-Lit-Node-Version:").ToList();                        
                         validator.NodeVersion = version?.FirstOrDefault(); *@
                        var result = await response.Content.ReadAsStringAsync();
                        
                         var connectContent = Newtonsoft.Json.JsonConvert.DeserializeObject<ConnectResponse>(result);
+                        Console.WriteLine("Result: " + result);
+                       
                         @* validator.StakerAddress = connectContent.staker_address; *@
                         validator.Attestation = connectContent.attestation == null ? "n/a" : "yes";
+                        validator.NodeVersion = connectContent.version == null ? "n/a" : connectContent.version;
                         @* validator.NodeVersion = version?.FirstOrDefault();                 *@
                     }
                 } catch (Exception e) {

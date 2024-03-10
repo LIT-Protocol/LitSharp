@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "HIPe921EmTZKmjSHiejr6SvHE24zVObtmgU+iRB0wY0gt88nSpWdoA7vegOotIPCWiKtL7ZhPqNX5I+Se3HXvQ==",
+  "dgSpecHash": "e4qGfwDyH13XYOdJuawTgn0AXDOwpaRVQCwAPneve7YtIrXaceAqHyX4ItB55ziV2l1k3kIAJh/RGBCrzY57UQ==",
   "success": true,
-  "projectFilePath": "/Users/brendonpaul/Documents/GitHub/gtc6244/LitSharp/LitContracts/LitContracts.csproj",
+  "projectFilePath": "/Users/brendonpaul/Documents/GitHub/LitProtocol/LitSharp/LitContracts/LitContracts.csproj",
   "expectedPackageFiles": [
     "/Users/brendonpaul/.nuget/packages/adraffy.ensnormalize/0.1.5/adraffy.ensnormalize.0.1.5.nupkg.sha512",
     "/Users/brendonpaul/.nuget/packages/microsoft.extensions.logging.abstractions/6.0.0/microsoft.extensions.logging.abstractions.6.0.0.nupkg.sha512",
