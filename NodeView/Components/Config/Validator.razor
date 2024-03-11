@@ -15,7 +15,7 @@
   </div>
   <div class="card-body p-0">
     <div class="row">
-      <div class="col"> 
+      <div class="d-none d-sm-block"> 
         <RadzenDataGrid AllowFiltering="false" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="false" PageSize="30" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
             Data="@validators" TItem="Services.Metrics.Models.Validator" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
             <Columns>       
@@ -44,6 +44,23 @@
             </Columns>
         </RadzenDataGrid>  
       </div>
+      <div class="d-block d-sm-none"> 
+        <RadzenDataGrid AllowFiltering="false" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="false" PageSize="30" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
+            Data="@validators" TItem="Services.Metrics.Models.Validator" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
+            <Columns>       
+                <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="NodeName"  Title="#" Width="5%" />
+                <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="responding"  Title="Up" Width="5%" />
+                 <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="kicked_status" Title="Kicked" Width="5%">
+                </RadzenDataGridColumn>                
+                <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="NodeSocketAddress" Title="Address" Width="15%" >
+                    <Template Context="data">
+                        <a href="@(data.NodeSocketAddress + "/connect")" style="text-decoration:none" target="_blank">@data.NodeSocketAddress</a>                        
+                    </Template>
+                </RadzenDataGridColumn>                
+            </Columns>
+        </RadzenDataGrid>  
+      </div>
+
     </div>
   </div>
 </div> 
