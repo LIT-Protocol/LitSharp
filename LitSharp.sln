@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NodeView", "NodeView\NodeVi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedService", "SharedService\SharedService.csproj", "{3D7380EE-F329-461A-9673-30FB08847375}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleNodeOps", "SimpleNodeOps\SimpleNodeOps.csproj", "{F2C6F2CB-A784-441E-A0B9-5ABD88735C15}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +28,10 @@ Global
 		{3D7380EE-F329-461A-9673-30FB08847375}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D7380EE-F329-461A-9673-30FB08847375}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D7380EE-F329-461A-9673-30FB08847375}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2C6F2CB-A784-441E-A0B9-5ABD88735C15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2C6F2CB-A784-441E-A0B9-5ABD88735C15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2C6F2CB-A784-441E-A0B9-5ABD88735C15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2C6F2CB-A784-441E-A0B9-5ABD88735C15}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

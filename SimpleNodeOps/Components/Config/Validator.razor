@@ -1,0 +1,74 @@
+@using Radzen.Blazor.Rendering;
+@using SharedService;
+@using Services.Metrics.Models;
+@using System.Numerics;
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+
+<div class="card border-primary">
+  <div class="card-header  ">
+    <div class="row no-gutters">
+      <div class="col">
+        @name
+        </div>
+    </div>
+  </div>
+  <div class="card-body p-0">
+    <div class="row">
+      <div class="d-none d-sm-block"> 
+        <RadzenDataGrid AllowFiltering="false" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="false" PageSize="30" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
+            Data="@validators" TItem="Services.Metrics.Models.Validator" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
+            <Columns>       
+                <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="NodeName"  Title="#" Width="5%" />
+                <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="responding"  Title="Up" Width="5%" />
+                 <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="kicked_status" Title="Kicked" Width="5%">
+                </RadzenDataGridColumn>                
+                <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="NodeSocketAddress" Title="Address" Width="15%" >
+                    <Template Context="data">
+                        <a href="@(data.NodeSocketAddress + "/connect")" style="text-decoration:none" target="_blank">@data.NodeSocketAddress</a>                        
+                    </Template>
+                </RadzenDataGridColumn>                
+                <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator"  Property="NodeAddress" Title="Node Address" Width="25%" >
+                    <Template Context="data">
+                        <a href="@("https://lit-protocol.calderaexplorer.xyz/address/"  +data.NodeAddress)" style="text-decoration:none" target="_blank">@data.NodeAddress</a>                        
+                    </Template>
+                </RadzenDataGridColumn>                
+                <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="StakerAddress" Title="Staker Address" Width="25%" >
+                    <Template Context="data">
+                        <a href="@("https://lit-protocol.calderaexplorer.xyz/address/" + data.StakerAddress)" style="text-decoration:none" target="_blank">@data.StakerAddress</a>                        
+                    </Template>
+                </RadzenDataGridColumn>                
+                <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="NodeVersion" Title="Version" Width="5%"  />
+                <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="Attestation" Title="Attestation" Width="5%"  />
+            </Columns>
+        </RadzenDataGrid>  
+      </div>
+      <div class="d-block d-sm-none"> 
+        <RadzenDataGrid AllowFiltering="false" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="false" PageSize="30" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
+            Data="@validators" TItem="Services.Metrics.Models.Validator" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
+            <Columns>       
+                <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="NodeName"  Title="#" Width="5%" />
+                <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="responding"  Title="Up" Width="5%" />
+                 <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="kicked_status" Title="Kicked" Width="5%">
+                </RadzenDataGridColumn>                
+                <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="NodeSocketAddress" Title="Address" Width="15%" >
+                    <Template Context="data">
+                        <a href="@(data.NodeSocketAddress + "/connect")" style="text-decoration:none" target="_blank">@data.NodeSocketAddress</a>                        
+                    </Template>
+                </RadzenDataGridColumn>                
+            </Columns>
+        </RadzenDataGrid>  
+      </div>
+
+    </div>
+  </div>
+</div> 
+
+
+@code {
+    [Parameter]    
+    public string? name { get; set;}
+    [Parameter]    
+    public List<Services.Metrics.Models.Validator>? validators { get; set; }
+
+
+}

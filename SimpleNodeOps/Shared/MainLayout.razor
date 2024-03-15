@@ -1,0 +1,63 @@
+﻿@namespace SimpleNodeOps.Shared
+@inherits LayoutComponentBase
+@using LitContracts.Staking
+@using Microsoft.AspNetCore.WebUtilities
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject NavigationManager NavManager
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+    <main>
+        <article class="content px-4">
+        @if (init_complete)
+        {
+            @Body
+        }
+        </article>
+    </main>
+</div>
+
+@code {
+    bool init_complete = false;
+//  new LitNetwork() { name = "Cayenne", env=0, url = "https://lit-protocol.calderachain.xyz/http", chainId=175177 , resolverAddress = "0xB0cb99e69c01Bd481aeCc6DD0155d4147e96C746" , selected=false, rpc_api_url = "https://lit-protocol.calderaexplorer.xyz/api", rpc_api_type = 1 },
+//  new LitNetwork() { name = "Manzano", env=0, url = "https://lit-protocol.calderachain.xyz/http", chainId=175177 , resolverAddress = "0x9F0Ede26261451C5E784DC799D71ECf766EB7562" , selected=false, rpc_api_url = "https://lit-protocol.calderaexplorer.xyz/api", rpc_api_type = 1 },
+//  new LitNetwork() { name = "Habanero", env=2, url ="https://lit-protocol.calderachain.xyz/http", chainId=175177 , resolverAddress = "0xe5a7C5d908EE8996332F488cE5f636d4EBff8522" , selected=false, rpc_api_url = "https://lit-protocol.calderaexplorer.xyz/api", rpc_api_type = 1 },
+    protected override async Task OnInitializedAsync()
+    { 
+        var uri = NavManager.ToAbsoluteUri(NavManager.Uri);           
+        var queryStrings = QueryHelpers.ParseQuery(uri.Query);
+        queryStrings.TryGetValue("network", out var network_name);        
+        network_name = network_name.ToString().ToLower();
+
+        switch (network_name) {
+            case "cayenne":
+                await SetNetwork("Cayenne", "https://lit-protocol.calderachain.xyz/http", 0, "0xB0cb99e69c01Bd481aeCc6DD0155d4147e96C746", "https://lit-protocol.calderaexplorer.xyz/api", 1);
+                break;
+            case "manzano":
+                await SetNetwork("Manzano", "https://lit-protocol.calderachain.xyz/http", 0, "0x9F0Ede26261451C5E784DC799D71ECf766", "https://lit-protocol.calderaexplorer.xyz/api", 1);
+                break;            
+            default: // this is habanero
+                await SetNetwork("Habanero", "https://lit-protocol.calderachain.xyz/http", 2, "0xe5a7C5d908EE8996332F488cE5f636d4EBff8522", "https://lit-protocol.calderaexplorer.xyz/api", 1);
+                break;
+        }
+
+        init_complete = true;
+        
+    }
+
+    private async Task SetNetwork(string name, string url, int env, string resolverAddress,  string rpc_api_url, int rpc_api_type)
+    {
+        Console.WriteLine("SetNetwork:" +  name);
+        var defaultPrivateKey = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
+        await localStorage.SetItemAsync("networkName", name);
+        await localStorage.SetItemAsync("url", url);
+        await localStorage.SetItemAsync("env", env);
+        await localStorage.SetItemAsync("contractResolverAddress", resolverAddress);
+        await localStorage.SetItemAsync("privateKey", defaultPrivateKey);
+        await localStorage.SetItemAsync("rpc_api_type", rpc_api_type);
+        await localStorage.SetItemAsync("rpc_api_url", rpc_api_url);
+    }
+}
+ 

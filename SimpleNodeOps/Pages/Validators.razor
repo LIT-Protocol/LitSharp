@@ -1,0 +1,155 @@
+﻿@page "/"
+@using SimpleNodeOps;
+@using Radzen.Blazor.Rendering;
+@using SharedService;
+@using Services.Metrics.Models;
+@using System.Numerics;
+@using LitContracts.Staking;
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+
+<PageTitle>NodeOps - Validators</PageTitle>
+<h2>Validators</h2>    
+<SimpleNodeOps.Components.MinimalHeader />
+<br />
+<SimpleNodeOps.Components.Config.Validator name="Current Nodes" validators="@current_validators" />
+<br />
+<SimpleNodeOps.Components.Config.Validator name="Next Nodes" validators="@next_validators" />
+
+<br/><br/>
+<p>Total Staked: @total_staked</p>
+<p> * Any nodes on local addresses won't be reachable unless the network is local, or the ports are tunnelled.</p>
+<p>@kicked_validators</p>
+@code {
+    public class ConnectResponse {
+        public List<int> id { get; set; }
+        public string addr { get; set; }
+        public string public_key { get; set; }
+        public string node_address { get; set; }
+        public List<int> sender_public_key { get; set; }
+        public List<int> receiver_public_key { get; set; }
+        public string staker_address { get; set; }
+        public string status { get; set; }
+        public object attestation { get; set; }
+        public string version { get; set; }
+    }
+    private List<Validator> ? current_validators = null;
+    private List<Validator> ? next_validators = null;
+    private string kicked_validators = "Kicked validators:";
+    private BigInteger total_staked = 0;
+    protected override async Task OnInitializedAsync()
+    {                
+        var resolver = new Resolver(localStorage);
+        LitContracts.Staking.StakingService? stakingService = null;
+        try {
+            stakingService = await resolver.GetStakingService();
+        }
+        catch(Exception e) {
+            Console.WriteLine(e);
+        }
+
+        if (stakingService == null) {
+            return;
+        }
+    
+        var v = await stakingService.GetValidatorsStructsInCurrentEpochQueryAsync();
+        current_validators = await getValidatorList( v.ReturnValue1, stakingService);
+        var v2 = await stakingService.GetValidatorsStructsInNextEpochQueryAsync();
+        next_validators = await getValidatorList( v2.ReturnValue1, stakingService);    
+
+        await connectToValidators(current_validators);
+        await connectToValidators(next_validators);
+        
+        var stakingBalance = await resolver.GetStakingBalancesService();
+        total_staked = await stakingBalance.TotalStakedQueryAsync();
+        
+        var k = await stakingService.GetKickedValidatorsQueryAsync();
+        kicked_validators = "Kicked validators: " + string.Join(", ", k.ToArray());
+    }   
+
+
+    public async Task<List<Validator>> getValidatorList(List<LitContracts.Staking.ContractDefinition.Validator> v, StakingService stakingService) {
+        var validators = v.Select(x => new Validator()
+        {
+            Ip = x.Ip,
+            Port = x.Port,
+            NodeAddress = x.NodeAddress,
+            Reward = x.Reward,
+            SenderPubKey = x.SenderPubKey,
+            ReceiverPubKey = x.ReceiverPubKey
+        }).ToList();
+
+        var node_addresses = validators.Select(x => x.NodeAddress).ToList();
+        var stakers = await stakingService.GetNodeStakerAddressMappingsQueryAsync(node_addresses);
+        
+        foreach (Validator validator in validators) {
+            validator.StakerAddress = stakers.ReturnValue1.FirstOrDefault(x => x.NodeAddress == validator.NodeAddress)?.StakerAddress ?? "n/a";
+        }
+
+        var kicked_validators = await stakingService.GetKickedValidatorsQueryAsync();
+        foreach (Validator validator in validators) {
+            if ( validator.StakerAddress != null )
+                validator.kicked = kicked_validators.Contains(validator.StakerAddress);            
+        }
+
+        validators.Sort((x, y) => x.StakerAddress.CompareTo(y.StakerAddress));
+        int i = 0;
+        foreach (Validator validator in validators) {
+            validator.NodeName = i.ToString();
+            i++;
+        }
+
+
+        return validators;
+    }
+
+    public async  Task connectToValidators(List<Services.Metrics.Models.Validator> validators) {
+        HttpClient client = new HttpClient();
+        client.Timeout = TimeSpan.FromMilliseconds(1000);
+        Console.WriteLine ("Connecting to validators");
+        @* List<Task> handles = new List<Task>(); *@
+        foreach(Validator validator in validators) {
+            @* var handle = Task.Run(async () => { *@
+                try {
+                    var response = await client.GetAsync(  validator.NodeSocketAddress + "/connect/meow");
+                    if (response.StatusCode == System.Net.HttpStatusCode.OK) {
+                        @* var version = response.Content.Headers.Select(header => header.Key = "X-Lit-Node-Version:").ToList();                        
+                        validator.NodeVersion = version?.FirstOrDefault(); *@
+                       var result = await response.Content.ReadAsStringAsync();
+                       
+                        var connectContent = Newtonsoft.Json.JsonConvert.DeserializeObject<ConnectResponse>(result);
+                        Console.WriteLine("Result: " + result);
+                       
+                        @* validator.StakerAddress = connectContent.staker_address; *@
+                        validator.Attestation = connectContent.attestation == null ? "n/a" : "yes";
+                        validator.NodeVersion = connectContent.version == null ? "n/a" : connectContent.version;
+                        @* validator.NodeVersion = version?.FirstOrDefault();                 *@
+                    }
+                } catch (Exception e) {
+                    Console.WriteLine("Error gathering data: " + e.Message);
+                }
+            @* }); *@
+
+            @* handles.Add(handle); *@
+        }
+        @* await Task.WhenAll(handles); *@
+
+    }
+
+    public async Task RejoinValidator(Validator validator) {
+        var resolver = new Resolver(localStorage);
+        LitContracts.Staking.StakingService? stakingService = null;
+        try {
+            stakingService = await resolver.GetStakingService();
+        }
+        catch(Exception e) {
+            Console.WriteLine(e);
+        }
+
+        if (stakingService == null) {
+            return;
+        }
+
+        var tx = await stakingService.AdminRejoinValidatorRequestAsync(validator.StakerAddress);
+        Console.WriteLine(tx);
+    }
+}
