@@ -21,9 +21,6 @@
 
 @code {
     bool init_complete = false;
-//  new LitNetwork() { name = "Cayenne", env=0, url = "https://lit-protocol.calderachain.xyz/http", chainId=175177 , resolverAddress = "0xB0cb99e69c01Bd481aeCc6DD0155d4147e96C746" , selected=false, rpc_api_url = "https://lit-protocol.calderaexplorer.xyz/api", rpc_api_type = 1 },
-//  new LitNetwork() { name = "Manzano", env=0, url = "https://lit-protocol.calderachain.xyz/http", chainId=175177 , resolverAddress = "0x9F0Ede26261451C5E784DC799D71ECf766EB7562" , selected=false, rpc_api_url = "https://lit-protocol.calderaexplorer.xyz/api", rpc_api_type = 1 },
-//  new LitNetwork() { name = "Habanero", env=2, url ="https://lit-protocol.calderachain.xyz/http", chainId=175177 , resolverAddress = "0xe5a7C5d908EE8996332F488cE5f636d4EBff8522" , selected=false, rpc_api_url = "https://lit-protocol.calderaexplorer.xyz/api", rpc_api_type = 1 },
     protected override async Task OnInitializedAsync()
     { 
         var uri = NavManager.ToAbsoluteUri(NavManager.Uri);           
@@ -33,7 +30,7 @@
 
         switch (network_name) {
             case "cayenne":
-                await SetNetwork("Cayenne", "https://lit-protocol.calderachain.xyz/http", 0, "0xB0cb99e69c01Bd481aeCc6DD0155d4147e96C746", "https://lit-protocol.calderaexplorer.xyz/api", 1);
+                await SetNetwork("Cayenne", "https://lit-protocol.calderachain.xyz/http", 0, "0xb82f2dB0B486F1ef698CC88F0d521D873eb04d03", "https://lit-protocol.calderaexplorer.xyz/api", 1);
                 break;
             case "manzano":
                 await SetNetwork("Manzano", "https://lit-protocol.calderachain.xyz/http", 0, "0x9F0Ede26261451C5E784DC799D71ECf766", "https://lit-protocol.calderaexplorer.xyz/api", 1);
