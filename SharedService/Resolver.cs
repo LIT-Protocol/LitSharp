@@ -31,7 +31,6 @@ public enum ContractType
     {
         Allowlist ,
         BackupRecovery,
-        ContractResolver,
         DomainWalletOracle,
         DomainWalletRegistry,
         HDKeyDeriver,
@@ -104,8 +103,6 @@ public class Resolver{
         case ContractType.BackupRecovery:
             typ = keccak256("BACKUP_RECOVERY");
             break;
-        case ContractType.ContractResolver:
-            break;
         case ContractType.DomainWalletOracle:
             typ = keccak256("DOMAIN_WALLET_ORACLE");
             break;
@@ -177,14 +174,17 @@ public class Resolver{
         var contractAddresses = new List<ContractAddress>();
 
         try {
-        
-        foreach (ContractType contractType in Enum.GetValues(typeof(ContractType)) ) {            
-            var typ = GetContractTypKeccak(contractType);
-            var env = await localStorage.GetItemAsync<byte>("env");
-            var contract = await resolverService.GetContractQueryAsync(typ, env);
-            contractAddresses.Add(new ContractAddress { name = contractType.ToString(), address = contract });
+
+            // Add in the ContractResolver separately
+            contractAddresses.Add(new ContractAddress { name = "ContractResolver", address = resolverService.ContractHandler.ContractAddress });
+
+            foreach (ContractType contractType in Enum.GetValues(typeof(ContractType)) ) {            
+                var typ = GetContractTypKeccak(contractType);
+                var env = await localStorage.GetItemAsync<byte>("env");
+                var contract = await resolverService.GetContractQueryAsync(typ, env);
+                contractAddresses.Add(new ContractAddress { name = contractType.ToString(), address = contract });
+                }
             }
-        }
         catch (Exception ex) {
             Console.WriteLine("Trying to get contract addresses: " + ex.Message);
         }
