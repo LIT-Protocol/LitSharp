@@ -31,7 +31,6 @@ public enum ContractType
     {
         Allowlist ,
         BackupRecovery,
-        DomainWalletOracle,
         DomainWalletRegistry,
         HDKeyDeriver,
         LitToken,
