@@ -60,14 +60,6 @@ namespace LitContracts.ContractResolver.ContractDefinition
 
     }
 
-    public partial class DomainWalletOracleFunction : DomainWalletOracleFunctionBase { }
-
-    [Function("DOMAIN_WALLET_ORACLE", "bytes32")]
-    public class DomainWalletOracleFunctionBase : FunctionMessage
-    {
-
-    }
-
     public partial class DomainWalletRegistryFunction : DomainWalletRegistryFunctionBase { }
 
     [Function("DOMAIN_WALLET_REGISTRY", "bytes32")]
@@ -412,15 +404,6 @@ namespace LitContracts.ContractResolver.ContractDefinition
 
     [FunctionOutput]
     public class DefaultAdminRoleOutputDTOBase : IFunctionOutputDTO 
-    {
-        [Parameter("bytes32", "", 1)]
-        public virtual byte[] ReturnValue1 { get; set; }
-    }
-
-    public partial class DomainWalletOracleOutputDTO : DomainWalletOracleOutputDTOBase { }
-
-    [FunctionOutput]
-    public class DomainWalletOracleOutputDTOBase : IFunctionOutputDTO 
     {
         [Parameter("bytes32", "", 1)]
         public virtual byte[] ReturnValue1 { get; set; }

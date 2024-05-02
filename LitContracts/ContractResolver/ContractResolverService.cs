@@ -92,17 +92,6 @@ namespace LitContracts.ContractResolver
             return ContractHandler.QueryAsync<DefaultAdminRoleFunction, byte[]>(null, blockParameter);
         }
 
-        public Task<byte[]> DomainWalletOracleQueryAsync(DomainWalletOracleFunction domainWalletOracleFunction, BlockParameter blockParameter = null)
-        {
-            return ContractHandler.QueryAsync<DomainWalletOracleFunction, byte[]>(domainWalletOracleFunction, blockParameter);
-        }
-
-        
-        public Task<byte[]> DomainWalletOracleQueryAsync(BlockParameter blockParameter = null)
-        {
-            return ContractHandler.QueryAsync<DomainWalletOracleFunction, byte[]>(null, blockParameter);
-        }
-
         public Task<byte[]> DomainWalletRegistryQueryAsync(DomainWalletRegistryFunction domainWalletRegistryFunction, BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<DomainWalletRegistryFunction, byte[]>(domainWalletRegistryFunction, blockParameter);
