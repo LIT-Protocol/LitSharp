@@ -34,8 +34,10 @@ public enum ContractType
         DomainWalletRegistry,
         HDKeyDeriver,
         LitToken,
-        Multisender, 
+        Multisender,
+        PaymentDelegation,
         PKPHelper,
+        PKPHelperV2,
         PKPNFT,
         PKPNFTMetadata,
         PKPPermissions,
@@ -91,68 +93,33 @@ public class Resolver{
         return calculatedHash;
     }
 
-    public static byte[] GetContractTypKeccak(ContractType contractType) {
+    public static byte[]? GetContractTypKeccak(ContractType contractType) {
+        byte[]? typ = contractType switch
+        {
+            ContractType.Allowlist => keccak256("ALLOWLIST"),
+            ContractType.BackupRecovery => keccak256("BACKUP_RECOVERY"),
+            ContractType.DomainWalletRegistry => keccak256("DOMAIN_WALLET_REGISTRY"),
+            ContractType.HDKeyDeriver => keccak256("HD_KEY_DERIVER"),
+            ContractType.LitToken => keccak256("LIT_TOKEN"),
+            ContractType.Multisender => keccak256("MULTI_SENDER"),
+            ContractType.PaymentDelegation => keccak256("PAYMENT_DELEGATION"),
+            ContractType.PKPHelper => keccak256("PKP_HELPER"),
+            ContractType.PKPHelperV2 => keccak256("PKP_HELPER_V2"),
+            ContractType.PKPNFT => keccak256("PKP_NFT"),
+            ContractType.PKPNFTMetadata => keccak256("PKP_NFT_METADATA"),
+            ContractType.PKPPermissions => keccak256("PKP_PERMISSIONS"),
+            ContractType.PubkeyRouter => keccak256("PUB_KEY_ROUTER"),
+            ContractType.RateLimitNFT => keccak256("RATE_LIMIT_NFT"),
+            ContractType.ReleaseRegister => keccak256("RELEASE_REGISTER"),
+            ContractType.Staking => keccak256("STAKING"),
+            ContractType.StakingBalances => keccak256("STAKING_BALANCES"),
+            ContractType.WLIT => keccak256("WLIT"),
+            _ => null,
+        };
+        if (typ == null)
+            return null;
 
-        byte[]  typ = keccak256("STAKING"); 
-                
-        switch (contractType) {
-        case ContractType.Allowlist:
-            typ = keccak256("ALLOWLIST");  
-            break;
-        case ContractType.BackupRecovery:
-            typ = keccak256("BACKUP_RECOVERY");
-            break;
-        case ContractType.DomainWalletOracle:
-            typ = keccak256("DOMAIN_WALLET_ORACLE");
-            break;
-        case ContractType.DomainWalletRegistry:
-            typ = keccak256("DOMAIN_WALLET_REGISTRY");
-            break;
-        case ContractType.HDKeyDeriver:
-            typ = keccak256("HD_KEY_DERIVER");
-            break;
-        case ContractType.LitToken:
-            typ = keccak256("LIT_TOKEN");            
-            break;
-        case ContractType.Multisender:
-            typ = keccak256("MULTI_SENDER"); 
-            break;
-        case ContractType.PKPHelper:
-            typ = keccak256("PKP_HELPER"); 
-            break;
-        case ContractType.PKPNFT:
-            typ = keccak256("PKP_NFT");  
-            break;
-        case ContractType.PKPNFTMetadata:
-            typ = keccak256("PKP_NFT_METADATA");  
-            break;
-        case ContractType.PKPPermissions:
-            typ = keccak256("PKP_PERMISSIONS");  
-            break;
-        case ContractType.PubkeyRouter:
-            typ = keccak256("PUB_KEY_ROUTER");  
-            break;
-        case ContractType.RateLimitNFT:
-            typ = keccak256("RATE_LIMIT_NFT");  
-            break;
-        case ContractType.ReleaseRegister:
-            typ = keccak256("RELEASE_REGISTER"); 
-            break;
-        case ContractType.Staking:
-            typ = keccak256("STAKING");  
-            break;
-        case ContractType.StakingBalances:
-            typ = keccak256("STAKING_BALANCES");  
-            break;
-        case ContractType.WLIT:
-            typ = keccak256("WLIT"); 
-            break;
-        default:
-            typ = keccak256("STAKING");  
-            break;
-        }
-         
-        if ( typ.Length > 32  )
+        if (typ.Length > 32)
             typ = typ.Slice(0, 32);
 
         return typ;
@@ -160,7 +127,10 @@ public class Resolver{
 
     public async Task<string> GetContractAddress(ContractType contractType)
     {
-        var typ = GetContractTypKeccak(contractType);        
+        var typ = GetContractTypKeccak(contractType);    
+        if (typ == null)
+            return "0x0";
+
         var resolverService = await GetContractResolverService();
         var env = await localStorage.GetItemAsync<byte>("env");
         var address_bytes = await resolverService.GetContractQueryAsync(typ, env);
@@ -179,11 +149,15 @@ public class Resolver{
 
             foreach (ContractType contractType in Enum.GetValues(typeof(ContractType)) ) {            
                 var typ = GetContractTypKeccak(contractType);
-                var env = await localStorage.GetItemAsync<byte>("env");
-                var contract = await resolverService.GetContractQueryAsync(typ, env);
-                contractAddresses.Add(new ContractAddress { name = contractType.ToString(), address = contract });
+                if (typ == null) {
+                    contractAddresses.Add(new ContractAddress { name = contractType.ToString(), address = "0x0" });
+                } else {
+                    var env = await localStorage.GetItemAsync<byte>("env");
+                    var contract = await resolverService.GetContractQueryAsync(typ, env);
+                    contractAddresses.Add(new ContractAddress { name = contractType.ToString(), address = contract });
                 }
             }
+        }
         catch (Exception ex) {
             Console.WriteLine("Trying to get contract addresses: " + ex.Message);
         }
