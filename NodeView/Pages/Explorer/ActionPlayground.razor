@@ -1,0 +1,325 @@
+@page "/explorer/actionplayground"
+@using Nethereum.Signer
+@using Radzen.Blazor.Rendering;
+@using SharedService;
+@using System.Numerics;
+@using LitContracts.Staking;
+@using Nethereum.Contracts.Extensions;
+@using Services.Metrics.Models;
+@using Services.ChainData.Models;
+@using Services.ChainData;
+@using Nethereum.Util;
+@using Nethereum.Web3;
+@using Nethereum.ABI.Model; 
+@using Nethereum.Contracts;
+@using Nethereum.Web3.Accounts;
+@using Nethereum.RPC.Eth.DTOs;
+@using Nethereum.Hex.HexTypes;
+@using System.Text
+@inject Blazored.LocalStorage.ILocalStorageService localStorage;
+
+<PageTitle>LNE - Playground</PageTitle>
+
+
+
+<div class="card border-primary">
+  <div class="card-header  ">
+    <div class="row no-gutters">
+      <div class="col">
+            Lit Action Playground
+        </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col">       
+
+        <div class="form-group">
+
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">PKP</span>
+                <input type="text" class="form-control" name="pkp_address" value="@pkp_address" placeHolder="0x0......">
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">PKP Owner Wallet Address</span>
+                <input type="text" id="chainUrl" class="form-control" name="pkp_owner_wallet_address" value="@pkp_owner_wallet_address"  placeHolder="0x0......" />
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">PKP Owner Wallet Key</span>
+                <input type="text" id="chainUrl" class="form-control" name="pkp_owner_wallet_key" value="@pkp_owner_wallet_key"  placeHolder="0x0......" />
+            </div>
+
+    
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Action:</span>
+                 <textarea class="form-control" style="height:300px;" id="action_code" value="@action_code" onchange="@ActionCodeChanged"  height=30 rows="3"></textarea>
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Responses:</span>
+                 <textarea class="form-control" style="height:150px;" id="action_response" value="@action_response"   height=30 rows="3"></textarea>
+            </div>
+
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+ <div class="form-group">
+    <button type="button" class="btn btn-primary"  @onclick="() => ExecuteLitAction()">Execute Action </button>                        
+ </div>
+</div>
+
+
+
+
+
+
+
+
+@code {
+    private List<Validator> ? current_validators = null;
+    class LocalConfig {
+        public string wallet_address { get; set;} = "";
+        public string wallet_secret { get; set;} = "";
+        public string pubkey { get; set;} = "";
+    }
+
+    string pkp_address { get; set; } = "";
+    string pkp_owner_wallet_key { get; set; } = "";
+
+    string pkp_owner_wallet_address { get; set; } = "";
+
+    class JsonAuthSig {
+        public string sig { get; set;} = "";
+        public string derivedVia { get; set;} ="";
+        public string  signedMessage { get; set;} = "";
+        public string address { get; set;} = "";
+        public string ? algo { get; set;} 
+
+}
+
+    class JsonExecutionRequest {
+        public string code { get; set; } = "";
+        public string ? ipfsId  { get; set; } 
+        public JsonAuthSig ? authSig { get; set; }
+        public object ? jsParams{ get; set; }
+        public string ? authMethods { get; set; } 
+    }
+
+
+    public class ActionResult { 
+        public bool success { get; set; } 
+        public object signedData { get; set; }
+        public object decryptedData { get; set; }
+        public object claimData { get; set; }
+        public string response { get; set; }
+        public string logs { get; set; }
+
+        public string ? node_port { get; set; }
+    }
+
+
+    public string action_code { get; set; } = "";
+    public string action_response { get; set; } = "";
+
+    async void ActionCodeChanged(ChangeEventArgs e)
+    {
+        if ( e.Value == null ) return;
+        if ( string.IsNullOrEmpty( e.Value.ToString() ) ) return;
+        action_code = e.Value.ToString();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        HttpClient client = new HttpClient();
+                
+        client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
+
+        var response = await client.GetAsync("http://127.0.0.1:8000/");
+        var result = await response.Content.ReadAsStringAsync();
+        var secrets = System.Text.Json.JsonSerializer.Deserialize<LocalConfig>(result);       
+
+        pkp_address = "0x" + secrets.pubkey;
+        pkp_owner_wallet_key = "0x" + secrets.wallet_secret;
+        pkp_owner_wallet_address = "0x" + secrets.wallet_address;
+
+         /// validators
+        var resolver = new Resolver(localStorage);
+        LitContracts.Staking.StakingService? stakingService = null;
+        try {
+            stakingService = await resolver.GetStakingService();
+        }
+        catch(Exception e) {
+            Console.WriteLine(e);
+        }
+
+        if (stakingService == null) {
+            return;
+        }
+    
+        var v = await stakingService.GetValidatorsStructsInCurrentEpochQueryAsync();
+        current_validators = await getValidatorList( v.ReturnValue1, stakingService);
+    }
+
+      public async Task<List<Validator>> getValidatorList(List<LitContracts.Staking.ContractDefinition.Validator> v, StakingService stakingService) {
+        var validators = v.Select(x => new Validator()
+        {
+            Ip = x.Ip,
+            Port = x.Port,
+            NodeAddress = x.NodeAddress,
+            Reward = x.Reward,
+            SenderPubKey = x.SenderPubKey,
+            ReceiverPubKey = x.ReceiverPubKey
+        }).ToList();
+
+        var node_addresses = validators.Select(x => x.NodeAddress).ToList();
+        var stakers = await stakingService.GetNodeStakerAddressMappingsQueryAsync(node_addresses);
+        
+        foreach (Validator validator in validators) {
+            validator.StakerAddress = stakers.ReturnValue1.FirstOrDefault(x => x.NodeAddress == validator.NodeAddress)?.StakerAddress ?? "n/a";
+        }
+
+        var kicked_validators = await stakingService.GetKickedValidatorsQueryAsync();
+        foreach (Validator validator in validators) {
+            if ( validator.StakerAddress != null )
+                validator.kicked = kicked_validators.Contains(validator.StakerAddress);            
+        }
+
+        validators.Sort((x, y) => x.StakerAddress.CompareTo(y.StakerAddress));
+        int i = 0;
+        foreach (Validator validator in validators) {
+            validator.NodeName = i.ToString();
+            i++;
+        }
+
+
+        return validators;
+    }
+
+
+    public async Task<bool> ExecuteLitAction() {
+
+        if (current_validators == null) {
+            Console.WriteLine("No validators found");
+            return false;
+        };
+
+        if (!action_code.Contains("async () =>")) {
+            action_code = "(async () => {\n"  + action_code + "\n})()";
+        }
+
+        var auth_sig = generate_auth_sig(pkp_owner_wallet_key);        
+        Console.WriteLine("Auth Sig: " + auth_sig.sig);
+        Console.WriteLine("Action code:" + action_code);
+        var b64_action_code = Convert.ToBase64String(Encoding.UTF8.GetBytes(action_code));
+        Console.WriteLine("Action code b64:" + b64_action_code);
+
+        var js_params = new {
+            publicKey = pkp_address,
+            sigName = "sig1"
+        };
+
+        var request = new JsonExecutionRequest {
+            code = b64_action_code,
+            ipfsId = null,
+            authSig = auth_sig,
+            jsParams = js_params,
+        };
+
+        
+        
+        var json_request = System.Text.Json.JsonSerializer.Serialize(request);
+        Console.WriteLine("Request: " + json_request);
+        HttpClient client = new HttpClient();
+        var request_id = Guid.NewGuid().ToString();
+        client.DefaultRequestHeaders.Add("X-Request-Id", request_id);
+
+        var combined_output = new System.Text.StringBuilder();
+        List<Task> handles = new List<Task>();
+        List<ActionResult> results = new List<ActionResult>();
+
+        foreach(Validator validator in current_validators) {
+            var handle = Task.Run(async () => { 
+                try {
+                    Console.WriteLine("Calling Node: " + validator.NodeSocketAddress);
+                    @* var response = await client.PostAsync(  validator.NodeSocketAddress + "/web/execute", new StringContent(json_request, Encoding.UTF8, "application/json")); *@
+                    var response = await client.PostAsJsonAsync<JsonExecutionRequest>(  validator.NodeSocketAddress + "/web/execute", request);
+                    if (response.StatusCode == System.Net.HttpStatusCode.OK) {
+                       var result = await response.Content.ReadAsStringAsync();
+                       
+                        var actionResult = System.Text.Json.JsonSerializer.Deserialize<ActionResult>(result);
+                        actionResult.node_port = validator.Port.ToString();
+                        results.Add(actionResult);                            
+                        Console.WriteLine("Result: " + result);
+                    }
+                    else {
+                        var result = await response.Content.ReadAsStringAsync();
+                            combined_output.AppendLine("Node #" + validator.Port.ToString()  + " Error: " + result); 
+                    }
+
+                } catch (Exception e) {
+                    Console.WriteLine("Error gathering data: " + e.Message);
+                }
+            });
+
+            handles.Add(handle);
+        }
+
+         await Task.WhenAll(handles);
+
+        foreach (ActionResult result in results) {
+
+            if (result.response.Length > 1) {
+                combined_output.AppendLine("Node #" + result.node_port  + " response: " + result.response); 
+            }
+            if (result.signedData != null) {
+                if (result.signedData.ToString().Length > 10) {
+                    combined_output.AppendLine("Node #" + result.node_port + " signedData: " + result.signedData); 
+                }
+            }
+            @* Console.WriteLine("Result: " + result.response); *@
+        }
+
+        action_response = combined_output.ToString();
+
+        return true;
+    }
+
+    private JsonAuthSig generate_auth_sig(string pkp_owner_wallet_key) {
+        
+        Nethereum.Web3.Accounts.Account account = new Nethereum.Web3.Accounts.Account(pkp_owner_wallet_key);
+
+        var chain_id = 31337;
+        var issue_datetime = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ssZ");        
+        var expiration_datetime = DateTime.Now.AddDays(1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+        var msg = @"localhost wants you to sign in with your Ethereum account:
+" + account.Address + @"
+
+This is a key for a Lit Action Test.
+
+URI: https://localhost/
+Version: 1
+Chain ID: " + chain_id + @"
+Nonce: 1LF00rraLO4f7ZSIt
+Issued At: " + issue_datetime + @"
+Expiration Time: " + expiration_datetime + @"";
+
+        var signer = new Nethereum.Signer.EthereumMessageSigner();
+
+        var sig = signer.EncodeUTF8AndSign(msg, new EthECKey(account.PrivateKey));
+        
+        return new JsonAuthSig {
+            sig = sig,
+            derivedVia = "web3.eth.personal.sign",
+            signedMessage = msg,
+            address = account.Address,
+            algo = null,
+        };
+    }
+}
