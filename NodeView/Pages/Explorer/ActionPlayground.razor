@@ -20,8 +20,6 @@
 
 <PageTitle>LNE - Playground</PageTitle>
 
-
-
 <div class="card border-primary">
   <div class="card-header  ">
     <div class="row no-gutters">
@@ -52,35 +50,75 @@
             </div>
 
     
-            <div class="input-group mb-3">
+            @* <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1">Action:</span>
                  <textarea class="form-control" style="height:300px;" id="action_code" value="@action_code" onchange="@ActionCodeChanged"  height=30 rows="3"></textarea>
+            </div> *@
+            
+            <div class="card">
+                <div class="card-header  ">
+                    <div class="row no-gutters">
+                    <div class="col">
+                            Lit Action Code
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                    <div class="col">       
+                        <StandaloneCodeEditor @ref="_editor" Id="my-editor-instance-id" ConstructionOptions="EditorConstructionOptions" />            
+                        </div>
+                    </div>
+                </div>
             </div>
+            <br/>
 
-            <div class="input-group mb-3">
+            <div class="card">
+                <div class="card-header  ">
+                    <div class="row no-gutters">
+                    <div class="col">
+                            Node Responses
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                    <div class="col">       
+                        <StandaloneCodeEditor @ref="_responses" Id="my-responses-instance-id" ConstructionOptions="ResponseConstructionOptions" />            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br/>
+
+            @* <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1">Responses:</span>
                  <textarea class="form-control" style="height:150px;" id="action_response" value="@action_response"   height=30 rows="3"></textarea>
-            </div>
+            </div> *@
 
+            <button type="button" class="btn btn-primary"  @onclick="() => ExecuteLitAction()">Execute Action </button>                        
 
         </div>
 
       </div>
     </div>
   </div>
- <div class="form-group">
-    <button type="button" class="btn btn-primary"  @onclick="() => ExecuteLitAction()">Execute Action </button>                        
- </div>
 </div>
 
-
-
-
-
+<style>
+    #my-editor-instance-id { /* for all editor instances */
+	height: 400px;
+}
+    #my-responses-instance-id { /* for all response instances */
+	height: 150px;
+}
+</style>
 
 
 
 @code {
+     private StandaloneCodeEditor _editor = null!;
+     private StandaloneCodeEditor _responses = null!;
     private List<Validator> ? current_validators = null;
     class LocalConfig {
         public string wallet_address { get; set;} = "";
@@ -126,6 +164,22 @@
     public string action_code { get; set; } = "";
     public string action_response { get; set; } = "";
 
+    private StandaloneEditorConstructionOptions EditorConstructionOptions(StandaloneCodeEditor editor)
+    {
+        return new StandaloneEditorConstructionOptions
+        {
+            AutomaticLayout = true,
+            Language = "javascript",
+        };
+    }
+    private StandaloneEditorConstructionOptions ResponseConstructionOptions(StandaloneCodeEditor editor)
+    {
+        return new StandaloneEditorConstructionOptions
+        {
+            AutomaticLayout = true,
+            Language = "javascript",
+        };
+    }
     async void ActionCodeChanged(ChangeEventArgs e)
     {
         if ( e.Value == null ) return;
@@ -204,6 +258,8 @@
 
     public async Task<bool> ExecuteLitAction() {
 
+        action_code = await _editor.GetValue();
+
         if (current_validators == null) {
             Console.WriteLine("No validators found");
             return false;
@@ -274,7 +330,7 @@
 
         foreach (ActionResult result in results) {
 
-            if (result.response.Length > 1) {
+            @* if (result.response.Length > 1) {
                 combined_output.AppendLine("Node #" + result.node_port  + " response: " + result.response); 
             }
             if (result.signedData != null) {
@@ -282,10 +338,13 @@
                     combined_output.AppendLine("Node #" + result.node_port + " signedData: " + result.signedData); 
                 }
             }
-            @* Console.WriteLine("Result: " + result.response); *@
+            Console.WriteLine("Result: " + result.response); *@
+            combined_output.AppendLine("// Node #" + result.node_port + " response: " );
+            combined_output.AppendLine( System.Text.Json.JsonSerializer.Serialize( result));
         }
 
         action_response = combined_output.ToString();
+        await _responses.SetValue(action_response);
 
         return true;
     }
