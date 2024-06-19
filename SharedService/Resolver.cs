@@ -46,7 +46,9 @@ public enum ContractType
         ReleaseRegister,
         Staking,
         StakingBalances,
-        WLIT
+        WLIT,
+        StylusContractP256,
+        StylusContractK256
     }
 
 public class Resolver{
@@ -114,6 +116,8 @@ public class Resolver{
             ContractType.Staking => keccak256("STAKING"),
             ContractType.StakingBalances => keccak256("STAKING_BALANCES"),
             ContractType.WLIT => keccak256("WLIT"),
+            ContractType.StylusContractP256 => keccak256("HD_KEY_DERIVER_CONTRACT_P256"),
+            ContractType.StylusContractK256 => keccak256("HD_KEY_DERIVER_CONTRACT_K256"),
             _ => null,
         };
         if (typ == null)

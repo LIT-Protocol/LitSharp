@@ -20,13 +20,13 @@
       <div class="col"> 
 
 
-<RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="20" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
+<RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="30" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
     Data="@contractAddresses" TItem="ContractAddress" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
     <Columns>       
         <RadzenDataGridColumn TItem="ContractAddress" Property="name" Title="Name" Width="25%" />
         <RadzenDataGridColumn TItem="ContractAddress" Property="address" Title="Address" >
             <Template Context="data">
-                <a href="@("https://lit-protocol.calderaexplorer.xyz/address/"  +data.address)" style="text-decoration:none" target="_blank" >@data.address</a>                        
+                <a href="@(explorerUrl +data.address)" style="text-decoration:none" target="_blank" >@data.address</a>                        
             </Template>
         </RadzenDataGridColumn>                
     </Columns>
@@ -39,6 +39,7 @@
 
 @code {
     private List<ContractAddress>? contractAddresses = null;
+    private string explorerUrl = "";
     protected override async Task OnInitializedAsync()
     {                
         var resolver = new Resolver(localStorage);
@@ -49,6 +50,8 @@
         catch (Exception ex) {
             Console.WriteLine(ex.Message);
         }
+
+        explorerUrl = await localStorage.GetItemAsync<string>("explorerUrl");
         
     }
 }

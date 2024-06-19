@@ -29,12 +29,12 @@
                 </RadzenDataGridColumn>                
                 <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator"  Property="NodeAddress" Title="Node Address" Width="25%" >
                     <Template Context="data">
-                        <a href="@("https://lit-protocol.calderaexplorer.xyz/address/"  +data.NodeAddress)" style="text-decoration:none" target="_blank">@data.NodeAddress</a>                        
+                        <a href="@(explorerUrl + data.NodeAddress)" style="text-decoration:none" target="_blank">@data.NodeAddress</a>                        
                     </Template>
                 </RadzenDataGridColumn>                
                 <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="StakerAddress" Title="Staker Address" Width="25%" >
                     <Template Context="data">
-                        <a href="@("https://lit-protocol.calderaexplorer.xyz/address/" + data.StakerAddress)" style="text-decoration:none" target="_blank">@data.StakerAddress</a>                        
+                        <a href="@(explorerUrl + data.StakerAddress)" style="text-decoration:none" target="_blank">@data.StakerAddress</a>                        
                     </Template>
                 </RadzenDataGridColumn>                
                 <RadzenDataGridColumn TItem="Services.Metrics.Models.Validator" Property="NodeVersion" Title="Version" Width="5%"  />
@@ -69,6 +69,12 @@
     public string? name { get; set;}
     [Parameter]    
     public List<Services.Metrics.Models.Validator>? validators { get; set; }
+    private string explorerUrl = "";
+
+    protected override async Task OnInitializedAsync()
+    {                
+        explorerUrl = await localStorage.GetItemAsync<string>("explorerUrl");
+    }
 
 
 }

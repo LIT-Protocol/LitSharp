@@ -30,13 +30,13 @@
 
         switch (network_name) {
             case "cayenne":
-                await SetNetwork("Cayenne", "https://lit-protocol.calderachain.xyz/http", 0, "0xb82f2dB0B486F1ef698CC88F0d521D873eb04d03", "https://lit-protocol.calderaexplorer.xyz/api", 1);
+                await SetNetwork("Cayenne", "https://lit-protocol.calderachain.xyz/http", 0, "0xb82f2dB0B486F1ef698CC88F0d521D873eb04d03", "https://lit-protocol.calderaexplorer.xyz/api", 1, "https://lit-protocol.calderaexplorer.xyz/address/");
                 break;
             case "manzano":
-                await SetNetwork("Manzano", "https://lit-protocol.calderachain.xyz/http", 0, "0x9F0Ede26261451C5E784DC799D71ECf766", "https://lit-protocol.calderaexplorer.xyz/api", 1);
+                await SetNetwork("Manzano", "https://lit-protocol.calderachain.xyz/http", 0, "0x9F0Ede26261451C5E784DC799D71ECf766", "https://lit-protocol.calderaexplorer.xyz/api", 1, "https://lit-protocol.calderaexplorer.xyz/address/");
                 break;            
             default: // this is habanero
-                await SetNetwork("Habanero", "https://lit-protocol.calderachain.xyz/http", 2, "0xe5a7C5d908EE8996332F488cE5f636d4EBff8522", "https://lit-protocol.calderaexplorer.xyz/api", 1);
+                await SetNetwork("Habanero", "https://lit-protocol.calderachain.xyz/http", 2, "0xe5a7C5d908EE8996332F488cE5f636d4EBff8522", "https://lit-protocol.calderaexplorer.xyz/api", 1, "https://lit-protocol.calderaexplorer.xyz/address/");
                 break;
         }
 
@@ -44,7 +44,7 @@
         
     }
 
-    private async Task SetNetwork(string name, string url, int env, string resolverAddress,  string rpc_api_url, int rpc_api_type)
+    private async Task SetNetwork(string name, string url, int env, string resolverAddress,  string rpc_api_url, int rpc_api_type, string explorerUrl)
     {
         Console.WriteLine("SetNetwork:" +  name);
         var defaultPrivateKey = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
@@ -55,6 +55,7 @@
         await localStorage.SetItemAsync("privateKey", defaultPrivateKey);
         await localStorage.SetItemAsync("rpc_api_type", rpc_api_type);
         await localStorage.SetItemAsync("rpc_api_url", rpc_api_url);
+        await localStorage.SetItemAsync("explorerUrl", explorerUrl);
     }
 }
  
