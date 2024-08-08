@@ -391,100 +391,45 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "CallerNotOwner",
-    "type": "error"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "newResolverAddress",
-        "type": "address"
-      }
-    ],
-    "name": "ContractResolverAddressSet",
-    "type": "event"
-  },
-  {
     "anonymous": false,
     "inputs": [
       {
         "indexed": true,
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "bytes",
-        "name": "pubkey",
-        "type": "bytes"
-      },
-      {
-        "indexed": false,
         "internalType": "address",
-        "name": "stakingContract",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "keyType",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "bytes32",
-        "name": "derivedKeyId",
-        "type": "bytes32"
-      }
-    ],
-    "name": "PubkeyRoutingDataSet",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "stakingContract",
+        "name": "payer",
         "type": "address"
       },
       {
         "components": [
           {
-            "internalType": "bytes",
-            "name": "pubkey",
-            "type": "bytes"
+            "internalType": "uint256",
+            "name": "requestsPerPeriod",
+            "type": "uint256"
           },
           {
             "internalType": "uint256",
-            "name": "keyType",
+            "name": "periodSeconds",
             "type": "uint256"
           }
         ],
         "indexed": false,
-        "internalType": "struct IPubkeyRouter.RootKey",
-        "name": "rootKey",
+        "internalType": "struct LibPaymentDelegationStorage.Restriction",
+        "name": "restriction",
         "type": "tuple"
       }
     ],
-    "name": "RootKeySet",
+    "name": "RestrictionSet",
     "type": "event"
   },
   {
     "inputs": [
       {
         "internalType": "address",
-        "name": "stakingContract",
+        "name": "user",
         "type": "address"
       }
     ],
-    "name": "adminResetRootKeys",
+    "name": "delegatePayments",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -492,224 +437,66 @@
   {
     "inputs": [
       {
-        "components": [
-          {
-            "internalType": "bytes32",
-            "name": "r",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "bytes32",
-            "name": "s",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "uint8",
-            "name": "v",
-            "type": "uint8"
-          }
-        ],
-        "internalType": "struct IPubkeyRouter.Signature[]",
-        "name": "signatures",
-        "type": "tuple[]"
+        "internalType": "address[]",
+        "name": "users",
+        "type": "address[]"
+      }
+    ],
+    "name": "delegatePaymentsBatch",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      }
+    ],
+    "name": "getPayers",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "",
+        "type": "address[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address[]",
+        "name": "users",
+        "type": "address[]"
+      }
+    ],
+    "name": "getPayersAndRestrictions",
+    "outputs": [
+      {
+        "internalType": "address[][]",
+        "name": "",
+        "type": "address[][]"
       },
-      {
-        "internalType": "bytes",
-        "name": "signedMessage",
-        "type": "bytes"
-      },
-      {
-        "internalType": "address",
-        "name": "stakingContractAddress",
-        "type": "address"
-      }
-    ],
-    "name": "checkNodeSignatures",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes",
-        "name": "pubkey",
-        "type": "bytes"
-      }
-    ],
-    "name": "deriveEthAddressFromPubkey",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "pure",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "ethAddress",
-        "type": "address"
-      }
-    ],
-    "name": "ethAddressToPkpId",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "stakingContract",
-        "type": "address"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "derivedKeyId",
-        "type": "bytes32"
-      }
-    ],
-    "name": "getDerivedPubkey",
-    "outputs": [
-      {
-        "internalType": "bytes",
-        "name": "",
-        "type": "bytes"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      }
-    ],
-    "name": "getEthAddress",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getPkpNftAddress",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      }
-    ],
-    "name": "getPubkey",
-    "outputs": [
-      {
-        "internalType": "bytes",
-        "name": "",
-        "type": "bytes"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "stakingContract",
-        "type": "address"
-      }
-    ],
-    "name": "getRootKeys",
-    "outputs": [
       {
         "components": [
-          {
-            "internalType": "bytes",
-            "name": "pubkey",
-            "type": "bytes"
-          },
           {
             "internalType": "uint256",
-            "name": "keyType",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct IPubkeyRouter.RootKey[]",
-        "name": "",
-        "type": "tuple[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      }
-    ],
-    "name": "getRoutingData",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "bytes",
-            "name": "pubkey",
-            "type": "bytes"
-          },
-          {
-            "internalType": "uint256",
-            "name": "keyType",
+            "name": "requestsPerPeriod",
             "type": "uint256"
           },
           {
-            "internalType": "bytes32",
-            "name": "derivedKeyId",
-            "type": "bytes32"
+            "internalType": "uint256",
+            "name": "periodSeconds",
+            "type": "uint256"
           }
         ],
-        "internalType": "struct LibPubkeyRouterStorage.PubkeyRoutingData",
+        "internalType": "struct LibPaymentDelegationStorage.Restriction[][]",
         "name": "",
-        "type": "tuple"
+        "type": "tuple[][]"
       }
     ],
     "stateMutability": "view",
@@ -718,51 +505,27 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "payer",
+        "type": "address"
       }
     ],
-    "name": "isRouted",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      }
-    ],
-    "name": "pubkeys",
+    "name": "getRestriction",
     "outputs": [
       {
         "components": [
           {
-            "internalType": "bytes",
-            "name": "pubkey",
-            "type": "bytes"
-          },
-          {
             "internalType": "uint256",
-            "name": "keyType",
+            "name": "requestsPerPeriod",
             "type": "uint256"
           },
           {
-            "internalType": "bytes32",
-            "name": "derivedKeyId",
-            "type": "bytes32"
+            "internalType": "uint256",
+            "name": "periodSeconds",
+            "type": "uint256"
           }
         ],
-        "internalType": "struct LibPubkeyRouterStorage.PubkeyRoutingData",
+        "internalType": "struct LibPaymentDelegationStorage.Restriction",
         "name": "",
         "type": "tuple"
       }
@@ -774,107 +537,68 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "newResolverAddress",
+        "name": "payer",
         "type": "address"
       }
     ],
-    "name": "setContractResolver",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "name": "getUsers",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "",
+        "type": "address[]"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bytes",
-        "name": "pubkey",
-        "type": "bytes"
-      },
-      {
-        "internalType": "address",
-        "name": "stakingContractAddress",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "keyType",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "derivedKeyId",
-        "type": "bytes32"
-      }
-    ],
-    "name": "setRoutingData",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bytes",
-        "name": "pubkey",
-        "type": "bytes"
-      },
-      {
-        "internalType": "address",
-        "name": "stakingContract",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "keyType",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "derivedKeyId",
-        "type": "bytes32"
-      }
-    ],
-    "name": "setRoutingDataAsAdmin",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "stakingContractAddress",
-        "type": "address"
-      },
       {
         "components": [
           {
-            "internalType": "bytes",
-            "name": "pubkey",
-            "type": "bytes"
+            "internalType": "uint256",
+            "name": "requestsPerPeriod",
+            "type": "uint256"
           },
           {
             "internalType": "uint256",
-            "name": "keyType",
+            "name": "periodSeconds",
             "type": "uint256"
           }
         ],
-        "internalType": "struct IPubkeyRouter.RootKey[]",
-        "name": "newRootKeys",
-        "type": "tuple[]"
+        "internalType": "struct LibPaymentDelegationStorage.Restriction",
+        "name": "r",
+        "type": "tuple"
       }
     ],
-    "name": "voteForRootKeys",
+    "name": "setRestriction",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      }
+    ],
+    "name": "undelegatePayments",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address[]",
+        "name": "users",
+        "type": "address[]"
+      }
+    ],
+    "name": "undelegatePaymentsBatch",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
