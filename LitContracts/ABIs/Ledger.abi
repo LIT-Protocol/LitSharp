@@ -392,23 +392,12 @@
   },
   {
     "inputs": [],
-    "name": "ActiveValidatorsCannotLeave",
+    "name": "AmountMustBePositive",
     "type": "error"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "aliasAccount",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "stakerAddress",
-        "type": "address"
-      }
-    ],
-    "name": "AliasNotOwnedBySender",
+    "inputs": [],
+    "name": "ArrayLengthsMustMatch",
     "type": "error"
   },
   {
@@ -417,105 +406,38 @@
     "type": "error"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "aliasAccount",
-        "type": "address"
-      }
-    ],
-    "name": "CannotRemoveAliasOfActiveValidator",
+    "inputs": [],
+    "name": "InsufficientFunds",
     "type": "error"
   },
   {
     "inputs": [],
-    "name": "CannotStakeZero",
+    "name": "InsufficientWithdrawAmount",
     "type": "error"
   },
   {
     "inputs": [],
-    "name": "CannotWithdrawZero",
+    "name": "MustBeNonzero",
     "type": "error"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "aliasCount",
-        "type": "uint256"
-      }
-    ],
-    "name": "MaxAliasCountReached",
+    "inputs": [],
+    "name": "NodeNotStakingNode",
     "type": "error"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "sender",
-        "type": "address"
-      }
-    ],
-    "name": "OnlyStakingContract",
+    "inputs": [],
+    "name": "SessionAlreadyUsed",
     "type": "error"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "amountStaked",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "minimumStake",
-        "type": "uint256"
-      }
-    ],
-    "name": "StakeMustBeGreaterThanMinimumStake",
+    "inputs": [],
+    "name": "ValueExceedsUint128MaxLimit",
     "type": "error"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "amountStaked",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "maximumStake",
-        "type": "uint256"
-      }
-    ],
-    "name": "StakeMustBeLessThanMaximumStake",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "stakerAddress",
-        "type": "address"
-      }
-    ],
-    "name": "StakerNotPermitted",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "yourBalance",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "requestedWithdrawlAmount",
-        "type": "uint256"
-      }
-    ],
-    "name": "TryingToWithdrawMoreThanStaked",
+    "inputs": [],
+    "name": "WithdrawalDelayNotPassed",
     "type": "error"
   },
   {
@@ -524,155 +446,7 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "staker",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "aliasAccount",
-        "type": "address"
-      }
-    ],
-    "name": "AliasAdded",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "staker",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "aliasAccount",
-        "type": "address"
-      }
-    ],
-    "name": "AliasRemoved",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "newMaxAliasCount",
-        "type": "uint256"
-      }
-    ],
-    "name": "MaxAliasCountSet",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "newMaximumStake",
-        "type": "uint256"
-      }
-    ],
-    "name": "MaximumStakeSet",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "newMinimumStake",
-        "type": "uint256"
-      }
-    ],
-    "name": "MinimumStakeSet",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "staker",
-        "type": "address"
-      }
-    ],
-    "name": "PermittedStakerAdded",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "staker",
-        "type": "address"
-      }
-    ],
-    "name": "PermittedStakerRemoved",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "bool",
-        "name": "permittedStakersOn",
-        "type": "bool"
-      }
-    ],
-    "name": "PermittedStakersOnChanged",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "newResolverAddress",
-        "type": "address"
-      }
-    ],
-    "name": "ResolverContractAddressSet",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "staker",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "reward",
-        "type": "uint256"
-      }
-    ],
-    "name": "RewardPaid",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "staker",
+        "name": "user",
         "type": "address"
       },
       {
@@ -682,20 +456,7 @@
         "type": "uint256"
       }
     ],
-    "name": "Staked",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "newTokenRewardPerTokenPerEpoch",
-        "type": "uint256"
-      }
-    ],
-    "name": "TokenRewardPerTokenPerEpochSet",
+    "name": "Deposit",
     "type": "event"
   },
   {
@@ -704,26 +465,7 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "staker",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "aliasAccount",
-        "type": "address"
-      }
-    ],
-    "name": "ValidatorNotRewardedBecauseAlias",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "staker",
+        "name": "user",
         "type": "address"
       },
       {
@@ -733,7 +475,20 @@
         "type": "uint256"
       }
     ],
-    "name": "ValidatorRewarded",
+    "name": "RewardWithdraw",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "delay",
+        "type": "uint256"
+      }
+    ],
+    "name": "RewardWithdrawDelaySet",
     "type": "event"
   },
   {
@@ -742,7 +497,7 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "staker",
+        "name": "user",
         "type": "address"
       },
       {
@@ -752,7 +507,7 @@
         "type": "uint256"
       }
     ],
-    "name": "ValidatorTokensPenalized",
+    "name": "RewardWithdrawRequest",
     "type": "event"
   },
   {
@@ -761,41 +516,103 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "staker",
+        "name": "user",
         "type": "address"
       },
       {
         "indexed": false,
-        "internalType": "uint256",
+        "internalType": "int256",
         "name": "amount",
+        "type": "int256"
+      }
+    ],
+    "name": "UserCharged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "delay",
         "type": "uint256"
       }
     ],
-    "name": "Withdrawn",
+    "name": "UserWithdrawDelaySet",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "int256",
+        "name": "amount",
+        "type": "int256"
+      }
+    ],
+    "name": "Withdraw",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "int256",
+        "name": "amount",
+        "type": "int256"
+      }
+    ],
+    "name": "WithdrawRequest",
     "type": "event"
   },
   {
     "inputs": [
       {
         "internalType": "address",
-        "name": "aliasAccount",
+        "name": "user",
         "type": "address"
       }
     ],
-    "name": "addAlias",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "name": "balance",
+    "outputs": [
+      {
+        "internalType": "int256",
+        "name": "",
+        "type": "int256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
       {
         "internalType": "address",
-        "name": "staker",
+        "name": "user",
         "type": "address"
+      },
+      {
+        "internalType": "int256",
+        "name": "amount",
+        "type": "int256"
       }
     ],
-    "name": "addPermittedStaker",
+    "name": "chargeUser",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -804,77 +621,25 @@
     "inputs": [
       {
         "internalType": "address[]",
-        "name": "stakers",
+        "name": "users",
         "type": "address[]"
+      },
+      {
+        "internalType": "int256[]",
+        "name": "amounts",
+        "type": "int256[]"
       }
     ],
-    "name": "addPermittedStakers",
+    "name": "chargeUsers",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      }
-    ],
-    "name": "balanceOf",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      }
-    ],
-    "name": "checkStakingAmounts",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "contractResolver",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      }
-    ],
-    "name": "getReward",
+    "name": "deposit",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -891,13 +656,31 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "getTokenAddress",
-    "outputs": [
+    "inputs": [
       {
         "internalType": "address",
-        "name": "",
+        "name": "user",
         "type": "address"
+      }
+    ],
+    "name": "latestRewardWithdrawRequest",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "timestamp",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct LibLedgerStorage.WithdrawRequest",
+        "name": "",
+        "type": "tuple"
       }
     ],
     "stateMutability": "view",
@@ -907,136 +690,28 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "staker",
+        "name": "user",
         "type": "address"
       }
     ],
-    "name": "isPermittedStaker",
+    "name": "latestWithdrawRequest",
     "outputs": [
       {
-        "internalType": "bool",
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "timestamp",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct LibLedgerStorage.WithdrawRequest",
         "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "maximumStake",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "minimumStake",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      }
-    ],
-    "name": "penalizeTokens",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "permittedStakersOn",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "aliasAccount",
-        "type": "address"
-      }
-    ],
-    "name": "removeAlias",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "staker",
-        "type": "address"
-      }
-    ],
-    "name": "removePermittedStaker",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "staker",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "balance",
-        "type": "uint256"
-      }
-    ],
-    "name": "restakePenaltyTokens",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      }
-    ],
-    "name": "rewardOf",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
+        "type": "tuple"
       }
     ],
     "stateMutability": "view",
@@ -1048,14 +723,9 @@
         "internalType": "uint256",
         "name": "amount",
         "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
       }
     ],
-    "name": "rewardValidator",
+    "name": "requestRewardWithdraw",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1063,82 +733,12 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "newResolverAddress",
-        "type": "address"
-      }
-    ],
-    "name": "setContractResolver",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "newMaxAliasCount",
-        "type": "uint256"
-      }
-    ],
-    "name": "setMaxAliasCount",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "newMaximumStake",
-        "type": "uint256"
-      }
-    ],
-    "name": "setMaximumStake",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "newMinimumStake",
-        "type": "uint256"
-      }
-    ],
-    "name": "setMinimumStake",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bool",
-        "name": "permitted",
-        "type": "bool"
-      }
-    ],
-    "name": "setPermittedStakersOn",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
+        "internalType": "int256",
         "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
+        "type": "int256"
       }
     ],
-    "name": "stake",
+    "name": "requestWithdraw",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1146,29 +746,25 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
         "internalType": "address",
-        "name": "account",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "sender",
+        "name": "user",
         "type": "address"
       }
     ],
-    "name": "stakeForValidator",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "name": "rewardBalance",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "totalStaked",
+    "name": "rewardWithdrawDelay",
     "outputs": [
       {
         "internalType": "uint256",
@@ -1183,16 +779,11 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "balance",
+        "name": "delay",
         "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "recipient",
-        "type": "address"
       }
     ],
-    "name": "transferPenaltyTokens",
+    "name": "setRewardWithdrawDelay",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1201,22 +792,36 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "amount",
+        "name": "delay",
         "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
       }
     ],
-    "name": "withdraw",
+    "name": "setUserWithdrawDelay",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [],
+    "name": "userWithdrawDelay",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "int256",
+        "name": "amount",
+        "type": "int256"
+      }
+    ],
     "name": "withdraw",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -1226,11 +831,11 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "balance",
+        "name": "amount",
         "type": "uint256"
       }
     ],
-    "name": "withdrawPenaltyTokens",
+    "name": "withdrawRewards",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

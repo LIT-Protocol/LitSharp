@@ -531,6 +531,19 @@
       {
         "indexed": false,
         "internalType": "address",
+        "name": "newResolverAddress",
+        "type": "address"
+      }
+    ],
+    "name": "ContractResolverAddressSet",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
         "name": "backupMemberAddress",
         "type": "address"
       },
@@ -980,6 +993,19 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newResolverAddress",
+        "type": "address"
+      }
+    ],
+    "name": "setContractResolver",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "setMemberForDkg",
     "outputs": [
@@ -990,6 +1016,100 @@
       }
     ],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "CURRENT",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "clearNodeRecoveryStatus",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getNodeRecoveryStatus",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "node_address",
+            "type": "address"
+          },
+          {
+            "internalType": "enum LibBackupRecoveryStorage.NodeRecoveryStatus",
+            "name": "status",
+            "type": "uint8"
+          }
+        ],
+        "internalType": "struct LibBackupRecoveryStorage.NodeRecoveryStatusMap[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "enum LibBackupRecoveryStorage.NodeRecoveryStatus",
+        "name": "status",
+        "type": "uint8"
+      }
+    ],
+    "name": "setNodeRecoveryStatus",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes",
+        "name": "bls12381G1EncKey",
+        "type": "bytes"
+      },
+      {
+        "internalType": "bytes",
+        "name": "secp256K1EcdsaPubKey",
+        "type": "bytes"
+      },
+      {
+        "internalType": "address[]",
+        "name": "partyMembers",
+        "type": "address[]"
+      }
+    ],
+    "name": "setBackupPartyState",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getNonSubmitingBackupMembersInNextState",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "missingRecoveryMembers",
+        "type": "address[]"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   }
 ]

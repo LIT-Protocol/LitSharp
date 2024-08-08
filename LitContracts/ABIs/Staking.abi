@@ -392,12 +392,517 @@
   },
   {
     "inputs": [],
-    "name": "ActiveValidatorsCannotLeave",
+    "name": "CallerNotOwner",
     "type": "error"
   },
   {
+    "inputs": [
+      {
+        "internalType": "enum LibStakingStorage.States",
+        "name": "state",
+        "type": "uint8"
+      }
+    ],
+    "name": "MustBeInActiveOrUnlockedOrPausedState",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "enum LibStakingStorage.States",
+        "name": "state",
+        "type": "uint8"
+      }
+    ],
+    "name": "MustBeInNextValidatorSetLockedOrReadyForNextEpochState",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "reason",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "tolerance",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "intervalSecs",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "kickPenaltyPercent",
+            "type": "uint256"
+          }
+        ],
+        "indexed": false,
+        "internalType": "struct LibStakingStorage.ComplaintConfig",
+        "name": "config",
+        "type": "tuple"
+      }
+    ],
+    "name": "ComplaintConfigSet",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newTokenRewardPerTokenPerEpoch",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256[]",
+        "name": "newKeyTypes",
+        "type": "uint256[]"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newMinimumValidatorCount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newMaxConcurrentRequests",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newMaxTripleCount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newMinTripleCount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newPeerCheckingIntervalSecs",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newMaxTripleConcurrency",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "newRpcHealthcheckEnabled",
+        "type": "bool"
+      }
+    ],
+    "name": "ConfigSet",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newEpochEndTime",
+        "type": "uint256"
+      }
+    ],
+    "name": "EpochEndTimeSet",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newEpochLength",
+        "type": "uint256"
+      }
+    ],
+    "name": "EpochLengthSet",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newEpochTimeout",
+        "type": "uint256"
+      }
+    ],
+    "name": "EpochTimeoutSet",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "reason",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newKickPenaltyPercent",
+        "type": "uint256"
+      }
+    ],
+    "name": "KickPenaltyPercentSet",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "newResolverContractAddress",
+        "type": "address"
+      }
+    ],
+    "name": "ResolverContractAddressSet",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "newStakingTokenAddress",
+        "type": "address"
+      }
+    ],
+    "name": "StakingTokenSet",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "enum LibStakingStorage.States",
+        "name": "newState",
+        "type": "uint8"
+      }
+    ],
+    "name": "StateChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "staker",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amountBurned",
+        "type": "uint256"
+      }
+    ],
+    "name": "ValidatorKickedFromNextEpoch",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "staker",
+        "type": "address"
+      }
+    ],
+    "name": "ValidatorRejoinedNextEpoch",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "validatorStakerAddress",
+        "type": "address"
+      }
+    ],
+    "name": "adminKickValidatorInNextEpoch",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "staker",
+        "type": "address"
+      }
+    ],
+    "name": "adminRejoinValidator",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
-    "name": "CallerNotOwner",
+    "name": "adminResetEpoch",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "validatorStakerAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amountToPenalize",
+        "type": "uint256"
+      }
+    ],
+    "name": "adminSlashValidator",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "staker",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "adminStakeForValidator",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "reason",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "tolerance",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "intervalSecs",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "kickPenaltyPercent",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct LibStakingStorage.ComplaintConfig",
+        "name": "config",
+        "type": "tuple"
+      }
+    ],
+    "name": "setComplaintConfig",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "tokenRewardPerTokenPerEpoch",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "DEPRECATED_complaintTolerance",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "DEPRECATED_complaintIntervalSecs",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256[]",
+            "name": "keyTypes",
+            "type": "uint256[]"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minimumValidatorCount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxConcurrentRequests",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxTripleCount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minTripleCount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "peerCheckingIntervalSecs",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxTripleConcurrency",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "rpcHealthcheckEnabled",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct LibStakingStorage.Config",
+        "name": "newConfig",
+        "type": "tuple"
+      }
+    ],
+    "name": "setConfig",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newResolverAddress",
+        "type": "address"
+      }
+    ],
+    "name": "setContractResolver",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "newEpochEndTime",
+        "type": "uint256"
+      }
+    ],
+    "name": "setEpochEndTime",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "newEpochLength",
+        "type": "uint256"
+      }
+    ],
+    "name": "setEpochLength",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "enum LibStakingStorage.States",
+        "name": "newState",
+        "type": "uint8"
+      }
+    ],
+    "name": "setEpochState",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "newEpochTimeout",
+        "type": "uint256"
+      }
+    ],
+    "name": "setEpochTimeout",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "reason",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "newKickPenaltyPercent",
+        "type": "uint256"
+      }
+    ],
+    "name": "setKickPenaltyPercent",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "ActiveValidatorsCannotLeave",
     "type": "error"
   },
   {
@@ -462,17 +967,6 @@
       }
     ],
     "name": "CouldNotMapNodeAddressToStakerAddress",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "enum LibStakingStorage.States",
-        "name": "state",
-        "type": "uint8"
-      }
-    ],
-    "name": "MustBeInActiveOrUnlockedOrPausedState",
     "type": "error"
   },
   {
@@ -664,117 +1158,15 @@
     "type": "error"
   },
   {
-    "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "newTokenRewardPerTokenPerEpoch",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "newComplaintTolerance",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "newComplaintIntervalSecs",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256[]",
-        "name": "newKeyTypes",
-        "type": "uint256[]"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "newMinimumValidatorCount",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "newMaxConcurrentRequests",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "newMaxTripleCount",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "newMinTripleCount",
-        "type": "uint256"
+        "internalType": "string",
+        "name": "valueName",
+        "type": "string"
       }
     ],
-    "name": "ConfigSet",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "newEpochEndTime",
-        "type": "uint256"
-      }
-    ],
-    "name": "EpochEndTimeSet",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "newEpochLength",
-        "type": "uint256"
-      }
-    ],
-    "name": "EpochLengthSet",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "newEpochTimeout",
-        "type": "uint256"
-      }
-    ],
-    "name": "EpochTimeoutSet",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "reason",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "newKickPenaltyPercent",
-        "type": "uint256"
-      }
-    ],
-    "name": "KickPenaltyPercentSet",
-    "type": "event"
+    "name": "ValueMustBeNonzero",
+    "type": "error"
   },
   {
     "anonymous": false,
@@ -845,83 +1237,12 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "address",
-        "name": "newResolverContractAddress",
-        "type": "address"
-      }
-    ],
-    "name": "ResolverContractAddressSet",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
         "internalType": "uint256",
         "name": "newDuration",
         "type": "uint256"
       }
     ],
     "name": "RewardsDurationUpdated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "newStakingTokenAddress",
-        "type": "address"
-      }
-    ],
-    "name": "StakingTokenSet",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "enum LibStakingStorage.States",
-        "name": "newState",
-        "type": "uint8"
-      }
-    ],
-    "name": "StateChanged",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "staker",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amountBurned",
-        "type": "uint256"
-      }
-    ],
-    "name": "ValidatorKickedFromNextEpoch",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "staker",
-        "type": "address"
-      }
-    ],
-    "name": "ValidatorRejoinedNextEpoch",
     "type": "event"
   },
   {
@@ -954,50 +1275,6 @@
     ],
     "name": "VotedToKickValidatorInNextEpoch",
     "type": "event"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "validatorStakerAddress",
-        "type": "address"
-      }
-    ],
-    "name": "adminKickValidatorInNextEpoch",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "staker",
-        "type": "address"
-      }
-    ],
-    "name": "adminRejoinValidator",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "validatorStakerAddress",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amountToPenalize",
-        "type": "uint256"
-      }
-    ],
-    "name": "adminSlashValidator",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
   },
   {
     "inputs": [],
@@ -1096,114 +1373,8 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "newTokenRewardPerTokenPerEpoch",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "newComplaintTolerance",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "newComplaintIntervalSecs",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "newKeyTypes",
-        "type": "uint256[]"
-      },
-      {
-        "internalType": "uint256",
-        "name": "newMinimumValidatorCount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "newMaxConcurrentRequests",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "newMaxTripleCount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "newMinTripleCount",
-        "type": "uint256"
-      }
-    ],
-    "name": "setConfig",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "newResolverAddress",
-        "type": "address"
-      }
-    ],
-    "name": "setContractResolver",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "newEpochEndTime",
-        "type": "uint256"
-      }
-    ],
-    "name": "setEpochEndTime",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "newEpochLength",
-        "type": "uint256"
-      }
-    ],
-    "name": "setEpochLength",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "enum LibStakingStorage.States",
-        "name": "newState",
-        "type": "uint8"
-      }
-    ],
-    "name": "setEpochState",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "newEpochTimeout",
-        "type": "uint256"
-      }
-    ],
-    "name": "setEpochTimeout",
+    "inputs": [],
+    "name": "requestToLeaveAsNode",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1242,24 +1413,6 @@
       }
     ],
     "name": "setIpPortNodeAddressAndCommunicationPubKeys",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "reason",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "newKickPenaltyPercent",
-        "type": "uint256"
-      }
-    ],
-    "name": "setKickPenaltyPercent",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1334,13 +1487,6 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "unlockValidatorsForNextEpoch",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -1352,6 +1498,42 @@
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "major",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minor",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "patch",
+            "type": "uint256"
+          }
+        ],
+        "indexed": false,
+        "internalType": "struct LibStakingStorage.Version",
+        "name": "version",
+        "type": "tuple"
+      }
+    ],
+    "name": "VersionRequirementsUpdated",
+    "type": "event"
   },
   {
     "inputs": [
@@ -1536,6 +1718,42 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "reason",
+        "type": "uint256"
+      }
+    ],
+    "name": "complaintConfig",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "tolerance",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "intervalSecs",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "kickPenaltyPercent",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct LibStakingStorage.ComplaintConfig",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "config",
     "outputs": [
@@ -1548,12 +1766,12 @@
           },
           {
             "internalType": "uint256",
-            "name": "complaintTolerance",
+            "name": "DEPRECATED_complaintTolerance",
             "type": "uint256"
           },
           {
             "internalType": "uint256",
-            "name": "complaintIntervalSecs",
+            "name": "DEPRECATED_complaintIntervalSecs",
             "type": "uint256"
           },
           {
@@ -1580,6 +1798,21 @@
             "internalType": "uint256",
             "name": "minTripleCount",
             "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "peerCheckingIntervalSecs",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxTripleConcurrency",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "rpcHealthcheckEnabled",
+            "type": "bool"
           }
         ],
         "internalType": "struct LibStakingStorage.Config",
@@ -1677,6 +1910,74 @@
         "internalType": "struct LibStakingStorage.Epoch",
         "name": "",
         "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getActiveUnkickedValidatorStructs",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint32",
+            "name": "ip",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint128",
+            "name": "ipv6",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint32",
+            "name": "port",
+            "type": "uint32"
+          },
+          {
+            "internalType": "address",
+            "name": "nodeAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "reward",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "senderPubKey",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "receiverPubKey",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "lastActiveEpoch",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct LibStakingStorage.Validator[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getActiveUnkickedValidators",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "",
+        "type": "address[]"
       }
     ],
     "stateMutability": "view",
@@ -1850,6 +2151,11 @@
             "internalType": "uint256",
             "name": "receiverPubKey",
             "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "lastActiveEpoch",
+            "type": "uint256"
           }
         ],
         "internalType": "struct LibStakingStorage.Validator[]",
@@ -1900,6 +2206,11 @@
             "internalType": "uint256",
             "name": "receiverPubKey",
             "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "lastActiveEpoch",
+            "type": "uint256"
           }
         ],
         "internalType": "struct LibStakingStorage.Validator[]",
@@ -1949,6 +2260,11 @@
           {
             "internalType": "uint256",
             "name": "receiverPubKey",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "lastActiveEpoch",
             "type": "uint256"
           }
         ],
@@ -2035,6 +2351,25 @@
   {
     "inputs": [],
     "name": "isReadyForNextEpoch",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "isRecentValidator",
     "outputs": [
       {
         "internalType": "bool",
@@ -2192,6 +2527,11 @@
           {
             "internalType": "uint256",
             "name": "receiverPubKey",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "lastActiveEpoch",
             "type": "uint256"
           }
         ],

@@ -396,16 +396,39 @@
     "type": "error"
   },
   {
+    "inputs": [],
+    "name": "MustBeLessThan100",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "MustBeNonzero",
+    "type": "error"
+  },
+  {
     "anonymous": false,
     "inputs": [
       {
         "indexed": false,
-        "internalType": "address",
-        "name": "newResolverAddress",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "newPrice",
+        "type": "uint256"
       }
     ],
-    "name": "ContractResolverAddressSet",
+    "name": "BaseNetworkPriceSet",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newPrice",
+        "type": "uint256"
+      }
+    ],
+    "name": "MaxNetworkPriceSet",
     "type": "event"
   },
   {
@@ -413,204 +436,123 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "bytes",
-        "name": "pubkey",
-        "type": "bytes"
-      },
-      {
-        "indexed": false,
         "internalType": "address",
-        "name": "stakingContract",
+        "name": "stakingAddress",
         "type": "address"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "keyType",
+        "name": "usagePercent",
         "type": "uint256"
       },
       {
         "indexed": false,
-        "internalType": "bytes32",
-        "name": "derivedKeyId",
-        "type": "bytes32"
+        "internalType": "uint256[]",
+        "name": "newPrices",
+        "type": "uint256[]"
       }
     ],
-    "name": "PubkeyRoutingDataSet",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "stakingContract",
-        "type": "address"
-      },
-      {
-        "components": [
-          {
-            "internalType": "bytes",
-            "name": "pubkey",
-            "type": "bytes"
-          },
-          {
-            "internalType": "uint256",
-            "name": "keyType",
-            "type": "uint256"
-          }
-        ],
-        "indexed": false,
-        "internalType": "struct IPubkeyRouter.RootKey",
-        "name": "rootKey",
-        "type": "tuple"
-      }
-    ],
-    "name": "RootKeySet",
+    "name": "UsageSet",
     "type": "event"
   },
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "stakingContract",
-        "type": "address"
+        "internalType": "uint256[]",
+        "name": "productIds",
+        "type": "uint256[]"
       }
     ],
-    "name": "adminResetRootKeys",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "name": "baseNetworkPrices",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
       {
+        "internalType": "uint256[]",
+        "name": "productIds",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "getNodesForRequest",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
         "components": [
           {
-            "internalType": "bytes32",
-            "name": "r",
-            "type": "bytes32"
+            "components": [
+              {
+                "internalType": "uint128",
+                "name": "ip",
+                "type": "uint128"
+              },
+              {
+                "internalType": "uint128",
+                "name": "ipv6",
+                "type": "uint128"
+              },
+              {
+                "internalType": "uint128",
+                "name": "port",
+                "type": "uint128"
+              },
+              {
+                "internalType": "address",
+                "name": "nodeAddress",
+                "type": "address"
+              },
+              {
+                "internalType": "uint256",
+                "name": "reward",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "senderPubKey",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "receiverPubKey",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "lastActiveEpoch",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct LibStakingStorage.Validator",
+            "name": "validator",
+            "type": "tuple"
           },
           {
-            "internalType": "bytes32",
-            "name": "s",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "uint8",
-            "name": "v",
-            "type": "uint8"
+            "internalType": "uint256[]",
+            "name": "prices",
+            "type": "uint256[]"
           }
         ],
-        "internalType": "struct IPubkeyRouter.Signature[]",
-        "name": "signatures",
+        "internalType": "struct LibPriceFeedStorage.NodeInfoAndPrices[]",
+        "name": "",
         "type": "tuple[]"
-      },
-      {
-        "internalType": "bytes",
-        "name": "signedMessage",
-        "type": "bytes"
-      },
-      {
-        "internalType": "address",
-        "name": "stakingContractAddress",
-        "type": "address"
-      }
-    ],
-    "name": "checkNodeSignatures",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes",
-        "name": "pubkey",
-        "type": "bytes"
-      }
-    ],
-    "name": "deriveEthAddressFromPubkey",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "pure",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "ethAddress",
-        "type": "address"
-      }
-    ],
-    "name": "ethAddressToPkpId",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "stakingContract",
-        "type": "address"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "derivedKeyId",
-        "type": "bytes32"
-      }
-    ],
-    "name": "getDerivedPubkey",
-    "outputs": [
-      {
-        "internalType": "bytes",
-        "name": "",
-        "type": "bytes"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      }
-    ],
-    "name": "getEthAddress",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -618,7 +560,7 @@
   },
   {
     "inputs": [],
-    "name": "getPkpNftAddress",
+    "name": "getStakingAddress",
     "outputs": [
       {
         "internalType": "address",
@@ -632,17 +574,17 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
+        "internalType": "uint256[]",
+        "name": "productIds",
+        "type": "uint256[]"
       }
     ],
-    "name": "getPubkey",
+    "name": "maxNetworkPrices",
     "outputs": [
       {
-        "internalType": "bytes",
+        "internalType": "uint256[]",
         "name": "",
-        "type": "bytes"
+        "type": "uint256[]"
       }
     ],
     "stateMutability": "view",
@@ -652,26 +594,41 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "stakingContract",
+        "name": "node",
         "type": "address"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "productIds",
+        "type": "uint256[]"
       }
     ],
-    "name": "getRootKeys",
+    "name": "price",
     "outputs": [
       {
         "components": [
           {
-            "internalType": "bytes",
-            "name": "pubkey",
-            "type": "bytes"
+            "internalType": "address",
+            "name": "stakerAddress",
+            "type": "address"
           },
           {
             "internalType": "uint256",
-            "name": "keyType",
+            "name": "price",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "productId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "timestamp",
             "type": "uint256"
           }
         ],
-        "internalType": "struct IPubkeyRouter.RootKey[]",
+        "internalType": "struct LibPriceFeedStorage.NodePriceData[]",
         "name": "",
         "type": "tuple[]"
       }
@@ -683,200 +640,119 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "tokenId",
+        "name": "productId",
         "type": "uint256"
       }
     ],
-    "name": "getRoutingData",
+    "name": "prices",
     "outputs": [
       {
         "components": [
           {
-            "internalType": "bytes",
-            "name": "pubkey",
-            "type": "bytes"
+            "internalType": "address",
+            "name": "stakerAddress",
+            "type": "address"
           },
           {
             "internalType": "uint256",
-            "name": "keyType",
+            "name": "price",
             "type": "uint256"
-          },
-          {
-            "internalType": "bytes32",
-            "name": "derivedKeyId",
-            "type": "bytes32"
-          }
-        ],
-        "internalType": "struct LibPubkeyRouterStorage.PubkeyRoutingData",
-        "name": "",
-        "type": "tuple"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      }
-    ],
-    "name": "isRouted",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      }
-    ],
-    "name": "pubkeys",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "bytes",
-            "name": "pubkey",
-            "type": "bytes"
           },
           {
             "internalType": "uint256",
-            "name": "keyType",
+            "name": "productId",
             "type": "uint256"
-          },
-          {
-            "internalType": "bytes32",
-            "name": "derivedKeyId",
-            "type": "bytes32"
-          }
-        ],
-        "internalType": "struct LibPubkeyRouterStorage.PubkeyRoutingData",
-        "name": "",
-        "type": "tuple"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "newResolverAddress",
-        "type": "address"
-      }
-    ],
-    "name": "setContractResolver",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bytes",
-        "name": "pubkey",
-        "type": "bytes"
-      },
-      {
-        "internalType": "address",
-        "name": "stakingContractAddress",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "keyType",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "derivedKeyId",
-        "type": "bytes32"
-      }
-    ],
-    "name": "setRoutingData",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bytes",
-        "name": "pubkey",
-        "type": "bytes"
-      },
-      {
-        "internalType": "address",
-        "name": "stakingContract",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "keyType",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "derivedKeyId",
-        "type": "bytes32"
-      }
-    ],
-    "name": "setRoutingDataAsAdmin",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "stakingContractAddress",
-        "type": "address"
-      },
-      {
-        "components": [
-          {
-            "internalType": "bytes",
-            "name": "pubkey",
-            "type": "bytes"
           },
           {
             "internalType": "uint256",
-            "name": "keyType",
+            "name": "timestamp",
             "type": "uint256"
           }
         ],
-        "internalType": "struct IPubkeyRouter.RootKey[]",
-        "name": "newRootKeys",
+        "internalType": "struct LibPriceFeedStorage.NodePriceData[]",
+        "name": "",
         "type": "tuple[]"
       }
     ],
-    "name": "voteForRootKeys",
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "newPrice",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "productIds",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "setBaseNetworkPrices",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "newPrice",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "productIds",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "setMaxNetworkPrices",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "usagePercent",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "productIds",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "setUsage",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "usagePercent",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "productIds",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "usagePercentToPrices",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   }
 ]

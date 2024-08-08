@@ -195,19 +195,6 @@
   },
   {
     "inputs": [],
-    "name": "DOMAIN_WALLET_ORACLE",
-    "outputs": [
-      {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "DOMAIN_WALLET_REGISTRY",
     "outputs": [
       {
@@ -222,6 +209,19 @@
   {
     "inputs": [],
     "name": "HD_KEY_DERIVER_CONTRACT",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "LEDGER_CONTRACT",
     "outputs": [
       {
         "internalType": "bytes32",
@@ -260,7 +260,33 @@
   },
   {
     "inputs": [],
+    "name": "PAYMENT_DELEGATION_CONTRACT",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "PKP_HELPER_CONTRACT",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "PKP_HELPER_V2_CONTRACT",
     "outputs": [
       {
         "internalType": "bytes32",
@@ -300,6 +326,19 @@
   {
     "inputs": [],
     "name": "PKP_PERMISSIONS_CONTRACT",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "PRICE_FEED_CONTRACT",
     "outputs": [
       {
         "internalType": "bytes32",

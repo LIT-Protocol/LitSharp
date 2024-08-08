@@ -430,9 +430,9 @@
         "type": "address"
       },
       {
-        "internalType": "uint32",
+        "internalType": "uint128",
         "name": "pos",
-        "type": "uint32"
+        "type": "uint128"
       }
     ],
     "name": "checkpoints",
@@ -440,9 +440,9 @@
       {
         "components": [
           {
-            "internalType": "uint32",
+            "internalType": "uint128",
             "name": "fromBlock",
-            "type": "uint32"
+            "type": "uint128"
           },
           {
             "internalType": "uint224",
@@ -829,9 +829,9 @@
     "name": "numCheckpoints",
     "outputs": [
       {
-        "internalType": "uint32",
+        "internalType": "uint128",
         "name": "",
-        "type": "uint32"
+        "type": "uint128"
       }
     ],
     "stateMutability": "view",
