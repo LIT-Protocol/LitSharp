@@ -25,7 +25,7 @@ namespace LitContracts.Staking.ContractDefinition
         public virtual BigInteger SenderPubKey { get; set; }
         [Parameter("uint256", "receiverPubKey", 7)]
         public virtual BigInteger ReceiverPubKey { get; set; }
-        [Parameter("uint256", "lastActiveEpoch", 8)]
-        public virtual BigInteger LastActiveEpoch { get; set; }
+        // [Parameter("uint256", "lastActiveEpoch", 8)]
+        // public virtual BigInteger LastActiveEpoch { get; set; }
     }
 }
