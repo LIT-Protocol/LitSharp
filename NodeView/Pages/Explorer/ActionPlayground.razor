@@ -36,17 +36,17 @@
 
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1">PKP</span>
-                <input type="text" class="form-control" name="pkp_address" value="@pkp_address" @onchange="@pkp_address_changed" placeHolder="0x0......">
+                <input type="text" class="form-control" name="pkp_address" value="@pkp_address" placeHolder="0x0......">
             </div>
 
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1">PKP Owner Wallet Address</span>
-                <input type="text" id="chainUrl" class="form-control" name="pkp_owner_wallet_address" value="@pkp_owner_wallet_address" @onchange="@pkp_owner_wallet_address_changed"  placeHolder="0x0......" />
+                <input type="text" id="chainUrl" class="form-control" name="pkp_owner_wallet_address" value="@pkp_owner_wallet_address"  placeHolder="0x0......" />
             </div>
 
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1">PKP Owner Wallet Key</span>
-                <input type="text" id="chainUrl" class="form-control" name="pkp_owner_wallet_key" value="@pkp_owner_wallet_key" @onchange="PkpOwnerWalletKeyChanged" placeHolder="0x0......" />
+                <input type="text" id="chainUrl" class="form-control" name="pkp_owner_wallet_key" value="@pkp_owner_wallet_key"  placeHolder="0x0......" />
             </div>
 
     
@@ -95,14 +95,9 @@
                 <span class="input-group-text" id="basic-addon1">Responses:</span>
                  <textarea class="form-control" style="height:150px;" id="action_response" value="@action_response"   height=30 rows="3"></textarea>
             </div> *@
-            <div class="row">
-                <div class="col">       
-                    <button type="button" class="btn btn-primary"  @onclick="() => ExecuteLitAction()">Execute Action </button>                        
-                </div>
-                <div class="col text-right">       
-                    <button type="button" class="btn btn-outline-primary" onclick="window.open(@gcp_url_address, '_blank').focus()">GCP logs (Datil)</button>                        
-                </div>
-            </div
+
+            <button type="button" class="btn btn-primary"  @onclick="() => ExecuteLitAction()">Execute Action </button>                        
+
         </div>
 
       </div>
@@ -142,7 +137,8 @@
         public string  signedMessage { get; set;} = "";
         public string address { get; set;} = "";
         public string ? algo { get; set;} 
-    }
+
+}
 
     class JsonExecutionRequest {
         public string code { get; set; } = "";
@@ -168,8 +164,6 @@
     public string action_code { get; set; } = "";
     public string action_response { get; set; } = "";
 
-    public string gcp_url_address { get; set; } = "";
-
     private StandaloneEditorConstructionOptions EditorConstructionOptions(StandaloneCodeEditor editor)
     {
         return new StandaloneEditorConstructionOptions
@@ -193,49 +187,17 @@
         action_code = e.Value.ToString();
     }
 
-    async void pkp_address_changed(ChangeEventArgs e)
-    {
-        if ( e.Value == null ) return;
-        if ( string.IsNullOrEmpty( e.Value.ToString() ) ) return;
-        pkp_address = e.Value.ToString();
-    }
-
-    async void pkp_owner_wallet_address_changed(ChangeEventArgs e)
-    {
-        if ( e.Value == null ) return;
-        if ( string.IsNullOrEmpty( e.Value.ToString() ) ) return;
-        pkp_owner_wallet_address = e.Value.ToString();
-    }
-
-    public async void PkpOwnerWalletKeyChanged(ChangeEventArgs e)
-    {
-        if ( e.Value == null ) return;
-        if ( string.IsNullOrEmpty( e.Value.ToString() ) ) return;
-        pkp_owner_wallet_key = e.Value.ToString();
-    }
-
     protected override async Task OnInitializedAsync()
     {
 
-        gcp_url_address = "'#'";
-        HttpClient client = new HttpClient();                
-        @* client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*"); *@
+        HttpClient client = new HttpClient();
+                
+        client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
 
-         var secrets =  new LocalConfig {
-            wallet_address = "0",
-            wallet_secret = "0",
-            pubkey = "0"
-            }; 
+        var response = await client.GetAsync("http://127.0.0.1:8000/");
+        var result = await response.Content.ReadAsStringAsync();
+        var secrets = System.Text.Json.JsonSerializer.Deserialize<LocalConfig>(result);       
 
-        try  {
-            var response = await client.GetAsync("http://localhost:8000/");
-            var result = await response.Content.ReadAsStringAsync();
-            secrets = System.Text.Json.JsonSerializer.Deserialize<LocalConfig>(result);    
-        }
-        catch (Exception e) {
-            Console.WriteLine("Error gathering data: " + e.Message);
-        }
-        
         pkp_address = "0x" + secrets.pubkey;
         pkp_owner_wallet_key = "0x" + secrets.wallet_secret;
         pkp_owner_wallet_address = "0x" + secrets.wallet_address;
@@ -307,13 +269,11 @@
             action_code = "(async () => {\n"  + action_code + "\n})()";
         }
 
-        Console.WriteLine("pkp_owner_wallet_key: " + pkp_owner_wallet_key);
-
         var auth_sig = generate_auth_sig(pkp_owner_wallet_key);        
-        @* Console.WriteLine("Auth Sig: " + auth_sig.sig);
-        Console.WriteLine("Action code:" + action_code); *@
+        Console.WriteLine("Auth Sig: " + auth_sig.sig);
+        Console.WriteLine("Action code:" + action_code);
         var b64_action_code = Convert.ToBase64String(Encoding.UTF8.GetBytes(action_code));
-        @* Console.WriteLine("Action code b64:" + b64_action_code); *@
+        Console.WriteLine("Action code b64:" + b64_action_code);
 
         var js_params = new {
             publicKey = pkp_address,
@@ -330,15 +290,9 @@
         
         
         var json_request = System.Text.Json.JsonSerializer.Serialize(request);
-        @* Console.WriteLine("Request: " + json_request); *@
+        Console.WriteLine("Request: " + json_request);
         HttpClient client = new HttpClient();
         var request_id = Guid.NewGuid().ToString();
-        Console.WriteLine("Request ID: " + request_id);
-        var cursor_time_stamp = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ssZ");
-        var start_time_stamp = DateTime.Now.AddDays(-1).ToString("yyyy-MM-ddTHH:mm:ssZ");
-        var end_time_stamp = DateTime.Now.AddDays(2).ToString("yyyy-MM-ddTHH:mm:ssZ");
-        
-        gcp_url_address = "'https://console.cloud.google.com/logs/query;query=SEARCH%2528%22%60" + request_id + "%60%22%2529;cursorTimestamp=" + cursor_time_stamp + ";startTime=" + start_time_stamp + ";endTime=" + end_time_stamp + "?project=quickstart-1572387045298&supportedpurview=folder,organizationId,project'";
         client.DefaultRequestHeaders.Add("X-Request-Id", request_id);
 
         var combined_output = new System.Text.StringBuilder();
