@@ -31,6 +31,7 @@ public enum ContractType
     {
         Allowlist ,
         BackupRecovery,
+        CloneNet,
         DomainWalletRegistry,
         HDKeyDeriver,
         LitToken,
@@ -100,6 +101,7 @@ public class Resolver{
         {
             ContractType.Allowlist => keccak256("ALLOWLIST"),
             ContractType.BackupRecovery => keccak256("BACKUP_RECOVERY"),
+            ContractType.CloneNet => keccak256("CLONE_NET"),
             ContractType.DomainWalletRegistry => keccak256("DOMAIN_WALLET_REGISTRY"),
             ContractType.HDKeyDeriver => keccak256("HD_KEY_DERIVER"),
             ContractType.LitToken => keccak256("LIT_TOKEN"),
