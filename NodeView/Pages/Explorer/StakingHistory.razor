@@ -38,7 +38,7 @@
                   <div class="input-group-prepend">
                     <div class="input-group-text">To</div>
                   </div>
-                  <input  type="number"  class="form-control" name="toBlock" value="@toBlock"  placeholder="9999999" disabled />
+                  <input  type="number"  class="form-control" name="toBlock" value="@toBlock"  placeholder="9999999" @onchange="toBlockChanged"  />
                   <button type="button" class="btn btn-primary btn-sm" @onclick="FilterHistory">Search</button>
                 </div>
                 </form>
@@ -250,7 +250,7 @@
         stakingService = await resolver.GetStakingService();
         contractBuilder = LitContracts.RawABI.get_staking_contract_abi(stakingService.ContractHandler.ContractAddress);       
         explorerUrl = await localStorage.GetItemAsync<string>("explorerUrl");
-        await LoadHistory();
+        await LoadHistory(fromBlock: 0, toBlock: 9999999);
     }
 
     protected async Task OnRowClick(DataGridRowMouseEventArgs<SimpleTx> args)
@@ -390,13 +390,26 @@
         } 
     }
 
+    async void toBlockChanged(ChangeEventArgs e)
+    {
+        if ( e.Value == null ) return;
+        if ( string.IsNullOrEmpty( e.Value.ToString() ) ) return;
+
+        try {
+            toBlock = e.Value.ToString();            
+        } catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+        } 
+    }
+
+
     private async Task FilterHistory()
     {
 
         await LoadHistory(int.Parse(fromBlock), int.Parse(toBlock));
     }
 
-    private async Task LoadHistory(int fromBlock = 0, int toBlock = 9999999)
+    private async Task LoadHistory(int fromBlock , int toBlock )
     {      
         
    
