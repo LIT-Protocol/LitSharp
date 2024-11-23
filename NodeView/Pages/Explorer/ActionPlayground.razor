@@ -16,6 +16,8 @@
 @using Nethereum.RPC.Eth.DTOs;
 @using Nethereum.Hex.HexTypes;
 @using System.Text
+@using MetaMask.Blazor.Exceptions;
+@using MetaMask.Blazor;
 @inject Blazored.LocalStorage.ILocalStorageService localStorage;
 
 <PageTitle>LNE - Playground</PageTitle>
@@ -39,7 +41,7 @@
                 <input type="text" class="form-control" name="pkp_address" value="@pkp_address" @onchange="@pkp_address_changed" placeHolder="0x0......">
             </div>
 
-            <div class="input-group mb-3">
+            @* <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1">PKP Owner Wallet Address</span>
                 <input type="text" id="chainUrl" class="form-control" name="pkp_owner_wallet_address" value="@pkp_owner_wallet_address" @onchange="@pkp_owner_wallet_address_changed"  placeHolder="0x0......" />
             </div>
@@ -47,7 +49,7 @@
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1">PKP Owner Wallet Key</span>
                 <input type="text" id="chainUrl" class="form-control" name="pkp_owner_wallet_key" value="@pkp_owner_wallet_key" @onchange="PkpOwnerWalletKeyChanged" placeHolder="0x0......" />
-            </div>
+            </div> *@
 
     
             @* <div class="input-group mb-3">
@@ -122,8 +124,24 @@
 
 
 @code {
-     private StandaloneCodeEditor _editor = null!;
-     private StandaloneCodeEditor _responses = null!;
+    [Inject]
+    public IMetaMaskService MetaMaskService { get; set; } = default!;
+    public bool HasMetaMask { get; set; }
+    public string? SelectedAddress { get; set; }
+
+    public string? InitializeMsg { get; set; }
+    public string? SelectedChain { get; set; }
+    public string? TransactionCount { get; set; }
+    public string? SignedData { get; set; }
+    public string? SignedDataV4 { get; set; }
+    public string? PersonalSigned { get; set; }
+    public string? FunctionResult { get; set; }
+    public string? RpcResult { get; set; }
+    public Chain? Chain { get; set; }
+
+        
+    private StandaloneCodeEditor _editor = null!;
+    private StandaloneCodeEditor _responses = null!;
     private List<Validator> ? current_validators = null;
     class LocalConfig {
         public string wallet_address { get; set;} = "";
@@ -155,11 +173,11 @@
 
     public class ActionResult { 
         public bool success { get; set; } 
-        public object signedData { get; set; }
-        public object decryptedData { get; set; }
-        public object claimData { get; set; }
-        public string response { get; set; }
-        public string logs { get; set; }
+        public object ? signedData { get; set; }
+        public object ? decryptedData { get; set; }
+        public object ? claimData { get; set; }
+        public string ? response { get; set; }
+        public string ? logs { get; set; }
 
         public string ? node_port { get; set; }
     }
@@ -186,33 +204,71 @@
             Language = "javascript",
         };
     }
-    async void ActionCodeChanged(ChangeEventArgs e)
+    void ActionCodeChanged(ChangeEventArgs e)
     {
         if ( e.Value == null ) return;
         if ( string.IsNullOrEmpty( e.Value.ToString() ) ) return;
         action_code = e.Value.ToString();
     }
 
-    async void pkp_address_changed(ChangeEventArgs e)
+    void pkp_address_changed(ChangeEventArgs e)
     {
         if ( e.Value == null ) return;
         if ( string.IsNullOrEmpty( e.Value.ToString() ) ) return;
         pkp_address = e.Value.ToString();
     }
 
-    async void pkp_owner_wallet_address_changed(ChangeEventArgs e)
+    void pkp_owner_wallet_address_changed(ChangeEventArgs e)
     {
         if ( e.Value == null ) return;
         if ( string.IsNullOrEmpty( e.Value.ToString() ) ) return;
         pkp_owner_wallet_address = e.Value.ToString();
     }
 
-    public async void PkpOwnerWalletKeyChanged(ChangeEventArgs e)
+    void PkpOwnerWalletKeyChanged(ChangeEventArgs e)
     {
         if ( e.Value == null ) return;
         if ( string.IsNullOrEmpty( e.Value.ToString() ) ) return;
         pkp_owner_wallet_key = e.Value.ToString();
     }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender)
+        {
+            //Subscribe to events
+            IMetaMaskService.AccountChangedEvent += MetaMaskService_AccountChangedEvent;
+            IMetaMaskService.ChainChangedEvent += MetaMaskService_ChainChangedEvent;
+            IMetaMaskService.OnConnectEvent += IMetaMaskService_OnConnectEvent;
+            IMetaMaskService.OnDisconnectEvent += IMetaMaskService_OnDisconnectEvent;
+
+            
+            Console.WriteLine("hello");
+
+
+
+
+            HasMetaMask = await MetaMaskService.HasMetaMask();
+            if (HasMetaMask)
+                await MetaMaskService.ListenToEvents();
+    
+            
+
+            bool isSiteConnected = await MetaMaskService.IsSiteConnected();
+            if (isSiteConnected)
+            {
+                await GetSelectedAddress();
+                await GetSelectedNetwork();
+            }
+
+            StateHasChanged();
+
+
+        }
+
+
+    }
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -309,7 +365,7 @@
 
         Console.WriteLine("pkp_owner_wallet_key: " + pkp_owner_wallet_key);
 
-        var auth_sig = generate_auth_sig(pkp_owner_wallet_key);        
+        var auth_sig = await generate_auth_sig(pkp_owner_wallet_key);        
         @* Console.WriteLine("Auth Sig: " + auth_sig.sig);
         Console.WriteLine("Action code:" + action_code); *@
         var b64_action_code = Convert.ToBase64String(Encoding.UTF8.GetBytes(action_code));
@@ -395,16 +451,21 @@
         return true;
     }
 
-    private JsonAuthSig generate_auth_sig(string pkp_owner_wallet_key) {
+    private async Task<JsonAuthSig> generate_auth_sig(string pkp_owner_wallet_key) {
         
-        Nethereum.Web3.Accounts.Account account = new Nethereum.Web3.Accounts.Account(pkp_owner_wallet_key);
+        @* Nethereum.Web3.Accounts.Account account = new Nethereum.Web3.Accounts.Account(pkp_owner_wallet_key); *@
+
+        var accounts = await MetaMaskService.RequestAccounts();
+        var accountString = accounts.Split(",")[0].Replace("[", "").Replace("]", "").Replace("\"", "");
+        var checksumAddress = Nethereum.Util.AddressExtensions.ConvertToEthereumChecksumAddress(accountString);
+        Console.WriteLine("Account: " + checksumAddress + " (" + accountString + ")");
 
         var chain_id = 31337;
         var issue_datetime = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ssZ");        
         var expiration_datetime = DateTime.Now.AddDays(1).ToString("yyyy-MM-ddTHH:mm:ssZ");
 
         var msg = @"localhost wants you to sign in with your Ethereum account:
-" + account.Address + @"
+" + checksumAddress+ @"
 
 This is a key for a Lit Action Test.
 
@@ -414,17 +475,80 @@ Chain ID: " + chain_id + @"
 Nonce: 1LF00rraLO4f7ZSIt
 Issued At: " + issue_datetime + @"
 Expiration Time: " + expiration_datetime + @"";
-
+@* 
         var signer = new Nethereum.Signer.EthereumMessageSigner();
 
         var sig = signer.EncodeUTF8AndSign(msg, new EthECKey(account.PrivateKey));
-        
+         *@
+        var sig = await MetaMaskService.PersonalSign(msg);
+
+        Console.WriteLine("Sig: " + sig);
+
         return new JsonAuthSig {
             sig = sig,
             derivedVia = "web3.eth.personal.sign",
             signedMessage = msg,
-            address = account.Address,
+            address = checksumAddress,
             algo = null,
         };
     }
+
+
+     private void IMetaMaskService_OnDisconnectEvent()
+        {
+            Console.WriteLine("Disconnect");
+        }
+
+        private void IMetaMaskService_OnConnectEvent()
+        {
+            Console.WriteLine("Connect");
+        }
+
+        private async Task MetaMaskService_ChainChangedEvent((long, MetaMask.Blazor.Enums.Chain) arg)
+        {
+            Console.WriteLine("Chain Changed");
+            await GetSelectedNetwork();
+            StateHasChanged();
+        }
+
+        private async Task MetaMaskService_AccountChangedEvent(string arg)
+        {
+            Console.WriteLine("Account Changed");
+            await GetSelectedAddress();
+            StateHasChanged();
+        }
+
+        public async Task ConnectMetaMask()
+        {
+            try
+            {
+                await MetaMaskService.ConnectMetaMask();
+
+                await GetSelectedAddress();
+            }
+            catch (UserDeniedException)
+            {
+                InitializeMsg = "User Denied";
+            }
+            catch (Exception ex)
+            {
+                InitializeMsg = ex.ToString();
+            }
+        }
+
+        public async Task GetSelectedAddress()
+        {
+            SelectedAddress = await MetaMaskService.GetSelectedAddress();
+            Console.WriteLine($"Address: {SelectedAddress}");
+        }
+
+        public async Task GetSelectedNetwork()
+        {
+            var chainInfo = await MetaMaskService.GetSelectedChain();
+            Chain = (Nethereum.Signer.Chain)chainInfo.chain;
+
+            SelectedChain = $"ChainID: {chainInfo.chainId}, Name: {chainInfo.chain.ToString()}";
+            Console.WriteLine($"ChainID: {chainInfo.chainId}");
+        }
+
 }

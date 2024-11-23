@@ -14,7 +14,7 @@ public class Validator: LitContracts.Staking.ContractDefinition.Validator  {
     public IPAddress Node_Ip  { get { return   IPAddress.Parse( Ip.ToString()); } }
 
     public string responding { get { return Attestation == null ? NodeSocketAddress.Contains("127.0.0.1") ? "*No" : "No" : "Yes"; } }
-    public string  NodeSocketAddress { get { return (Port == 443 ? "https" : "http") + "://" + Node_Ip.ToString() + (Port > 443 ? ":" + Port : "") ; } }
+    public string  NodeSocketAddress { get { return ( (Port == 443) || (Node_Ip.ToString().StartsWith("15")) ? "https" : "http") + "://" + Node_Ip.ToString() + (Port > 443 ? ":" + Port : "") ; } }
     
     public bool kicked { get; set; } = false;
 
