@@ -463,21 +463,22 @@
         var chain_id = 31337;
         var issue_datetime = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ssZ");        
         var expiration_datetime = DateTime.Now.AddDays(1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+        
+        var uri_root ="lit-protocol.github.io";
+        var uri = "https://" +  uri_root + "/";
 
-        var msg = @"localhost wants you to sign in with your Ethereum account:
+        var msg = uri_root + @" wants you to sign in with your Ethereum account:
 " + checksumAddress+ @"
 
 This is a key for a Lit Action Test.
 
-URI: https://lit-protocol.github.io/
+URI: " + uri + @"
 Version: 1
 Chain ID: " + chain_id + @"
 Nonce: 1LF00rraLO4f7ZSIt
 Issued At: " + issue_datetime + @"
 Expiration Time: " + expiration_datetime + @"";
-@* 
-        var signer = new Nethereum.Signer.EthereumMessageSigner();
-
+@*         var signer = new Nethereum.Signer.EthereumMessageSigner
         var sig = signer.EncodeUTF8AndSign(msg, new EthECKey(account.PrivateKey));
          *@
         var sig = await MetaMaskService.PersonalSign(msg);
