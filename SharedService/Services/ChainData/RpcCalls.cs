@@ -10,8 +10,12 @@ public class RpcCalls {
 
         var txs = new List<SimpleTx>();
 
+        blockEnd = blockEnd == 0 ? 9999999 : blockEnd;
+
         Console.WriteLine("rpc_api_type: " + rpc_api_type);
         Console.WriteLine("rpc_api_url: " + rpc_api_url);
+        Console.WriteLine("from/to: " + blockStart + "/" + blockEnd);
+
 
         switch (rpc_api_type) {
             case 1:
