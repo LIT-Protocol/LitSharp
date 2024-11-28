@@ -14,7 +14,7 @@ public class RpcCalls {
 
         var client = new HttpClient();
         try {        
-            var response = await client.GetAsync( rpc_api_url + "?module=account&action=txlist&sort=asc&&offset=300&startblock=" + blockStart.ToString() + "&endBlock=" + blockEnd.ToString() + "&address=" + address);
+            var response = await client.GetAsync( rpc_api_url + "?module=account&action=txlist&sort=desc&&offset=300&startblock=" + blockStart.ToString() + "&endBlock=" + blockEnd.ToString() + "&address=" + address);
             var responseString = await response.Content.ReadAsStringAsync();
             if ( string.IsNullOrWhiteSpace(responseString)) {
                 Console.WriteLine("No data returned from BlockScout"   );                

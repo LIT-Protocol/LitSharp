@@ -14,7 +14,7 @@ public class RpcCalls {
         try {        
             var client = new Nethereum.JsonRpc.Client.RpcClient(new Uri(rpc_api_url));
             var parameters = new object[] {   address, 0, 300 };
-            var resp = await client.SendRequestAsync<object>("ots_searchTransactionsAfter", null, parameters);
+            var resp = await client.SendRequestAsync<object>("ots_searchTransactionsBefore", null, parameters);
 
             response = JsonConvert.DeserializeObject<OtterscanResponse>(resp.ToString());
         }
