@@ -117,6 +117,7 @@ public class Resolver{
             ContractType.ReleaseRegister => keccak256("RELEASE_REGISTER"),
             ContractType.Staking => keccak256("STAKING"),
             ContractType.StakingBalances => keccak256("STAKING_BALANCES"),
+            ContractType.HostCommands => keccak256("HOST_COMMANDS"),
             ContractType.WLIT => keccak256("WLIT"),
             ContractType.StylusContractP256 => keccak256("HD_KEY_DERIVER_CONTRACT_P256"),
             ContractType.StylusContractK256 => keccak256("HD_KEY_DERIVER_CONTRACT_K256"),
