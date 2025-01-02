@@ -34,6 +34,7 @@ public enum ContractType
         CloneNet,
         DomainWalletRegistry,
         HDKeyDeriver,
+        HostCommands,
         LitToken,
         Multisender,
         PaymentDelegation,
@@ -47,7 +48,6 @@ public enum ContractType
         ReleaseRegister,
         Staking,
         StakingBalances,
-        HostCommands,
         WLIT,
         StylusContractP256,
         StylusContractK256
