@@ -47,6 +47,7 @@ public enum ContractType
         ReleaseRegister,
         Staking,
         StakingBalances,
+        HostCommands,
         WLIT,
         StylusContractP256,
         StylusContractK256
